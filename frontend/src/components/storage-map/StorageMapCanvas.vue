@@ -8,6 +8,9 @@ import { useStorageMapViewStore } from '@/stores/storageMapViewStore'
 import { formatBlockLabel } from '@/utils/format'
 import type { BlockPruningState } from '@/api/queries'
 
+const ROW_HEIGHT = 26
+const WINDOW_BUFFER_ROWS = 3
+
 const props = defineProps<{
   datasetId?: string
   blockPruning?: BlockPruningState[]
@@ -35,12 +38,29 @@ const scrollRoot = ref<HTMLElement | null>(null)
 const cellWidth = 32
 const labelWidth = 96
 const labelGap = 8
+const visibleBlockStart = ref(0)
+const visibleBlockEnd = ref(64)
 
 const data = computed(() => mapData.value)
 
 const maxBlocks = computed(() =>
   Math.max(...(data.value?.columns.map((col) => col.blocks.length) ?? [0]), 0),
 )
+
+function updateVisibleWindow() {
+  const el = scrollRoot.value
+  if (!el || maxBlocks.value === 0) return
+  const perRow = Math.max(1, blocksPerRow.value)
+  const startRow = Math.max(0, Math.floor(el.scrollTop / ROW_HEIGHT) - WINDOW_BUFFER_ROWS)
+  const visibleRows =
+    Math.ceil(el.clientHeight / ROW_HEIGHT) + WINDOW_BUFFER_ROWS * 2
+  const startBlock = startRow * perRow
+  const endBlock = Math.min(maxBlocks.value - 1, startBlock + visibleRows * perRow - 1)
+  visibleBlockStart.value = startBlock
+  visibleBlockEnd.value = Math.max(startBlock, endBlock)
+}
+
+watch([maxBlocks, blocksPerRow], () => updateVisibleWindow())
 
 const headerIndices = computed(() => {
   const n = Math.max(maxBlocks.value, blocksPerRow.value)
@@ -97,6 +117,8 @@ function onKeydown(event: KeyboardEvent) {
 onMounted(() => {
   if (props.datasetId) void mapStore.load(Number(props.datasetId))
   window.addEventListener('keydown', onKeydown)
+  scrollRoot.value?.addEventListener('scroll', updateVisibleWindow, { passive: true })
+  updateVisibleWindow()
 })
 
 watch(
@@ -104,11 +126,13 @@ watch(
   (id) => {
     if (id) void mapStore.load(Number(id))
     else mapStore.clearSelection()
+    updateVisibleWindow()
   },
 )
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeydown)
+  scrollRoot.value?.removeEventListener('scroll', updateVisibleWindow)
 })
 </script>
 
@@ -163,8 +187,8 @@ onUnmounted(() => {
             :blocks="column.blocks"
             :blocks-per-row="blocksPerRow"
             :cell-width="cellWidth"
-            :visible-start="0"
-            :visible-end="maxBlocks"
+            :visible-start="visibleBlockStart"
+            :visible-end="visibleBlockEnd"
             :selected-block-id="selectedColumn === column.name ? selectedBlockId : null"
             :active-block-id="
               activeScanBlock?.column === column.name

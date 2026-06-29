@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 import time
+import uuid
 from pathlib import Path
 
 SAMPLES = Path(__file__).resolve().parents[3] / "samples"
 
 
 def _auth_headers(client) -> dict[str, str]:
+    suffix = uuid.uuid4().hex[:8]
+    username = f"del_user_{suffix}"
+    email = f"del_{suffix}@example.com"
     reg = client.post(
         "/api/auth/register",
-        json={"username": "del_user", "email": "del@example.com", "password": "secret12"},
+        json={"username": username, "email": email, "password": "secret12"},
     )
-    if reg.status_code != 200:
-        login = client.post("/api/auth/login", json={"username": "del_user", "password": "secret12"})
-        token = login.json()["data"]["access_token"]
-    else:
-        token = reg.json()["data"]["access_token"]
+    assert reg.status_code == 200, reg.text
+    token = reg.json()["data"]["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -26,6 +27,15 @@ def _wait_job(client, headers, job_id: int) -> dict:
             return body
         time.sleep(0.2)
     raise TimeoutError("import timeout")
+
+
+def _wait_tables(client, headers, dataset_id: int) -> list[dict]:
+    for _ in range(50):
+        tables = client.get(f"/api/datasets/{dataset_id}/tables", headers=headers).json()["data"]
+        if tables:
+            return tables
+        time.sleep(0.2)
+    raise AssertionError("dataset has no tables after import")
 
 
 def test_delete_dataset_conflict_when_query_running(client, tmp_path, monkeypatch):
@@ -39,8 +49,9 @@ def test_delete_dataset_conflict_when_query_running(client, tmp_path, monkeypatc
             data={"table_name": "data", "import_mode": "strict", "target_block_bytes": "512"},
         )
     data = resp.json()["data"]
-    _wait_job(client, headers, data["job_id"])
-    tables = client.get(f"/api/datasets/{data['dataset_id']}/tables", headers=headers).json()["data"]
+    job = _wait_job(client, headers, data["job_id"])
+    assert job["status"] == "completed", job
+    tables = _wait_tables(client, headers, data["dataset_id"])
 
     import app.engine.execution.executor as ex
 

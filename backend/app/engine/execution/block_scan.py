@@ -22,6 +22,9 @@ def read_block(
         return None
     ctx.check_cancel()
     ctx.active_block = (column, block_id)
+    ctx.metrics.block_accesses += 1
+
+    block_key = (column, block_id)
     key = CacheKey(
         version_id=ctx.version_id,
         column_id=column_id,
@@ -31,14 +34,18 @@ def read_block(
     cached = ctx.cache.get(key)
     if cached is not None:
         ctx.metrics.cache_hits += 1
-        ctx.metrics.scanned_blocks += 1
         return cached
+
     reader: ColumnReader = ctx.reader_for(column)
     start = time.perf_counter_ns()
     block = reader.read_block(block_id)
     elapsed = time.perf_counter_ns() - start
-    ctx.metrics.scanned_blocks += 1
-    ctx.metrics.bytes_read += block.encoded_bytes
+
+    if block_key not in ctx.metrics._scanned_ids:
+        ctx.metrics._scanned_ids.add(block_key)
+        ctx.metrics.scanned_blocks += 1
+        ctx.metrics.bytes_read += block.encoded_bytes
+
     ctx.cache.put(key, block, block.encoded_bytes)
     ctx.metrics.operators.append(
         OperatorMetric(

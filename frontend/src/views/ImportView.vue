@@ -3,21 +3,68 @@ import { onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import ImportPipeline from '@/components/import-progress/ImportPipeline.vue'
 import PageBackNav from '@/components/workspace/PageBackNav.vue'
+import { previewSchema, type SchemaColumnPreview } from '@/api/import'
 import { useImportJobStore } from '@/stores/importJob'
 
 const router = useRouter()
 const importStore = useImportJobStore()
 
+const LOGICAL_TYPES = ['INT64', 'FLOAT64', 'BOOLEAN', 'UTF8', 'DATE32', 'TIMESTAMP64', 'DECIMAL64']
+
 const file = ref<File | null>(null)
 const importMode = ref<'strict' | 'coerce'>('strict')
 const tableName = ref('data')
+const targetBlockBytes = ref(65536)
+const demoDenseBlocks = ref(false)
+const schemaColumns = ref<SchemaColumnPreview[]>([])
+const schemaLoading = ref(false)
+const schemaError = ref('')
+
+const blockSizeOptions = [
+  { label: '16 KiB', value: 16384 },
+  { label: '32 KiB', value: 32768 },
+  { label: '64 KiB（默认）', value: 65536 },
+  { label: '128 KiB', value: 131072 },
+  { label: '256 KiB', value: 262144 },
+  { label: '4 KiB（演示密集块）', value: 4096 },
+]
+
+async function onFileChange(event: Event) {
+  const picked = (event.target as HTMLInputElement).files?.[0] ?? null
+  file.value = picked
+  schemaColumns.value = []
+  schemaError.value = ''
+  if (!picked) return
+  schemaLoading.value = true
+  try {
+    const preview = await previewSchema(picked)
+    schemaColumns.value = preview.columns.map((col) => ({ ...col }))
+  } catch (err) {
+    schemaError.value = err instanceof Error ? err.message : '无法推断列类型'
+  } finally {
+    schemaLoading.value = false
+  }
+}
+
+function buildSchemaOverrides() {
+  return JSON.stringify(
+    schemaColumns.value.map((col) => ({
+      name: col.name,
+      logical_type: col.logical_type,
+      scale: col.logical_type === 'DECIMAL64' ? col.scale : 0,
+      nullable: col.nullable,
+    })),
+  )
+}
 
 async function onSubmit() {
   if (!file.value) return
+  const blockBytes = demoDenseBlocks.value ? 4096 : targetBlockBytes.value
   const result = await importStore.upload(file.value, {
     importMode: importMode.value,
     tableName: tableName.value,
-    targetBlockBytes: 4096,
+    targetBlockBytes: blockBytes,
+    schemaOverrides: schemaColumns.value.length ? buildSchemaOverrides() : '[]',
   })
   watchJob(result.job_id, result.dataset_id)
 }
@@ -40,7 +87,7 @@ async function onCancel() {
   }
 }
 
-onUnmounted(() => importStore.stopPolling())
+onUnmounted(() => importStore.stopTracking())
 </script>
 
 <template>
@@ -48,16 +95,64 @@ onUnmounted(() => importStore.stopPolling())
     <PageBackNav />
     <header class="page-header">
       <h1>导入数据</h1>
-      <p>上传 CSV 或 XLSX，系统将流式解析并写入列式存储。</p>
+      <p>上传 CSV 或 XLSX，确认列类型后写入列式存储。</p>
     </header>
     <form class="import-form" @submit.prevent="onSubmit">
       <label class="field">
         <span>数据文件</span>
-        <input type="file" accept=".csv,.xlsx" @change="(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)" />
+        <input type="file" accept=".csv,.xlsx" @change="onFileChange" />
       </label>
       <label class="field">
         <span>表名</span>
         <input v-model="tableName" type="text" />
+      </label>
+
+      <section v-if="schemaLoading" class="schema-panel">
+        <p class="state-hint">正在推断列类型…</p>
+      </section>
+      <section v-else-if="schemaError" class="schema-panel">
+        <p class="state-hint error">{{ schemaError }}</p>
+      </section>
+      <section v-else-if="schemaColumns.length" class="schema-panel">
+        <div class="schema-header">
+          <span class="schema-title">列类型确认</span>
+          <span class="schema-meta">可覆盖推断结果</span>
+        </div>
+        <table class="schema-table">
+          <thead>
+            <tr>
+              <th>列名</th>
+              <th>逻辑类型</th>
+              <th>可空</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="col in schemaColumns" :key="col.name">
+              <td class="mono">{{ col.name }}</td>
+              <td>
+                <select v-model="col.logical_type">
+                  <option v-for="t in LOGICAL_TYPES" :key="t" :value="t">{{ t }}</option>
+                </select>
+              </td>
+              <td>
+                <input v-model="col.nullable" type="checkbox" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <label class="field">
+        <span>块大小</span>
+        <select v-model.number="targetBlockBytes" :disabled="demoDenseBlocks">
+          <option v-for="opt in blockSizeOptions" :key="opt.value" :value="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+      </label>
+      <label class="field checkbox-field">
+        <input v-model="demoDenseBlocks" type="checkbox" />
+        <span>演示密集块模式（4 KiB，产生更多小块便于展示）</span>
       </label>
       <label class="field">
         <span>导入模式</span>
@@ -67,7 +162,11 @@ onUnmounted(() => importStore.stopPolling())
         </select>
       </label>
       <div class="actions">
-        <button type="submit" class="btn-primary" :disabled="!file || importStore.uploading">
+        <button
+          type="submit"
+          class="btn-primary"
+          :disabled="!file || importStore.uploading || schemaLoading"
+        >
           {{ importStore.uploading ? '上传中…' : '开始导入' }}
         </button>
         <button
@@ -123,6 +222,73 @@ onUnmounted(() => importStore.stopPolling())
   border-radius: var(--radius-control);
   padding: 0 8px;
   background: var(--bg-panel);
+}
+
+.schema-panel {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+  padding: 10px;
+  background: var(--bg-panel);
+}
+
+.schema-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.schema-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.schema-meta {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.schema-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.schema-table th,
+.schema-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-default);
+  text-align: left;
+}
+
+.schema-table select {
+  width: 100%;
+  height: 28px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.state-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.state-hint.error {
+  color: #b91c1c;
+}
+
+.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-field input {
+  width: auto;
+  height: auto;
 }
 
 .actions {

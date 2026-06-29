@@ -112,26 +112,15 @@ class BenchmarkRunner:
 
         def execute_fn(*, warmup: bool = False) -> dict[str, Any]:
             sql = config.sql or "SELECT COUNT(*) AS cnt FROM data"
-            data = service.submit(
+            metrics = service.execute_sync(
                 user_id=record.user_id,
                 dataset_id=config.dataset_id,
                 sql=sql,
                 table_id=None,
+                pruning_enabled=config.pruning_enabled,
             )
-            query_id = data["query_id"]
-            from app.application.query_runner import get_query_runner
-
-            runner = get_query_runner()
-            import time
-
-            for _ in range(300):
-                time.sleep(0.05)
-                events = runner.get_events(query_id)
-                if events and events[-1].stage in ("completed", "failed", "cancelled"):
-                    break
-            q = service.get_query(user_id=record.user_id, query_id=query_id)
-            metrics = q.get("metrics") or {}
-            return {"scanned_blocks": metrics.get("scanned_blocks", 0), "warmup": warmup}
+            metrics["warmup"] = warmup
+            return metrics
 
         return run_query_benchmark(config, execute_fn=execute_fn)
 

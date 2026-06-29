@@ -305,38 +305,35 @@ def rebuild_without_filters(node: Any, inner: Any) -> Any:
     return inner
 
 
+_UNCHANGED = object()
+
+
 def push_limit_down(plan: Any) -> Any:
     if not isinstance(plan, Limit):
         return plan
     if isinstance(plan.child, Sort):
         return plan
-    limit = plan
-    return _push_limit_past(limit, limit.child)
+    pushed = _push_limit_into_child(plan, plan.child)
+    return plan if pushed is _UNCHANGED else pushed
 
 
-def _push_limit_past(limit: Limit, node: Any) -> Any:
+def _push_limit_into_child(limit: Limit, node: Any) -> Any:
+    """Push LIMIT through Project only; never through Filter/Aggregate/Sort."""
+    if isinstance(node, (Filter, Aggregate, Sort)):
+        return _UNCHANGED
     if isinstance(node, Project):
-        return Project(
-            items=node.items,
-            child=Limit(limit=limit.limit, offset=limit.offset, child=_push_limit_past(limit, node.child), annotations=limit.annotations),
-            annotations=node.annotations,
-        )
-    if isinstance(node, Aggregate):
-        return Aggregate(
-            group_keys=node.group_keys,
-            aggregates=node.aggregates,
-            child=Limit(limit=limit.limit, offset=limit.offset, child=_push_limit_past(limit, node.child), annotations=limit.annotations),
-            annotations=node.annotations,
-        )
-    if isinstance(node, Filter):
-        return Filter(
-            predicate=node.predicate,
-            child=Limit(limit=limit.limit, offset=limit.offset, child=node.child, annotations=limit.annotations),
-            annotations=node.annotations,
-        )
+        inner = _push_limit_into_child(limit, node.child)
+        if inner is _UNCHANGED:
+            return _UNCHANGED
+        return Project(items=node.items, child=inner, annotations=node.annotations)
     if isinstance(node, Scan):
-        return Limit(limit=limit.limit, offset=limit.offset, child=node, annotations=limit.annotations)
-    return limit
+        return Limit(
+            limit=limit.limit,
+            offset=limit.offset,
+            child=node,
+            annotations=limit.annotations,
+        )
+    return _UNCHANGED
 
 
 def map_plan(

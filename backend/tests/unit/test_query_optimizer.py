@@ -1,7 +1,7 @@
 import json
 
 from app.engine.query.binder import ColumnSchema, TableSchema
-from app.engine.query.logical import Filter, Limit, Project, Scan, plan_to_dict
+from app.engine.query.logical import Aggregate, Filter, Limit, Project, Scan, plan_to_dict
 from app.engine.query.optimizer import optimize_plan
 from app.engine.query.planner import plan_query
 
@@ -11,6 +11,7 @@ TABLE = TableSchema(
         ColumnSchema(name="id", logical_type="INT64"),
         ColumnSchema(name="name", logical_type="UTF8"),
         ColumnSchema(name="qty", logical_type="INT64"),
+        ColumnSchema(name="amount", logical_type="INT64"),
     ),
 )
 
@@ -55,10 +56,28 @@ def test_filter_on_scan():
     assert isinstance(node.child, Scan)
 
 
-def test_limit_pushdown_without_sort():
+def test_limit_not_pushed_through_filter():
     plan = plan_query("SELECT id FROM data WHERE id > 1 LIMIT 10", TABLE)
+    result = optimize_plan(plan, TABLE)
+    node = result.plan
+    assert isinstance(node, Limit)
+    assert isinstance(node.child, Project)
+    assert isinstance(node.child.child, Filter)
+
+
+def test_limit_not_pushed_through_aggregate():
+    plan = plan_query("SELECT COUNT(*) FROM data LIMIT 1", TABLE)
+    result = optimize_plan(plan, TABLE)
+    node = result.plan
+    assert isinstance(node, Limit)
+    assert isinstance(node.child, Project)
+    assert isinstance(node.child.child, Aggregate)
+
+
+def test_limit_pushed_through_project_only():
+    plan = plan_query("SELECT id FROM data LIMIT 10", TABLE)
     result = optimize_plan(plan, TABLE)
     node = result.plan
     assert isinstance(node, Project)
     assert isinstance(node.child, Limit)
-    assert isinstance(node.child.child, Filter)
+    assert isinstance(node.child.child, Scan)

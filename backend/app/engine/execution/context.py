@@ -30,6 +30,7 @@ class OperatorMetric:
 class ExecutionMetrics:
     scanned_blocks: int = 0
     pruned_blocks: int = 0
+    block_accesses: int = 0
     cache_hits: int = 0
     bytes_read: int = 0
     rows_examined: int = 0
@@ -37,12 +38,19 @@ class ExecutionMetrics:
     compressed_operator_blocks: int = 0
     decoded_blocks: int = 0
     peak_memory: int = 0
+    parse_time: float = 0.0
+    optimize_time: float = 0.0
+    execute_time: float = 0.0
+    total_time: float = 0.0
     operators: list[OperatorMetric] = field(default_factory=list)
+    _scanned_ids: set[tuple[str, int]] = field(default_factory=set, repr=False)
+    _decoded_ids: set[tuple[str, int]] = field(default_factory=set, repr=False)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "scanned_blocks": self.scanned_blocks,
             "pruned_blocks": self.pruned_blocks,
+            "block_accesses": self.block_accesses,
             "cache_hits": self.cache_hits,
             "bytes_read": self.bytes_read,
             "rows_examined": self.rows_examined,
@@ -50,6 +58,10 @@ class ExecutionMetrics:
             "compressed_operator_blocks": self.compressed_operator_blocks,
             "decoded_blocks": self.decoded_blocks,
             "peak_memory": self.peak_memory,
+            "parse_time": self.parse_time,
+            "optimize_time": self.optimize_time,
+            "execute_time": self.execute_time,
+            "total_time": self.total_time,
             "operators": [o.to_dict() for o in self.operators],
         }
 
@@ -68,6 +80,7 @@ class ExecutionContext:
     columns: dict[str, ColumnExecMeta]
     pruning: dict[tuple[str, int], BlockPruningEntry]
     readers: dict[str, Any] = field(default_factory=dict)
+    decoded_vectors: dict[tuple[str, int], Any] = field(default_factory=dict)
     cache: BlockCache = field(default_factory=get_block_cache)
     metrics: ExecutionMetrics = field(default_factory=ExecutionMetrics)
     cancelled: bool = False

@@ -141,8 +141,13 @@ class QueryRunner:
             elapsed = time.perf_counter() - start
 
             metrics = result.metrics.to_dict()
+            pre_metrics = json.loads(record.metrics_json or "{}")
+            parse_time = float(pre_metrics.get("parse_time", 0.0))
+            optimize_time = float(pre_metrics.get("optimize_time", 0.0))
+            metrics["parse_time"] = parse_time
+            metrics["optimize_time"] = optimize_time
             metrics["execute_time"] = elapsed
-            metrics["total_time"] = elapsed
+            metrics["total_time"] = parse_time + optimize_time + elapsed
             record.metrics_json = json.dumps(metrics, sort_keys=True)
             preview_rows = result.rows[: self.MAX_PREVIEW_ROWS]
             record.result_json = json.dumps(

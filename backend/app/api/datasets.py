@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
+from app.catalog.access import resolve_table_for_user
 from app.application.block_inspector_service import BlockInspectorService
 from app.application.import_coordinator import ImportCoordinator, hash_file
 from app.catalog.repositories.catalog_repo import CatalogRepository, DatasetRepository, ImportJobRepository
@@ -62,6 +63,33 @@ def _job_out(job) -> dict:
     ).model_dump()
 
 
+@router.post("/datasets/schema-preview")
+async def schema_preview(
+    file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+):
+    del user
+    filename = file.filename or "upload.csv"
+    suffix = Path(filename).suffix.lower()
+    if suffix not in {".csv", ".xlsx"}:
+        raise HTTPException(status_code=400, detail="仅支持 CSV 或 XLSX 文件")
+    max_bytes = settings.MAX_UPLOAD_MB * 1024 * 1024
+    chunks: list[bytes] = []
+    total = 0
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > max_bytes:
+            raise HTTPException(status_code=413, detail="文件超过大小限制")
+        chunks.append(chunk)
+    from app.engine.import_pipeline.schema_preview import infer_schema_from_upload
+
+    columns = infer_schema_from_upload(filename, b"".join(chunks))
+    return success({"columns": columns, "row_sample_count": min(500, total)})
+
+
 @router.post("/datasets/uploads")
 async def upload_dataset(
     file: UploadFile = File(...),
@@ -80,24 +108,14 @@ async def upload_dataset(
     overrides = json.loads(schema_overrides) if schema_overrides else []
 
     coordinator = ImportCoordinator(db)
-    staging = settings.resolve_path(settings.STAGING_DIR) / f"job_pending_{user.id}"
-    if staging.exists():
-        import shutil
-
-        shutil.rmtree(staging, ignore_errors=True)
     job, source_path = coordinator.begin_upload(
         user_id=user.id,
         filename=filename,
-        staging_dir=staging,
         table_name=table_name,
         import_mode=import_mode,
         schema_overrides=overrides,
         target_block_bytes=target_block_bytes,
     )
-    source_path = staging / f"source{suffix}"
-    job.source_path = str(source_path)
-    ImportJobRepository(db).update(job)
-
     total = 0
     with source_path.open("wb") as out:
         while True:
@@ -178,10 +196,8 @@ def list_tables(dataset_id: int, db: Session = Depends(get_db), user: User = Dep
 
 @router.get("/tables/{table_id}/columns")
 def list_columns(table_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    resolve_table_for_user(db, user.id, table_id)
     catalog = CatalogRepository(db)
-    table = catalog.get_table(table_id)
-    if table is None:
-        raise HTTPException(status_code=404, detail="表不存在")
     cols = catalog.list_columns(table_id)
     return success(
         [
@@ -202,10 +218,10 @@ def list_columns(table_id: int, db: Session = Depends(get_db), user: User = Depe
 
 @router.get("/tables/{table_id}/storage-map")
 def storage_map(table_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    resolve_table_for_user(db, user.id, table_id)
     catalog = CatalogRepository(db)
     table = catalog.get_table(table_id)
-    if table is None:
-        raise HTTPException(status_code=404, detail="表不存在")
+    assert table is not None
     columns_out: list[StorageMapColumnOut] = []
     total_blocks = 0
     for col in catalog.list_columns(table_id):

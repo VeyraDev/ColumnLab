@@ -6,10 +6,10 @@
     "id": {
       "path": "id.col",
       "logical_type": "int64",
-      "sha256": "7710cb58f0cab4e98300fe39664b7157dd6220475734667b59989d813712336f",
+      "sha256": "6103188216f3d6601c2bb421282cb858bed5ede4879cdaa872c7513c683eedc2",
       "total_rows": 8000,
       "block_count": 55,
-      "footer_offset": 73894,
+      "footer_offset": 73918,
       "index_length": 3520,
       "blocks": [
         {
@@ -567,10 +567,10 @@
     "status": {
       "path": "status.col",
       "logical_type": "utf8",
-      "sha256": "adf551523a248b5710081786ab97b2202d109ff42adafa6cd11e2080504e55a6",
+      "sha256": "0f1520ccbb56cc620d48556c133342fbd81ea50b3fb0b1545bb08e63317744d8",
       "total_rows": 8000,
       "block_count": 55,
-      "footer_offset": 14936,
+      "footer_offset": 14965,
       "index_length": 3520,
       "blocks": [
         {
@@ -1128,10 +1128,10 @@
     "qty": {
       "path": "qty.col",
       "logical_type": "int64",
-      "sha256": "ff485a79899df665cc0be87c0e70b1a717f8700424ee16fa7e52a491f0b662d8",
+      "sha256": "9d331976c4222e64a2692f6d6e1c1227b3c0452bcd83d99cffcdcfc82ac46491",
       "total_rows": 8000,
       "block_count": 55,
-      "footer_offset": 11410,
+      "footer_offset": 11434,
       "index_length": 3520,
       "blocks": [
         {
@@ -1689,10 +1689,10 @@
     "price": {
       "path": "price.col",
       "logical_type": "float64",
-      "sha256": "d8932337494dc4ad617f5eb95a1ba1092c0cb9cbca24ba66b68472c54bd154dd",
+      "sha256": "5ad98b3f6866006daaff57e180d41c02faecca1ee6270f00204f13bcdd42cace",
       "total_rows": 8000,
       "block_count": 55,
-      "footer_offset": 73894,
+      "footer_offset": 73918,
       "index_length": 3520,
       "blocks": [
         {
@@ -2250,10 +2250,10 @@
     "flag": {
       "path": "flag.col",
       "logical_type": "boolean",
-      "sha256": "dd03eaa3a20fc4a6fb9f73ff7b55d8687f12e36cfd4b78235e5860a80fb9232b",
+      "sha256": "a00e9d2381bd6d0191818bd97ffb28f6e1b2bff87eac118e19e333e6c1349334",
       "total_rows": 8000,
       "block_count": 55,
-      "footer_offset": 10154,
+      "footer_offset": 10164,
       "index_length": 3520,
       "blocks": [
         {
@@ -2811,10 +2811,10 @@
     "score": {
       "path": "score.col",
       "logical_type": "int64",
-      "sha256": "94a372c250bb4f91f49ac0e4c74bf51bff4890b01f28a30df774f4a410287086",
+      "sha256": "82d9fa88db03b493924d65da32232999566831c689c39b8bb30d358d1a0e0718",
       "total_rows": 8000,
       "block_count": 55,
-      "footer_offset": 51220,
+      "footer_offset": 51244,
       "index_length": 3520,
       "blocks": [
         {

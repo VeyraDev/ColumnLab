@@ -55,27 +55,30 @@ class ImportCoordinator:
         *,
         user_id: int,
         filename: str,
-        staging_dir: Path,
         table_name: str = "data",
         import_mode: str = "strict",
         schema_overrides: list[dict] | None = None,
         target_block_bytes: int = 65536,
     ) -> tuple[ImportJob, Path]:
-        staging_dir.mkdir(parents=True, exist_ok=True)
         suffix = Path(filename).suffix.lower()
-        source_path = staging_dir / f"source{suffix}"
         dataset_name = Path(filename).stem or "dataset"
         dataset = self.datasets.create(user_id=user_id, name=dataset_name, source_file_name=filename)
         job = self.jobs.create(
             user_id=user_id,
             dataset_id=dataset.id,
-            source_path=str(source_path),
-            staging_path=str(staging_dir),
+            source_path="",
+            staging_path="",
             table_name=table_name,
             import_mode=import_mode,
             schema_json=json.dumps(schema_overrides or [], ensure_ascii=False),
             target_block_bytes=target_block_bytes,
         )
+        staging_dir = self.settings.resolve_path(self.settings.STAGING_DIR) / str(job.id)
+        staging_dir.mkdir(parents=True, exist_ok=True)
+        source_path = staging_dir / f"source{suffix}"
+        job.source_path = str(source_path)
+        job.staging_path = str(staging_dir)
+        self.jobs.update(job)
         _cancel_flags[job.id] = False
         with _event_lock:
             _event_buffers[job.id] = []

@@ -19,7 +19,7 @@ from app.engine.format.headers import (
 )
 from app.engine.storage.row_group import RowGroupSlice
 from app.engine.types import LogicalType
-from app.engine.vectors import ValueVector, serialize_typed_value, sort_key
+from app.engine.vectors import ValueVector, sort_key
 
 
 @dataclass(slots=True)
@@ -140,8 +140,6 @@ class ColumnWriter:
         self._file.write(stats)
         self._file.write(block.payload)
         total_len = len(header_bytes) + len(stats) + len(block.payload)
-        min_blob = b"" if block.min_value is None else serialize_typed_value(self.logical_type, block.min_value)
-        max_blob = b"" if block.max_value is None else serialize_typed_value(self.logical_type, block.max_value)
         self._index.append(
             BlockIndexEntry(
                 block_id=block_id,
@@ -153,8 +151,8 @@ class ColumnWriter:
                 encoding=block.encoding,
                 null_count=block.null_count,
                 payload_crc32=payload_crc,
-                min_value=min_blob,
-                max_value=max_blob,
+                stats_offset=BLOCK_HEADER_SIZE,
+                stats_length=len(stats),
             )
         )
         self._column_raw_bytes += block.raw_bytes
@@ -165,16 +163,17 @@ class ColumnWriter:
         index_bytes = pack_index(self._index)
         index_offset = self._file.tell()
         self._file.write(index_bytes)
-        min_blob = b"" if self._column_min is None else serialize_typed_value(self.logical_type, self._column_min)
-        max_blob = b"" if self._column_max is None else serialize_typed_value(self.logical_type, self._column_max)
+        column_stats = encode_stats(self.logical_type, self._column_min, self._column_max)
+        column_stats_offset = self._file.tell()
+        self._file.write(column_stats)
         footer = FileFooter(
             index_offset=index_offset,
             index_length=len(index_bytes),
             index_crc32=crc32(index_bytes),
             column_raw_bytes=self._column_raw_bytes,
             column_encoded_bytes=self._column_encoded_bytes,
-            column_min=min_blob,
-            column_max=max_blob,
+            column_stats_offset=column_stats_offset,
+            column_stats_length=len(column_stats),
         )
         footer_offset = self._file.tell()
         self._file.write(footer.pack())

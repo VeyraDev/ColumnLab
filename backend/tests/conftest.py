@@ -49,6 +49,14 @@ def sample_user(db_session):
 @pytest.fixture
 def client(db_engine, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+
+    def _resolve_path(self, relative: str):
+        path = tmp_path / relative
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    monkeypatch.setattr("app.core.config.Settings.resolve_path", _resolve_path)
+
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
 
     def override_get_db():

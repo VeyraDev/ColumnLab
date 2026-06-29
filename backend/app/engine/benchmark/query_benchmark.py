@@ -54,7 +54,18 @@ def run_query_benchmark(
             {
                 "cache_mode": config.cache_mode,
                 "pruning_enabled": config.pruning_enabled,
-                "scanned_blocks": result.get("scanned_blocks", 0) if isinstance(result, dict) else 0,
+                **({k: result.get(k, 0) for k in (
+                    "scanned_blocks",
+                    "decoded_blocks",
+                    "bytes_read",
+                    "compressed_operator_blocks",
+                    "cache_hits",
+                    "block_accesses",
+                    "parse_time",
+                    "optimize_time",
+                    "execute_time",
+                    "total_time",
+                )} if isinstance(result, dict) else {}),
             },
             sort_keys=True,
         )

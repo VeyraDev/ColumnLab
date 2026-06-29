@@ -21,6 +21,28 @@ export interface ImportJobState {
   error_samples?: Array<{ row: number; column: string; value: string; reason: string }>
 }
 
+export interface SchemaColumnPreview {
+  name: string
+  logical_type: string
+  scale: number
+  nullable: boolean
+  inferred: boolean
+}
+
+export interface SchemaPreviewResult {
+  columns: SchemaColumnPreview[]
+  row_sample_count: number
+}
+
+export async function previewSchema(file: File) {
+  const form = new FormData()
+  form.append('file', file)
+  const { data } = await request.post<{ data: SchemaPreviewResult }>('/datasets/schema-preview', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return data.data
+}
+
 export async function uploadDataset(
   file: File,
   options: {

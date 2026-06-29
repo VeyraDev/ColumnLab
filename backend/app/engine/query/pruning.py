@@ -111,6 +111,22 @@ def pruning_summary(entries: tuple[BlockPruningEntry, ...]) -> dict[str, int]:
     return {"total_blocks": total, "pruned_blocks": skipped, "to_read_blocks": total - skipped}
 
 
+def all_blocks_to_read(snapshot: TableBlocksSnapshot) -> tuple[BlockPruningEntry, ...]:
+    entries: list[BlockPruningEntry] = []
+    for col in snapshot.columns:
+        for block in col.blocks:
+            entries.append(
+                BlockPruningEntry(
+                    column=col.name,
+                    block_id=block.block_id,
+                    state=BlockPruneState.TO_READ,
+                    verdict=BlockVerdict.MAYBE,
+                    reason="pruning_disabled",
+                )
+            )
+    return tuple(entries)
+
+
 def _required_columns(plan: Any) -> set[str]:
     refs = collect_column_refs(plan)
     if isinstance(plan, Scan):
@@ -183,8 +199,13 @@ def _prune_block(column: str, logical_type: str, block: BlockStatsSnapshot, pred
         )
     verdict, reason, used_metadata = evaluate_predicate(predicate, logical_type, block)
     if verdict == BlockVerdict.ALWAYS_FALSE:
-        state = BlockPruneState.METADATA_CHECK if used_metadata else BlockPruneState.SKIPPED
-        return BlockPruningEntry(column=column, block_id=block.block_id, state=state, verdict=verdict, reason=reason)
+        return BlockPruningEntry(
+            column=column,
+            block_id=block.block_id,
+            state=BlockPruneState.SKIPPED,
+            verdict=verdict,
+            reason=reason if not used_metadata else f"metadata:{reason}",
+        )
     if verdict == BlockVerdict.ALWAYS_TRUE:
         return BlockPruningEntry(
             column=column,
@@ -346,16 +367,22 @@ def _ensure_min_max(block: BlockStatsSnapshot) -> BlockStatsSnapshot:
         return block
     try:
         reader = ColumnReader.open(block.column_file_path)
-        encoded = reader.read_block(block.block_id)
-        if encoded.min_value is None or encoded.max_value is None:
+        entry = next((e for e in reader.index if e.block_id == block.block_id), None)
+        if entry is not None and entry.stats_length > 0:
+            min_value, max_value = reader.read_entry_minmax(entry)
+        else:
+            encoded = reader.read_block(block.block_id)
+            min_value, max_value = encoded.min_value, encoded.max_value
+        reader.close()
+        if min_value is None or max_value is None:
             return block
         return BlockStatsSnapshot(
             block_id=block.block_id,
             encoding=block.encoding,
             row_count=block.row_count,
             null_count=block.null_count,
-            min_repr=str(encoded.min_value),
-            max_repr=str(encoded.max_value),
+            min_repr=str(min_value),
+            max_repr=str(max_value),
             dictionary_count=block.dictionary_count,
             column_file_path=block.column_file_path,
         )

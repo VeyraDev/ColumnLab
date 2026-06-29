@@ -47,8 +47,8 @@ def test_footer_roundtrip():
         index_crc32=123,
         column_raw_bytes=1000,
         column_encoded_bytes=400,
-        column_min=b"\x01",
-        column_max=b"\x09",
+        column_stats_offset=500,
+        column_stats_length=24,
     )
     packed = footer.pack()
     assert len(packed) == FOOTER_SIZE
@@ -69,8 +69,8 @@ def test_index_roundtrip():
             encoding=__import__("app.engine.types", fromlist=["Encoding"]).Encoding.RLE,
             null_count=1,
             payload_crc32=0xAABBCCDD,
-            min_value=b"\x00",
-            max_value=b"\x05",
+            stats_offset=64,
+            stats_length=16,
         )
     ]
     data = pack_index(entries)

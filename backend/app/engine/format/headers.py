@@ -190,12 +190,11 @@ class BlockIndexEntry:
     encoding: Encoding
     null_count: int
     payload_crc32: int
-    min_value: bytes
-    max_value: bytes
+    stats_offset: int
+    stats_length: int
 
     def pack(self) -> bytes:
-        min_blob = self.min_value[:8].ljust(8, b"\x00")
-        max_blob = self.max_value[:8].ljust(8, b"\x00")
+        tail = struct.pack("<IIII", self.stats_offset, self.stats_length, 0, 0) + b"\x00" * 4
         return struct.pack(
             "<IIQIQIIII",
             self.block_id,
@@ -207,15 +206,14 @@ class BlockIndexEntry:
             int(self.encoding),
             self.null_count,
             self.payload_crc32,
-        ) + min_blob + max_blob + b"\x00" * 4
+        ) + tail
 
     @classmethod
     def unpack(cls, data: bytes, offset: int = 0) -> tuple[BlockIndexEntry, int]:
         if len(data) < offset + INDEX_ENTRY_SIZE:
             raise TruncatedFileError("index entry truncated")
         fields = struct.unpack("<IIQIQIIII", data[offset : offset + 44])
-        min_blob = data[offset + 44 : offset + 52]
-        max_blob = data[offset + 52 : offset + 60]
+        stats_offset, stats_length, _, _ = struct.unpack("<IIII", data[offset + 44 : offset + 60])
         return (
             cls(
                 block_id=fields[0],
@@ -227,8 +225,8 @@ class BlockIndexEntry:
                 encoding=Encoding(fields[6]),
                 null_count=fields[7],
                 payload_crc32=fields[8],
-                min_value=min_blob.rstrip(b"\x00"),
-                max_value=max_blob.rstrip(b"\x00"),
+                stats_offset=stats_offset,
+                stats_length=stats_length,
             ),
             offset + INDEX_ENTRY_SIZE,
         )
@@ -241,24 +239,21 @@ class FileFooter:
     index_crc32: int
     column_raw_bytes: int
     column_encoded_bytes: int
-    column_min: bytes
-    column_max: bytes
+    column_stats_offset: int
+    column_stats_length: int
 
     def pack(self) -> bytes:
-        min_blob = self.column_min[:8].ljust(8, b"\x00")
-        max_blob = self.column_max[:8].ljust(8, b"\x00")
-        body = (
-            struct.pack(
-                "<8sQIIQQ",
-                FOOTER_MAGIC,
-                self.index_offset,
-                self.index_length,
-                self.index_crc32,
-                self.column_raw_bytes,
-                self.column_encoded_bytes,
-            )
-            + min_blob
-            + max_blob
+        body = struct.pack(
+            "<8sQIIQQQII",
+            FOOTER_MAGIC,
+            self.index_offset,
+            self.index_length,
+            self.index_crc32,
+            self.column_raw_bytes,
+            self.column_encoded_bytes,
+            self.column_stats_offset,
+            self.column_stats_length,
+            0,
         )
         checksum = crc32(body)
         return body + struct.pack("<II", checksum, FOOTER_SIZE)
@@ -270,11 +265,16 @@ class FileFooter:
         chunk = data[offset : offset + FOOTER_SIZE]
         if chunk[:8] != FOOTER_MAGIC:
             raise InvalidMagicError(f"invalid footer magic: {chunk[:8]!r}")
-        index_offset, index_length, index_crc32, column_raw, column_encoded = struct.unpack(
-            "<QIIQQ", chunk[8:40]
-        )
-        min_blob = chunk[40:48]
-        max_blob = chunk[48:56]
+        (
+            index_offset,
+            index_length,
+            index_crc32,
+            column_raw,
+            column_encoded,
+            column_stats_offset,
+            column_stats_length,
+            _reserved,
+        ) = struct.unpack("<QIIQQQII", chunk[8:56])
         stored_crc, = struct.unpack("<I", chunk[56:60])
         verify_crc32(chunk[:56], stored_crc)
         footer_size, = struct.unpack("<I", chunk[60:64])
@@ -286,8 +286,8 @@ class FileFooter:
             index_crc32=index_crc32,
             column_raw_bytes=column_raw,
             column_encoded_bytes=column_encoded,
-            column_min=min_blob,
-            column_max=max_blob,
+            column_stats_offset=column_stats_offset,
+            column_stats_length=column_stats_length,
         )
 
 

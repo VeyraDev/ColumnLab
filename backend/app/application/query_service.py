@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from typing import Any
 
 from fastapi import HTTPException
@@ -32,7 +33,15 @@ class QueryService:
         self.catalog = CatalogRepository(db)
         self.queries = QueryRepository(db)
 
-    def submit(self, *, user_id: int, dataset_id: int, sql: str, table_id: int | None) -> dict[str, Any]:
+    def submit(
+        self,
+        *,
+        user_id: int,
+        dataset_id: int,
+        sql: str,
+        table_id: int | None,
+        pruning_enabled: bool = True,
+    ) -> dict[str, Any]:
         dataset = self.datasets.get_for_user(dataset_id, user_id)
         if dataset is None:
             raise HTTPException(status_code=404, detail="数据集不存在")
@@ -43,15 +52,28 @@ class QueryService:
         schema = self._table_schema(table.id)
 
         try:
+            t0 = time.perf_counter()
             plan = plan_query(sql, schema)
+            parse_time = time.perf_counter() - t0
             plan_json = json.dumps(plan_to_dict(plan), sort_keys=True)
+            t1 = time.perf_counter()
             opt_result = optimize_plan(plan, schema)
+            optimize_time = time.perf_counter() - t1
             optimized_json = json.dumps(plan_to_dict(opt_result.plan), sort_keys=True)
             trace_json = json.dumps([t.to_dict() for t in opt_result.trace], sort_keys=True)
             blocks_snapshot = self._blocks_snapshot(table.id)
-            pruning = prune_blocks(opt_result.plan, blocks_snapshot)
+            if pruning_enabled:
+                pruning = prune_blocks(opt_result.plan, blocks_snapshot)
+            else:
+                from app.engine.query.pruning import all_blocks_to_read
+
+                pruning = all_blocks_to_read(blocks_snapshot)
             pruning_json = json.dumps([e.to_dict() for e in pruning], sort_keys=True)
             summary = pruning_summary(pruning)
+            timing_json = json.dumps(
+                {"parse_time": parse_time, "optimize_time": optimize_time},
+                sort_keys=True,
+            )
             record = self.queries.create(
                 user_id=user_id,
                 dataset_id=dataset_id,
@@ -63,6 +85,7 @@ class QueryService:
                 optimizer_trace_json=trace_json,
                 block_pruning_json=pruning_json,
                 parse_error_json=None,
+                metrics_json=timing_json,
             )
             get_query_runner().schedule(self.db, record.id)
             return {
@@ -174,7 +197,7 @@ class QueryService:
         physical = json.loads(record.physical_plan_json) if record.physical_plan_json else None
         metrics = json.loads(record.metrics_json) if record.metrics_json else None
         error = _parse_error(record.parse_error_json)
-        pruned = sum(1 for p in pruning_raw if p.get("state") in {"skipped", "metadata_check"} and p.get("verdict") == "always_false")
+        pruned = sum(1 for p in pruning_raw if p.get("state") == "skipped")
         return {
             "query_id": record.id,
             "status": record.status,
@@ -192,6 +215,85 @@ class QueryService:
             "pruned_blocks": pruned,
             "error": error.model_dump() if error else None,
         }
+
+    def execute_sync(
+        self,
+        *,
+        user_id: int,
+        dataset_id: int,
+        sql: str,
+        table_id: int | None = None,
+        pruning_enabled: bool = True,
+    ) -> dict[str, Any]:
+        """Run query inline for benchmarks/tests without background thread."""
+        from app.engine.cache.block_cache import get_block_cache
+        from app.engine.execution.context import ColumnExecMeta, ExecutionContext
+        from app.engine.execution.executor import QueryExecutor
+        from app.engine.query.physical_planner import ColumnCatalogInfo, PhysicalPlanContext, plan_physical
+
+        dataset = self.datasets.get_for_user(dataset_id, user_id)
+        if dataset is None:
+            raise HTTPException(status_code=404, detail="数据集不存在")
+        if dataset.status != "ready":
+            raise HTTPException(status_code=400, detail="数据集尚未就绪")
+        table = self._resolve_table(dataset, table_id)
+        schema = self._table_schema(table.id)
+        version = self.catalog.get_active_version(dataset)
+        if version is None:
+            raise HTTPException(status_code=400, detail="数据集没有可用版本")
+
+        t0 = time.perf_counter()
+        plan = plan_query(sql, schema)
+        parse_time = time.perf_counter() - t0
+        t1 = time.perf_counter()
+        opt_result = optimize_plan(plan, schema)
+        optimize_time = time.perf_counter() - t1
+        blocks_snapshot = self._blocks_snapshot(table.id)
+        if pruning_enabled:
+            pruning = prune_blocks(opt_result.plan, blocks_snapshot)
+        else:
+            from app.engine.query.pruning import all_blocks_to_read
+
+            pruning = all_blocks_to_read(blocks_snapshot)
+
+        columns_meta: list[ColumnCatalogInfo] = []
+        for col in self.catalog.list_columns(table.id):
+            columns_meta.append(
+                ColumnCatalogInfo(name=col.name, column_id=col.id, file_path=col.column_file_path)
+            )
+        ctx_info = PhysicalPlanContext(
+            snapshot=blocks_snapshot,
+            pruning=pruning,
+            columns=tuple(columns_meta),
+            version_id=version.id,
+        )
+        physical = plan_physical(opt_result.plan, ctx_info)
+        cache = get_block_cache()
+        cache.set_version(version.id)
+        exec_ctx = ExecutionContext(
+            version_id=version.id,
+            columns={
+                c.name: ColumnExecMeta(
+                    name=c.name,
+                    column_id=c.column_id,
+                    file_path=c.file_path,
+                    logical_type=next(
+                        col.logical_type for col in blocks_snapshot.columns if col.name == c.name
+                    ),
+                )
+                for c in columns_meta
+            },
+            pruning={(e.column, e.block_id): e for e in pruning},
+        )
+        t2 = time.perf_counter()
+        result = QueryExecutor().execute(physical, exec_ctx)
+        execute_time = time.perf_counter() - t2
+        metrics = result.metrics.to_dict()
+        metrics["parse_time"] = parse_time
+        metrics["optimize_time"] = optimize_time
+        metrics["execute_time"] = execute_time
+        metrics["total_time"] = parse_time + optimize_time + execute_time
+        return metrics
 
     def history(self, *, user_id: int, dataset_id: int, limit: int = 20) -> list[dict[str, Any]]:
         dataset = self.datasets.get_for_user(dataset_id, user_id)

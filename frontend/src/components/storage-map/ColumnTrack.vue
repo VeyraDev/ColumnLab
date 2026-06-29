@@ -39,11 +39,16 @@ const trackWidth = computed(() => {
   return cols * props.cellWidth + Math.max(0, cols - 1) * gap
 })
 
-const visibleBlocks = computed(() =>
-  props.blocks.filter(
-    (block) => block.block_id >= props.visibleStart && block.block_id <= props.visibleEnd,
-  ),
-)
+const visibleBlocks = computed(() => {
+  const start = Math.max(0, Math.min(props.visibleStart, props.blocks.length))
+  const end = Math.min(props.blocks.length, props.visibleEnd + 1)
+  return props.blocks.slice(start, end)
+})
+
+const topSpacerHeight = computed(() => {
+  const hiddenRows = Math.floor(props.visibleStart / props.blocksPerRow)
+  return hiddenRows * (22 + gap)
+})
 
 function chunkBlocks(blocks: StorageBlock[]) {
   const rows: StorageBlock[][] = []
@@ -53,7 +58,7 @@ function chunkBlocks(blocks: StorageBlock[]) {
   return rows
 }
 
-const blockRows = computed(() => chunkBlocks(props.blocks))
+const blockRows = computed(() => chunkBlocks(visibleBlocks.value))
 
 function pruneState(column: string, blockId: number) {
   return props.blockPruningMap?.[`${column}:${blockId}`]?.state
@@ -72,6 +77,7 @@ function isScanned(column: string, blockId: number) {
       <span class="track-count">{{ blocks.length }} 块</span>
     </div>
     <div class="track-grid" :style="{ width: `${trackWidth}px` }">
+      <div v-if="topSpacerHeight > 0" class="track-spacer" :style="{ height: `${topSpacerHeight}px` }" />
       <div v-for="(row, rowIdx) in blockRows" :key="rowIdx" class="track-row">
         <BlockCell
           v-for="block in row"
