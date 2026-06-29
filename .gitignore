@@ -1,0 +1,82 @@
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# --- Python (backend) ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+.venv/
+venv/
+env/
+ENV/
+
+*.egg
+*.egg-info/
+.eggs/
+dist/
+build/
+pip-wheel-metadata/
+*.manifest
+*.spec
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# --- Backend runtime data (generated) ---
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+backend/columnlab.db
+backend/columnlab.db-*
+backend/*.db
+backend/*.db-*
+
+backend/staging/
+backend/datasets/
+
+# --- Node / frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+frontend/playwright/.cache/
+
+# --- Logs & temp ---
+*.log
+logs/
+tmp/
+temp/
+.cache/
+
+# --- Secrets (anywhere) ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json

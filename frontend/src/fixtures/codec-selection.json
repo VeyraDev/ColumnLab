@@ -1,0 +1,54 @@
+{
+  "selection_reason": "smallest_encoded_bytes",
+  "winner_encoding": "DICTIONARY",
+  "candidates": [
+    {
+      "encoding": "RAW",
+      "encoded_bytes": 809,
+      "raw_bytes": 809,
+      "gain": 0.0,
+      "encode_ns": 249600,
+      "selected": false,
+      "reason": "baseline"
+    },
+    {
+      "encoding": "RLE",
+      "encoded_bytes": 894,
+      "raw_bytes": 809,
+      "gain": -0.105068,
+      "encode_ns": 696400,
+      "selected": false,
+      "reason": "not_selected"
+    },
+    {
+      "encoding": "DICTIONARY",
+      "encoded_bytes": 78,
+      "raw_bytes": 809,
+      "gain": 0.903585,
+      "encode_ns": 657200,
+      "selected": true,
+      "reason": "smallest_encoded_bytes"
+    }
+  ],
+  "dictionary": {
+    "dictionary_count": 3,
+    "bit_width": 2,
+    "entries": [
+      "alpha",
+      "beta",
+      "gamma"
+    ],
+    "packed_codes_hex": "24499224499224499224499224499224",
+    "sample_codes": [
+      0,
+      1,
+      2,
+      0,
+      1,
+      2,
+      0,
+      1
+    ],
+    "row_count": 90
+  }
+}

@@ -1,0 +1,377 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import { usePanelResize } from '@/composables/usePanelResize'
+import { useQueryStore } from '@/stores/query'
+import { useStorageMapStore } from '@/stores/storageMapStore'
+import { useWorkspaceLayoutStore } from '@/stores/workspaceLayoutStore'
+import FunctionRail from '@/components/workspace/FunctionRail.vue'
+import TopBar from '@/components/workspace/TopBar.vue'
+import DataStructurePanel from '@/components/workspace/DataStructurePanel.vue'
+import StatusBar from '@/components/workspace/StatusBar.vue'
+import PanelSplitter from '@/components/workspace/PanelSplitter.vue'
+import StorageMapCanvas from '@/components/storage-map/StorageMapCanvas.vue'
+import BlockInspector from '@/components/block-inspector/BlockInspector.vue'
+import ExecutionWorkbench from '@/components/execution-plan/ExecutionWorkbench.vue'
+import type { StorageBlock } from '@/components/storage-map/ColumnTrack.vue'
+
+const props = defineProps<{
+  datasetId?: string
+}>()
+
+const router = useRouter()
+const queryStore = useQueryStore()
+const mapStore = useStorageMapStore()
+const layoutStore = useWorkspaceLayoutStore()
+const { startHorizontalResize, startVerticalResize } = usePanelResize()
+
+const { blockPruning, activeScanBlock } = storeToRefs(queryStore)
+const { selectedBlock } = storeToRefs(mapStore)
+const { leftWidth, rightWidth, lowerHeightPx, leftCollapsed, rightCollapsed, lowerCollapsed } =
+  storeToRefs(layoutStore)
+
+const activeRail = ref('map')
+const workspaceMainRef = ref<HTMLElement | null>(null)
+const isResizing = ref(false)
+
+function onRailClick(id: string) {
+  activeRail.value = id
+  if (id === 'import') router.push('/imports')
+  if (id === 'lab' && props.datasetId) router.push(`/compression-lab/${props.datasetId}`)
+  if (id === 'query' && props.datasetId) router.push(`/query/${props.datasetId}`)
+}
+
+function onSelectBlock(payload: { column: string; block: StorageBlock }) {
+  const pruning = queryStore.getPruning(payload.column, payload.block.block_id)
+  mapStore.selectBlock(payload.column, payload.block, {
+    state: pruning?.state,
+    reason: pruning?.reason,
+  })
+}
+
+const railItems = [
+  { id: 'import', icon: '↑', label: '数据导入', title: '数据导入' },
+  { id: 'map', icon: '▦', label: '存储映射', title: '存储映射' },
+  { id: 'query', icon: '⌕', label: '查询执行', title: '查询执行' },
+  { id: 'lab', icon: '⊞', label: '压缩实验', title: '压缩实验' },
+]
+
+function containerWidth() {
+  return workspaceMainRef.value?.clientWidth ?? window.innerWidth
+}
+
+function mainHeight() {
+  return workspaceMainRef.value?.clientHeight ?? window.innerHeight
+}
+
+function beginResize() {
+  isResizing.value = true
+}
+
+function endResize() {
+  isResizing.value = false
+}
+
+function onResizeLeft(event: PointerEvent) {
+  if (leftCollapsed.value) return
+  beginResize()
+  startHorizontalResize({
+    event,
+    startSize: leftWidth.value,
+    min: 140,
+    max: layoutStore.clampLeftWidth(9999, containerWidth()),
+    captureTarget: event.currentTarget as HTMLElement,
+    onEnd: endResize,
+    onMove: (size) => {
+      leftWidth.value = layoutStore.clampLeftWidth(size, containerWidth())
+    },
+  })
+}
+
+function onResizeRight(event: PointerEvent) {
+  if (rightCollapsed.value) return
+  beginResize()
+  startHorizontalResize({
+    event,
+    startSize: rightWidth.value,
+    min: 180,
+    max: layoutStore.clampRightWidth(9999, containerWidth()),
+    invert: true,
+    captureTarget: event.currentTarget as HTMLElement,
+    onEnd: endResize,
+    onMove: (size) => {
+      rightWidth.value = layoutStore.clampRightWidth(size, containerWidth())
+    },
+  })
+}
+
+function onResizeLower(event: PointerEvent) {
+  if (lowerCollapsed.value) return
+  beginResize()
+  startVerticalResize({
+    event,
+    startSize: lowerHeightPx.value,
+    min: 120,
+    max: layoutStore.clampLowerHeight(9999, mainHeight()),
+    captureTarget: event.currentTarget as HTMLElement,
+    onEnd: endResize,
+    onMove: (size) => {
+      lowerHeightPx.value = layoutStore.clampLowerHeight(size, mainHeight())
+    },
+  })
+}
+
+const lowerGridRows = () => {
+  if (lowerCollapsed.value) return 'minmax(0, 1fr) auto'
+  return `minmax(0, 1fr) auto ${lowerHeightPx.value}px`
+}
+</script>
+
+<template>
+  <div class="workspace-shell">
+    <TopBar :dataset-id="props.datasetId" />
+    <div class="workspace-body">
+      <nav class="function-rail" aria-label="功能轨道">
+        <FunctionRail
+          v-for="item in railItems"
+          :key="item.id"
+          :icon="item.icon"
+          :label="item.label"
+          :title="item.title"
+          :active="activeRail === item.id"
+          @click="onRailClick(item.id)"
+        />
+        <FunctionRail
+          icon="⚙"
+          label="设置"
+          title="设置"
+          class="rail-settings"
+          :active="activeRail === 'settings'"
+          @click="activeRail = 'settings'"
+        />
+      </nav>
+
+      <div
+        ref="workspaceMainRef"
+        class="workspace-main"
+        :class="{ 'is-resizing': isResizing }"
+        :style="{ gridTemplateRows: lowerGridRows() }"
+      >
+        <div class="upper-row">
+          <button
+            v-if="leftCollapsed"
+            type="button"
+            class="edge-expand left"
+            title="展开数据结构"
+            @click="layoutStore.toggleLeft()"
+          >
+            ›
+          </button>
+
+          <aside
+            v-show="!leftCollapsed"
+            class="side-panel"
+            :style="{ width: `${leftWidth}px` }"
+          >
+            <DataStructurePanel :dataset-id="props.datasetId" />
+          </aside>
+
+          <PanelSplitter
+            v-if="!leftCollapsed"
+            orientation="vertical"
+            title="拖拽调整数据结构宽度"
+            @resize-start="onResizeLeft"
+          />
+
+          <div class="center-panel">
+            <StorageMapCanvas
+              :dataset-id="props.datasetId"
+              :block-pruning="blockPruning"
+              :active-scan-block="activeScanBlock"
+              @select-block="onSelectBlock"
+            />
+          </div>
+
+          <PanelSplitter
+            v-if="!rightCollapsed"
+            orientation="vertical"
+            title="拖拽调整块检查器宽度"
+            @resize-start="onResizeRight"
+          />
+
+          <aside
+            v-show="!rightCollapsed"
+            class="side-panel"
+            :style="{ width: `${rightWidth}px` }"
+          >
+            <BlockInspector :selected-block="selectedBlock" />
+          </aside>
+
+          <button
+            v-if="rightCollapsed"
+            type="button"
+            class="edge-expand right"
+            title="展开块检查器"
+            @click="layoutStore.toggleRight()"
+          >
+            ‹
+          </button>
+        </div>
+
+        <div class="lower-splitter-bar">
+          <PanelSplitter
+            v-if="!lowerCollapsed"
+            orientation="horizontal"
+            title="拖拽调整执行轨迹高度"
+            @resize-start="onResizeLower"
+          />
+          <button
+            type="button"
+            class="lower-toggle"
+            :title="lowerCollapsed ? '展开执行轨迹' : '收起执行轨迹'"
+            @click="layoutStore.toggleLower()"
+          >
+            <span aria-hidden="true">{{ lowerCollapsed ? '▲' : '▼' }}</span>
+            执行轨迹
+          </button>
+        </div>
+
+        <div v-show="!lowerCollapsed" class="lower-row">
+          <ExecutionWorkbench />
+        </div>
+      </div>
+    </div>
+    <StatusBar :dataset-id="props.datasetId" />
+  </div>
+</template>
+
+<style scoped>
+.workspace-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-app);
+}
+
+.workspace-body {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.function-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 8px 4px;
+  background: var(--bg-muted);
+  border-right: 1px solid var(--border-default);
+}
+
+.rail-settings {
+  margin-top: auto;
+}
+
+.workspace-main {
+  display: grid;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-main.is-resizing .upper-row,
+.workspace-main.is-resizing .lower-row {
+  pointer-events: none;
+}
+
+.upper-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.side-panel,
+.center-panel {
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.center-panel {
+  flex: 1;
+}
+
+.lower-splitter-bar {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-muted);
+  border-top: 1px solid var(--border-default);
+}
+
+.lower-row {
+  min-height: 0;
+  overflow: hidden;
+  border-top: 1px solid var(--border-default);
+}
+
+.lower-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 22px;
+  border: none;
+  background: var(--bg-muted);
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.lower-toggle:hover {
+  color: var(--text-primary);
+  background: var(--bg-panel);
+}
+
+.edge-expand {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 14px;
+  height: 40px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-panel);
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.edge-expand.left {
+  left: 0;
+}
+
+.edge-expand.right {
+  right: 0;
+}
+</style>
+
+<style>
+body.is-resizing-col {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+body.is-resizing-row {
+  cursor: row-resize !important;
+  user-select: none;
+}
+</style>

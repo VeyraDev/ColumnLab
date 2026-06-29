@@ -1,0 +1,23 @@
+.el-button--primary {
+  --el-button-bg-color: var(--accent);
+  --el-button-border-color: var(--accent);
+  --el-button-hover-bg-color: var(--accent-hover);
+  --el-button-hover-border-color: var(--accent-hover);
+  --el-button-active-bg-color: var(--accent-hover);
+  --el-button-active-border-color: var(--accent-hover);
+}
+
+.el-input__wrapper,
+.el-select__wrapper {
+  border-radius: var(--radius-control);
+  box-shadow: none !important;
+  border: 1px solid var(--border-default);
+}
+
+.el-form-item__label {
+  color: var(--text-secondary);
+}
+
+.el-message {
+  border-radius: var(--radius-control);
+}

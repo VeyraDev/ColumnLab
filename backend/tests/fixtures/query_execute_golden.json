@@ -1,0 +1,19 @@
+{
+  "queries": [
+    {
+      "sql": "SELECT id FROM data WHERE id > 1 LIMIT 10",
+      "columns": ["id"],
+      "rows": [[2], [3], [4], [5]]
+    },
+    {
+      "sql": "SELECT id, status FROM data WHERE status > 10",
+      "columns": ["id", "status"],
+      "rows": [[2, 20], [3, 30], [5, 100]]
+    },
+    {
+      "sql": "SELECT status, COUNT(*) AS cnt FROM data GROUP BY status",
+      "columns": ["status", "cnt"],
+      "rows": [[5, 1], [10, 1], [20, 1], [30, 1], [100, 1]]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+:root {
+  --bg-app: #f3f3f0;
+  --bg-panel: #fafaf7;
+  --bg-raised: #ffffff;
+  --bg-muted: #eeefea;
+
+  --text-primary: #242621;
+  --text-secondary: #666b62;
+  --text-tertiary: #92978e;
+
+  --border-default: #d8dad3;
+  --border-strong: #bfc3b8;
+
+  --accent: #747f62;
+  --accent-hover: #657055;
+  --accent-soft: #e4e7de;
+
+  --success: #647c61;
+  --warning: #8a775b;
+  --danger: #8a625e;
+
+  --state-active-border: #647c61;
+  --state-active-bg: #e8efe6;
+  --state-scanned-border: #bfc3b8;
+  --state-skipped-opacity: 0.45;
+
+  --radius-panel: 4px;
+  --radius-control: 4px;
+
+  --font-mono: 'Consolas', 'Courier New', monospace;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-app);
+}
+
+button {
+  font-family: inherit;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}

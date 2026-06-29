@@ -1,0 +1,3373 @@
+{
+  "format_version": 1,
+  "created_at_epoch": 1700000000,
+  "row_count": 8000,
+  "columns": {
+    "id": {
+      "path": "id.col",
+      "logical_type": "int64",
+      "sha256": "7710cb58f0cab4e98300fe39664b7157dd6220475734667b59989d813712336f",
+      "total_rows": 8000,
+      "block_count": 55,
+      "footer_offset": 73894,
+      "index_length": 3520,
+      "blocks": [
+        {
+          "block_id": 0,
+          "row_group_id": 0,
+          "row_start": 0,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 64,
+          "total_block_length": 1299,
+          "payload_crc32": "bfdaa798"
+        },
+        {
+          "block_id": 1,
+          "row_group_id": 1,
+          "row_start": 148,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 1363,
+          "total_block_length": 1283,
+          "payload_crc32": "db05302b"
+        },
+        {
+          "block_id": 2,
+          "row_group_id": 2,
+          "row_start": 294,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 2646,
+          "total_block_length": 1283,
+          "payload_crc32": "3f36ba2a"
+        },
+        {
+          "block_id": 3,
+          "row_group_id": 3,
+          "row_start": 440,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 3929,
+          "total_block_length": 1275,
+          "payload_crc32": "0c613c1e"
+        },
+        {
+          "block_id": 4,
+          "row_group_id": 4,
+          "row_start": 585,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 5204,
+          "total_block_length": 1299,
+          "payload_crc32": "6ef631fd"
+        },
+        {
+          "block_id": 5,
+          "row_group_id": 5,
+          "row_start": 733,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 6503,
+          "total_block_length": 1275,
+          "payload_crc32": "1e359d1f"
+        },
+        {
+          "block_id": 6,
+          "row_group_id": 6,
+          "row_start": 878,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 7778,
+          "total_block_length": 1307,
+          "payload_crc32": "ef09fd0f"
+        },
+        {
+          "block_id": 7,
+          "row_group_id": 7,
+          "row_start": 1027,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 9085,
+          "total_block_length": 1299,
+          "payload_crc32": "f4322ec7"
+        },
+        {
+          "block_id": 8,
+          "row_group_id": 8,
+          "row_start": 1175,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 10384,
+          "total_block_length": 1299,
+          "payload_crc32": "ae855760"
+        },
+        {
+          "block_id": 9,
+          "row_group_id": 9,
+          "row_start": 1323,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 11683,
+          "total_block_length": 1299,
+          "payload_crc32": "69854b02"
+        },
+        {
+          "block_id": 10,
+          "row_group_id": 10,
+          "row_start": 1471,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 12982,
+          "total_block_length": 1299,
+          "payload_crc32": "de491817"
+        },
+        {
+          "block_id": 11,
+          "row_group_id": 11,
+          "row_start": 1619,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 14281,
+          "total_block_length": 1291,
+          "payload_crc32": "38ccda0b"
+        },
+        {
+          "block_id": 12,
+          "row_group_id": 12,
+          "row_start": 1766,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 15572,
+          "total_block_length": 1291,
+          "payload_crc32": "45bf95f7"
+        },
+        {
+          "block_id": 13,
+          "row_group_id": 13,
+          "row_start": 1913,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 16863,
+          "total_block_length": 1275,
+          "payload_crc32": "7af64c8e"
+        },
+        {
+          "block_id": 14,
+          "row_group_id": 14,
+          "row_start": 2058,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 18138,
+          "total_block_length": 1283,
+          "payload_crc32": "102779e3"
+        },
+        {
+          "block_id": 15,
+          "row_group_id": 15,
+          "row_start": 2204,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 19421,
+          "total_block_length": 1283,
+          "payload_crc32": "35c41947"
+        },
+        {
+          "block_id": 16,
+          "row_group_id": 16,
+          "row_start": 2350,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 20704,
+          "total_block_length": 1275,
+          "payload_crc32": "48bd07af"
+        },
+        {
+          "block_id": 17,
+          "row_group_id": 17,
+          "row_start": 2495,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 21979,
+          "total_block_length": 1283,
+          "payload_crc32": "4cdf70d4"
+        },
+        {
+          "block_id": 18,
+          "row_group_id": 18,
+          "row_start": 2641,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 23262,
+          "total_block_length": 1299,
+          "payload_crc32": "bc6d3d9d"
+        },
+        {
+          "block_id": 19,
+          "row_group_id": 19,
+          "row_start": 2789,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 24561,
+          "total_block_length": 1291,
+          "payload_crc32": "4e026885"
+        },
+        {
+          "block_id": 20,
+          "row_group_id": 20,
+          "row_start": 2936,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 25852,
+          "total_block_length": 1283,
+          "payload_crc32": "532e1223"
+        },
+        {
+          "block_id": 21,
+          "row_group_id": 21,
+          "row_start": 3082,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 27135,
+          "total_block_length": 1299,
+          "payload_crc32": "d7dfbc56"
+        },
+        {
+          "block_id": 22,
+          "row_group_id": 22,
+          "row_start": 3230,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 28434,
+          "total_block_length": 1291,
+          "payload_crc32": "4627ce6c"
+        },
+        {
+          "block_id": 23,
+          "row_group_id": 23,
+          "row_start": 3377,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 29725,
+          "total_block_length": 1275,
+          "payload_crc32": "01eada3d"
+        },
+        {
+          "block_id": 24,
+          "row_group_id": 24,
+          "row_start": 3522,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 31000,
+          "total_block_length": 1291,
+          "payload_crc32": "fa39bceb"
+        },
+        {
+          "block_id": 25,
+          "row_group_id": 25,
+          "row_start": 3669,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 32291,
+          "total_block_length": 1307,
+          "payload_crc32": "88bdeeb3"
+        },
+        {
+          "block_id": 26,
+          "row_group_id": 26,
+          "row_start": 3818,
+          "row_count": 143,
+          "encoding": "RAW",
+          "offset": 33598,
+          "total_block_length": 1258,
+          "payload_crc32": "6d34881c"
+        },
+        {
+          "block_id": 27,
+          "row_group_id": 27,
+          "row_start": 3961,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 34856,
+          "total_block_length": 1299,
+          "payload_crc32": "6a94d0b5"
+        },
+        {
+          "block_id": 28,
+          "row_group_id": 28,
+          "row_start": 4109,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 36155,
+          "total_block_length": 1299,
+          "payload_crc32": "6553270a"
+        },
+        {
+          "block_id": 29,
+          "row_group_id": 29,
+          "row_start": 4257,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 37454,
+          "total_block_length": 1283,
+          "payload_crc32": "a4c24287"
+        },
+        {
+          "block_id": 30,
+          "row_group_id": 30,
+          "row_start": 4403,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 38737,
+          "total_block_length": 1291,
+          "payload_crc32": "925f3f67"
+        },
+        {
+          "block_id": 31,
+          "row_group_id": 31,
+          "row_start": 4550,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 40028,
+          "total_block_length": 1299,
+          "payload_crc32": "d397c38b"
+        },
+        {
+          "block_id": 32,
+          "row_group_id": 32,
+          "row_start": 4698,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 41327,
+          "total_block_length": 1266,
+          "payload_crc32": "5282fa58"
+        },
+        {
+          "block_id": 33,
+          "row_group_id": 33,
+          "row_start": 4842,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 42593,
+          "total_block_length": 1291,
+          "payload_crc32": "3fe8e2c3"
+        },
+        {
+          "block_id": 34,
+          "row_group_id": 34,
+          "row_start": 4989,
+          "row_count": 150,
+          "encoding": "RAW",
+          "offset": 43884,
+          "total_block_length": 1315,
+          "payload_crc32": "9ddc052b"
+        },
+        {
+          "block_id": 35,
+          "row_group_id": 35,
+          "row_start": 5139,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 45199,
+          "total_block_length": 1266,
+          "payload_crc32": "6d280506"
+        },
+        {
+          "block_id": 36,
+          "row_group_id": 36,
+          "row_start": 5283,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 46465,
+          "total_block_length": 1299,
+          "payload_crc32": "2005089a"
+        },
+        {
+          "block_id": 37,
+          "row_group_id": 37,
+          "row_start": 5431,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 47764,
+          "total_block_length": 1275,
+          "payload_crc32": "b13eadd8"
+        },
+        {
+          "block_id": 38,
+          "row_group_id": 38,
+          "row_start": 5576,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 49039,
+          "total_block_length": 1266,
+          "payload_crc32": "9093af30"
+        },
+        {
+          "block_id": 39,
+          "row_group_id": 39,
+          "row_start": 5720,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 50305,
+          "total_block_length": 1299,
+          "payload_crc32": "36d832b7"
+        },
+        {
+          "block_id": 40,
+          "row_group_id": 40,
+          "row_start": 5868,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 51604,
+          "total_block_length": 1307,
+          "payload_crc32": "448b4bfc"
+        },
+        {
+          "block_id": 41,
+          "row_group_id": 41,
+          "row_start": 6017,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 52911,
+          "total_block_length": 1275,
+          "payload_crc32": "67fc25ec"
+        },
+        {
+          "block_id": 42,
+          "row_group_id": 42,
+          "row_start": 6162,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 54186,
+          "total_block_length": 1291,
+          "payload_crc32": "a26cb0df"
+        },
+        {
+          "block_id": 43,
+          "row_group_id": 43,
+          "row_start": 6309,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 55477,
+          "total_block_length": 1291,
+          "payload_crc32": "8abb42ac"
+        },
+        {
+          "block_id": 44,
+          "row_group_id": 44,
+          "row_start": 6456,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 56768,
+          "total_block_length": 1283,
+          "payload_crc32": "453ffdd6"
+        },
+        {
+          "block_id": 45,
+          "row_group_id": 45,
+          "row_start": 6602,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 58051,
+          "total_block_length": 1266,
+          "payload_crc32": "3384a66f"
+        },
+        {
+          "block_id": 46,
+          "row_group_id": 46,
+          "row_start": 6746,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 59317,
+          "total_block_length": 1275,
+          "payload_crc32": "f07f3ceb"
+        },
+        {
+          "block_id": 47,
+          "row_group_id": 47,
+          "row_start": 6891,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 60592,
+          "total_block_length": 1291,
+          "payload_crc32": "db7c8046"
+        },
+        {
+          "block_id": 48,
+          "row_group_id": 48,
+          "row_start": 7038,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 61883,
+          "total_block_length": 1291,
+          "payload_crc32": "d21b8d3b"
+        },
+        {
+          "block_id": 49,
+          "row_group_id": 49,
+          "row_start": 7185,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 63174,
+          "total_block_length": 1283,
+          "payload_crc32": "e6d7e417"
+        },
+        {
+          "block_id": 50,
+          "row_group_id": 50,
+          "row_start": 7331,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 64457,
+          "total_block_length": 1291,
+          "payload_crc32": "679ce828"
+        },
+        {
+          "block_id": 51,
+          "row_group_id": 51,
+          "row_start": 7478,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 65748,
+          "total_block_length": 1283,
+          "payload_crc32": "9e765245"
+        },
+        {
+          "block_id": 52,
+          "row_group_id": 52,
+          "row_start": 7624,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 67031,
+          "total_block_length": 1266,
+          "payload_crc32": "502f7fcd"
+        },
+        {
+          "block_id": 53,
+          "row_group_id": 53,
+          "row_start": 7768,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 68297,
+          "total_block_length": 1266,
+          "payload_crc32": "0cd16f8f"
+        },
+        {
+          "block_id": 54,
+          "row_group_id": 54,
+          "row_start": 7912,
+          "row_count": 88,
+          "encoding": "RAW",
+          "offset": 69563,
+          "total_block_length": 811,
+          "payload_crc32": "efe44d7e"
+        }
+      ]
+    },
+    "status": {
+      "path": "status.col",
+      "logical_type": "utf8",
+      "sha256": "adf551523a248b5710081786ab97b2202d109ff42adafa6cd11e2080504e55a6",
+      "total_rows": 8000,
+      "block_count": 55,
+      "footer_offset": 14936,
+      "index_length": 3520,
+      "blocks": [
+        {
+          "block_id": 0,
+          "row_group_id": 0,
+          "row_start": 0,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 64,
+          "total_block_length": 207,
+          "payload_crc32": "5502bd4f"
+        },
+        {
+          "block_id": 1,
+          "row_group_id": 1,
+          "row_start": 148,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 271,
+          "total_block_length": 207,
+          "payload_crc32": "57ba91c0"
+        },
+        {
+          "block_id": 2,
+          "row_group_id": 2,
+          "row_start": 294,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 478,
+          "total_block_length": 207,
+          "payload_crc32": "9755576d"
+        },
+        {
+          "block_id": 3,
+          "row_group_id": 3,
+          "row_start": 440,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 685,
+          "total_block_length": 207,
+          "payload_crc32": "4ee875b2"
+        },
+        {
+          "block_id": 4,
+          "row_group_id": 4,
+          "row_start": 585,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 892,
+          "total_block_length": 207,
+          "payload_crc32": "dcba617e"
+        },
+        {
+          "block_id": 5,
+          "row_group_id": 5,
+          "row_start": 733,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 1099,
+          "total_block_length": 207,
+          "payload_crc32": "d04e0bb9"
+        },
+        {
+          "block_id": 6,
+          "row_group_id": 6,
+          "row_start": 878,
+          "row_count": 149,
+          "encoding": "DICTIONARY",
+          "offset": 1306,
+          "total_block_length": 208,
+          "payload_crc32": "4c54bdf4"
+        },
+        {
+          "block_id": 7,
+          "row_group_id": 7,
+          "row_start": 1027,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 1514,
+          "total_block_length": 207,
+          "payload_crc32": "16429053"
+        },
+        {
+          "block_id": 8,
+          "row_group_id": 8,
+          "row_start": 1175,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 1721,
+          "total_block_length": 207,
+          "payload_crc32": "d8eac8d7"
+        },
+        {
+          "block_id": 9,
+          "row_group_id": 9,
+          "row_start": 1323,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 1928,
+          "total_block_length": 207,
+          "payload_crc32": "aab9970c"
+        },
+        {
+          "block_id": 10,
+          "row_group_id": 10,
+          "row_start": 1471,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 2135,
+          "total_block_length": 207,
+          "payload_crc32": "de02b722"
+        },
+        {
+          "block_id": 11,
+          "row_group_id": 11,
+          "row_start": 1619,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 2342,
+          "total_block_length": 207,
+          "payload_crc32": "418d0d59"
+        },
+        {
+          "block_id": 12,
+          "row_group_id": 12,
+          "row_start": 1766,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 2549,
+          "total_block_length": 207,
+          "payload_crc32": "b1faae82"
+        },
+        {
+          "block_id": 13,
+          "row_group_id": 13,
+          "row_start": 1913,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 2756,
+          "total_block_length": 207,
+          "payload_crc32": "28afda68"
+        },
+        {
+          "block_id": 14,
+          "row_group_id": 14,
+          "row_start": 2058,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 2963,
+          "total_block_length": 207,
+          "payload_crc32": "8e44af2f"
+        },
+        {
+          "block_id": 15,
+          "row_group_id": 15,
+          "row_start": 2204,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 3170,
+          "total_block_length": 207,
+          "payload_crc32": "b0ffe4d7"
+        },
+        {
+          "block_id": 16,
+          "row_group_id": 16,
+          "row_start": 2350,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 3377,
+          "total_block_length": 207,
+          "payload_crc32": "8fe4e876"
+        },
+        {
+          "block_id": 17,
+          "row_group_id": 17,
+          "row_start": 2495,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 3584,
+          "total_block_length": 207,
+          "payload_crc32": "f327e7ee"
+        },
+        {
+          "block_id": 18,
+          "row_group_id": 18,
+          "row_start": 2641,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 3791,
+          "total_block_length": 207,
+          "payload_crc32": "2843d636"
+        },
+        {
+          "block_id": 19,
+          "row_group_id": 19,
+          "row_start": 2789,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 3998,
+          "total_block_length": 207,
+          "payload_crc32": "6aa77e70"
+        },
+        {
+          "block_id": 20,
+          "row_group_id": 20,
+          "row_start": 2936,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 4205,
+          "total_block_length": 207,
+          "payload_crc32": "3f89d47d"
+        },
+        {
+          "block_id": 21,
+          "row_group_id": 21,
+          "row_start": 3082,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 4412,
+          "total_block_length": 207,
+          "payload_crc32": "5e78153d"
+        },
+        {
+          "block_id": 22,
+          "row_group_id": 22,
+          "row_start": 3230,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 4619,
+          "total_block_length": 207,
+          "payload_crc32": "a02d20f0"
+        },
+        {
+          "block_id": 23,
+          "row_group_id": 23,
+          "row_start": 3377,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 4826,
+          "total_block_length": 207,
+          "payload_crc32": "0357c8d9"
+        },
+        {
+          "block_id": 24,
+          "row_group_id": 24,
+          "row_start": 3522,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 5033,
+          "total_block_length": 207,
+          "payload_crc32": "070e3107"
+        },
+        {
+          "block_id": 25,
+          "row_group_id": 25,
+          "row_start": 3669,
+          "row_count": 149,
+          "encoding": "DICTIONARY",
+          "offset": 5240,
+          "total_block_length": 208,
+          "payload_crc32": "e6368c30"
+        },
+        {
+          "block_id": 26,
+          "row_group_id": 26,
+          "row_start": 3818,
+          "row_count": 143,
+          "encoding": "DICTIONARY",
+          "offset": 5448,
+          "total_block_length": 205,
+          "payload_crc32": "f06f7e31"
+        },
+        {
+          "block_id": 27,
+          "row_group_id": 27,
+          "row_start": 3961,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 5653,
+          "total_block_length": 207,
+          "payload_crc32": "07dcf56c"
+        },
+        {
+          "block_id": 28,
+          "row_group_id": 28,
+          "row_start": 4109,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 5860,
+          "total_block_length": 207,
+          "payload_crc32": "0c8ec473"
+        },
+        {
+          "block_id": 29,
+          "row_group_id": 29,
+          "row_start": 4257,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 6067,
+          "total_block_length": 207,
+          "payload_crc32": "7ecfb00e"
+        },
+        {
+          "block_id": 30,
+          "row_group_id": 30,
+          "row_start": 4403,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 6274,
+          "total_block_length": 207,
+          "payload_crc32": "37f62046"
+        },
+        {
+          "block_id": 31,
+          "row_group_id": 31,
+          "row_start": 4550,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 6481,
+          "total_block_length": 207,
+          "payload_crc32": "64ba9eae"
+        },
+        {
+          "block_id": 32,
+          "row_group_id": 32,
+          "row_start": 4698,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 6688,
+          "total_block_length": 205,
+          "payload_crc32": "040753b9"
+        },
+        {
+          "block_id": 33,
+          "row_group_id": 33,
+          "row_start": 4842,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 6893,
+          "total_block_length": 207,
+          "payload_crc32": "fba5d598"
+        },
+        {
+          "block_id": 34,
+          "row_group_id": 34,
+          "row_start": 4989,
+          "row_count": 150,
+          "encoding": "DICTIONARY",
+          "offset": 7100,
+          "total_block_length": 208,
+          "payload_crc32": "6884679e"
+        },
+        {
+          "block_id": 35,
+          "row_group_id": 35,
+          "row_start": 5139,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 7308,
+          "total_block_length": 205,
+          "payload_crc32": "9aee628b"
+        },
+        {
+          "block_id": 36,
+          "row_group_id": 36,
+          "row_start": 5283,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 7513,
+          "total_block_length": 207,
+          "payload_crc32": "8fde9b86"
+        },
+        {
+          "block_id": 37,
+          "row_group_id": 37,
+          "row_start": 5431,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 7720,
+          "total_block_length": 207,
+          "payload_crc32": "c670a82a"
+        },
+        {
+          "block_id": 38,
+          "row_group_id": 38,
+          "row_start": 5576,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 7927,
+          "total_block_length": 205,
+          "payload_crc32": "02badf99"
+        },
+        {
+          "block_id": 39,
+          "row_group_id": 39,
+          "row_start": 5720,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 8132,
+          "total_block_length": 207,
+          "payload_crc32": "2d3969df"
+        },
+        {
+          "block_id": 40,
+          "row_group_id": 40,
+          "row_start": 5868,
+          "row_count": 149,
+          "encoding": "DICTIONARY",
+          "offset": 8339,
+          "total_block_length": 208,
+          "payload_crc32": "5f014b40"
+        },
+        {
+          "block_id": 41,
+          "row_group_id": 41,
+          "row_start": 6017,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 8547,
+          "total_block_length": 207,
+          "payload_crc32": "e13b408e"
+        },
+        {
+          "block_id": 42,
+          "row_group_id": 42,
+          "row_start": 6162,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 8754,
+          "total_block_length": 207,
+          "payload_crc32": "b00bd153"
+        },
+        {
+          "block_id": 43,
+          "row_group_id": 43,
+          "row_start": 6309,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 8961,
+          "total_block_length": 207,
+          "payload_crc32": "0afd084e"
+        },
+        {
+          "block_id": 44,
+          "row_group_id": 44,
+          "row_start": 6456,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 9168,
+          "total_block_length": 207,
+          "payload_crc32": "ad326bf3"
+        },
+        {
+          "block_id": 45,
+          "row_group_id": 45,
+          "row_start": 6602,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 9375,
+          "total_block_length": 205,
+          "payload_crc32": "8a40702c"
+        },
+        {
+          "block_id": 46,
+          "row_group_id": 46,
+          "row_start": 6746,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 9580,
+          "total_block_length": 207,
+          "payload_crc32": "c205df56"
+        },
+        {
+          "block_id": 47,
+          "row_group_id": 47,
+          "row_start": 6891,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 9787,
+          "total_block_length": 207,
+          "payload_crc32": "c3cc710d"
+        },
+        {
+          "block_id": 48,
+          "row_group_id": 48,
+          "row_start": 7038,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 9994,
+          "total_block_length": 207,
+          "payload_crc32": "ac1b9059"
+        },
+        {
+          "block_id": 49,
+          "row_group_id": 49,
+          "row_start": 7185,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 10201,
+          "total_block_length": 207,
+          "payload_crc32": "d254c44a"
+        },
+        {
+          "block_id": 50,
+          "row_group_id": 50,
+          "row_start": 7331,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 10408,
+          "total_block_length": 207,
+          "payload_crc32": "7d9bd974"
+        },
+        {
+          "block_id": 51,
+          "row_group_id": 51,
+          "row_start": 7478,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 10615,
+          "total_block_length": 207,
+          "payload_crc32": "083b09e2"
+        },
+        {
+          "block_id": 52,
+          "row_group_id": 52,
+          "row_start": 7624,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 10822,
+          "total_block_length": 205,
+          "payload_crc32": "74274299"
+        },
+        {
+          "block_id": 53,
+          "row_group_id": 53,
+          "row_start": 7768,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 11027,
+          "total_block_length": 205,
+          "payload_crc32": "d0ba0cc0"
+        },
+        {
+          "block_id": 54,
+          "row_group_id": 54,
+          "row_start": 7912,
+          "row_count": 88,
+          "encoding": "DICTIONARY",
+          "offset": 11232,
+          "total_block_length": 184,
+          "payload_crc32": "4836c51a"
+        }
+      ]
+    },
+    "qty": {
+      "path": "qty.col",
+      "logical_type": "int64",
+      "sha256": "ff485a79899df665cc0be87c0e70b1a717f8700424ee16fa7e52a491f0b662d8",
+      "total_rows": 8000,
+      "block_count": 55,
+      "footer_offset": 11410,
+      "index_length": 3520,
+      "blocks": [
+        {
+          "block_id": 0,
+          "row_group_id": 0,
+          "row_start": 0,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 64,
+          "total_block_length": 137,
+          "payload_crc32": "3a3ea6da"
+        },
+        {
+          "block_id": 1,
+          "row_group_id": 1,
+          "row_start": 148,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 201,
+          "total_block_length": 146,
+          "payload_crc32": "945cf434"
+        },
+        {
+          "block_id": 2,
+          "row_group_id": 2,
+          "row_start": 294,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 347,
+          "total_block_length": 146,
+          "payload_crc32": "567e7e51"
+        },
+        {
+          "block_id": 3,
+          "row_group_id": 3,
+          "row_start": 440,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 493,
+          "total_block_length": 146,
+          "payload_crc32": "44a3fcc7"
+        },
+        {
+          "block_id": 4,
+          "row_group_id": 4,
+          "row_start": 585,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 639,
+          "total_block_length": 146,
+          "payload_crc32": "a57c876b"
+        },
+        {
+          "block_id": 5,
+          "row_group_id": 5,
+          "row_start": 733,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 785,
+          "total_block_length": 146,
+          "payload_crc32": "5d20e9cd"
+        },
+        {
+          "block_id": 6,
+          "row_group_id": 6,
+          "row_start": 878,
+          "row_count": 149,
+          "encoding": "RLE",
+          "offset": 931,
+          "total_block_length": 146,
+          "payload_crc32": "bc327007"
+        },
+        {
+          "block_id": 7,
+          "row_group_id": 7,
+          "row_start": 1027,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 1077,
+          "total_block_length": 137,
+          "payload_crc32": "7e0112c7"
+        },
+        {
+          "block_id": 8,
+          "row_group_id": 8,
+          "row_start": 1175,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 1214,
+          "total_block_length": 146,
+          "payload_crc32": "f5e001a2"
+        },
+        {
+          "block_id": 9,
+          "row_group_id": 9,
+          "row_start": 1323,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 1360,
+          "total_block_length": 137,
+          "payload_crc32": "d22a7543"
+        },
+        {
+          "block_id": 10,
+          "row_group_id": 10,
+          "row_start": 1471,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 1497,
+          "total_block_length": 137,
+          "payload_crc32": "04da869f"
+        },
+        {
+          "block_id": 11,
+          "row_group_id": 11,
+          "row_start": 1619,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 1634,
+          "total_block_length": 146,
+          "payload_crc32": "2dd14de0"
+        },
+        {
+          "block_id": 12,
+          "row_group_id": 12,
+          "row_start": 1766,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 1780,
+          "total_block_length": 137,
+          "payload_crc32": "6cca914a"
+        },
+        {
+          "block_id": 13,
+          "row_group_id": 13,
+          "row_start": 1913,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 1917,
+          "total_block_length": 146,
+          "payload_crc32": "76a5a63b"
+        },
+        {
+          "block_id": 14,
+          "row_group_id": 14,
+          "row_start": 2058,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 2063,
+          "total_block_length": 137,
+          "payload_crc32": "92b648cf"
+        },
+        {
+          "block_id": 15,
+          "row_group_id": 15,
+          "row_start": 2204,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 2200,
+          "total_block_length": 146,
+          "payload_crc32": "27858447"
+        },
+        {
+          "block_id": 16,
+          "row_group_id": 16,
+          "row_start": 2350,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 2346,
+          "total_block_length": 146,
+          "payload_crc32": "15251ff2"
+        },
+        {
+          "block_id": 17,
+          "row_group_id": 17,
+          "row_start": 2495,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 2492,
+          "total_block_length": 137,
+          "payload_crc32": "54b6b480"
+        },
+        {
+          "block_id": 18,
+          "row_group_id": 18,
+          "row_start": 2641,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 2629,
+          "total_block_length": 137,
+          "payload_crc32": "8b0e728c"
+        },
+        {
+          "block_id": 19,
+          "row_group_id": 19,
+          "row_start": 2789,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 2766,
+          "total_block_length": 146,
+          "payload_crc32": "3abc37b0"
+        },
+        {
+          "block_id": 20,
+          "row_group_id": 20,
+          "row_start": 2936,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 2912,
+          "total_block_length": 146,
+          "payload_crc32": "632505b8"
+        },
+        {
+          "block_id": 21,
+          "row_group_id": 21,
+          "row_start": 3082,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 3058,
+          "total_block_length": 146,
+          "payload_crc32": "c1d47629"
+        },
+        {
+          "block_id": 22,
+          "row_group_id": 22,
+          "row_start": 3230,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 3204,
+          "total_block_length": 146,
+          "payload_crc32": "38806327"
+        },
+        {
+          "block_id": 23,
+          "row_group_id": 23,
+          "row_start": 3377,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 3350,
+          "total_block_length": 146,
+          "payload_crc32": "ad3465db"
+        },
+        {
+          "block_id": 24,
+          "row_group_id": 24,
+          "row_start": 3522,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 3496,
+          "total_block_length": 146,
+          "payload_crc32": "955aa939"
+        },
+        {
+          "block_id": 25,
+          "row_group_id": 25,
+          "row_start": 3669,
+          "row_count": 149,
+          "encoding": "RLE",
+          "offset": 3642,
+          "total_block_length": 137,
+          "payload_crc32": "ac4f6788"
+        },
+        {
+          "block_id": 26,
+          "row_group_id": 26,
+          "row_start": 3818,
+          "row_count": 143,
+          "encoding": "RLE",
+          "offset": 3779,
+          "total_block_length": 145,
+          "payload_crc32": "31d2b88d"
+        },
+        {
+          "block_id": 27,
+          "row_group_id": 27,
+          "row_start": 3961,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 3924,
+          "total_block_length": 137,
+          "payload_crc32": "630dda01"
+        },
+        {
+          "block_id": 28,
+          "row_group_id": 28,
+          "row_start": 4109,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 4061,
+          "total_block_length": 146,
+          "payload_crc32": "97d0aae3"
+        },
+        {
+          "block_id": 29,
+          "row_group_id": 29,
+          "row_start": 4257,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 4207,
+          "total_block_length": 137,
+          "payload_crc32": "dd6f4eda"
+        },
+        {
+          "block_id": 30,
+          "row_group_id": 30,
+          "row_start": 4403,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 4344,
+          "total_block_length": 137,
+          "payload_crc32": "833e534a"
+        },
+        {
+          "block_id": 31,
+          "row_group_id": 31,
+          "row_start": 4550,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 4481,
+          "total_block_length": 155,
+          "payload_crc32": "d444a29b"
+        },
+        {
+          "block_id": 32,
+          "row_group_id": 32,
+          "row_start": 4698,
+          "row_count": 144,
+          "encoding": "RLE",
+          "offset": 4636,
+          "total_block_length": 145,
+          "payload_crc32": "826f8ab4"
+        },
+        {
+          "block_id": 33,
+          "row_group_id": 33,
+          "row_start": 4842,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 4781,
+          "total_block_length": 146,
+          "payload_crc32": "04e57183"
+        },
+        {
+          "block_id": 34,
+          "row_group_id": 34,
+          "row_start": 4989,
+          "row_count": 150,
+          "encoding": "RLE",
+          "offset": 4927,
+          "total_block_length": 137,
+          "payload_crc32": "c8ea91da"
+        },
+        {
+          "block_id": 35,
+          "row_group_id": 35,
+          "row_start": 5139,
+          "row_count": 144,
+          "encoding": "RLE",
+          "offset": 5064,
+          "total_block_length": 145,
+          "payload_crc32": "2c702a52"
+        },
+        {
+          "block_id": 36,
+          "row_group_id": 36,
+          "row_start": 5283,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 5209,
+          "total_block_length": 137,
+          "payload_crc32": "2987350d"
+        },
+        {
+          "block_id": 37,
+          "row_group_id": 37,
+          "row_start": 5431,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 5346,
+          "total_block_length": 137,
+          "payload_crc32": "21072e4b"
+        },
+        {
+          "block_id": 38,
+          "row_group_id": 38,
+          "row_start": 5576,
+          "row_count": 144,
+          "encoding": "RLE",
+          "offset": 5483,
+          "total_block_length": 145,
+          "payload_crc32": "1243b97b"
+        },
+        {
+          "block_id": 39,
+          "row_group_id": 39,
+          "row_start": 5720,
+          "row_count": 148,
+          "encoding": "RLE",
+          "offset": 5628,
+          "total_block_length": 146,
+          "payload_crc32": "8cb19127"
+        },
+        {
+          "block_id": 40,
+          "row_group_id": 40,
+          "row_start": 5868,
+          "row_count": 149,
+          "encoding": "RLE",
+          "offset": 5774,
+          "total_block_length": 137,
+          "payload_crc32": "98033034"
+        },
+        {
+          "block_id": 41,
+          "row_group_id": 41,
+          "row_start": 6017,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 5911,
+          "total_block_length": 146,
+          "payload_crc32": "f91596c8"
+        },
+        {
+          "block_id": 42,
+          "row_group_id": 42,
+          "row_start": 6162,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 6057,
+          "total_block_length": 137,
+          "payload_crc32": "3f3abcf3"
+        },
+        {
+          "block_id": 43,
+          "row_group_id": 43,
+          "row_start": 6309,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 6194,
+          "total_block_length": 146,
+          "payload_crc32": "d82af93f"
+        },
+        {
+          "block_id": 44,
+          "row_group_id": 44,
+          "row_start": 6456,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 6340,
+          "total_block_length": 146,
+          "payload_crc32": "0dbc5d86"
+        },
+        {
+          "block_id": 45,
+          "row_group_id": 45,
+          "row_start": 6602,
+          "row_count": 144,
+          "encoding": "RLE",
+          "offset": 6486,
+          "total_block_length": 136,
+          "payload_crc32": "9e0c123d"
+        },
+        {
+          "block_id": 46,
+          "row_group_id": 46,
+          "row_start": 6746,
+          "row_count": 145,
+          "encoding": "RLE",
+          "offset": 6622,
+          "total_block_length": 137,
+          "payload_crc32": "14321a48"
+        },
+        {
+          "block_id": 47,
+          "row_group_id": 47,
+          "row_start": 6891,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 6759,
+          "total_block_length": 146,
+          "payload_crc32": "a0bdcff7"
+        },
+        {
+          "block_id": 48,
+          "row_group_id": 48,
+          "row_start": 7038,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 6905,
+          "total_block_length": 146,
+          "payload_crc32": "60949829"
+        },
+        {
+          "block_id": 49,
+          "row_group_id": 49,
+          "row_start": 7185,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 7051,
+          "total_block_length": 146,
+          "payload_crc32": "39071fba"
+        },
+        {
+          "block_id": 50,
+          "row_group_id": 50,
+          "row_start": 7331,
+          "row_count": 147,
+          "encoding": "RLE",
+          "offset": 7197,
+          "total_block_length": 137,
+          "payload_crc32": "ae9a6254"
+        },
+        {
+          "block_id": 51,
+          "row_group_id": 51,
+          "row_start": 7478,
+          "row_count": 146,
+          "encoding": "RLE",
+          "offset": 7334,
+          "total_block_length": 146,
+          "payload_crc32": "f0e47fc5"
+        },
+        {
+          "block_id": 52,
+          "row_group_id": 52,
+          "row_start": 7624,
+          "row_count": 144,
+          "encoding": "RLE",
+          "offset": 7480,
+          "total_block_length": 145,
+          "payload_crc32": "82a71d1b"
+        },
+        {
+          "block_id": 53,
+          "row_group_id": 53,
+          "row_start": 7768,
+          "row_count": 144,
+          "encoding": "RLE",
+          "offset": 7625,
+          "total_block_length": 136,
+          "payload_crc32": "a052301c"
+        },
+        {
+          "block_id": 54,
+          "row_group_id": 54,
+          "row_start": 7912,
+          "row_count": 88,
+          "encoding": "RLE",
+          "offset": 7761,
+          "total_block_length": 129,
+          "payload_crc32": "ac02bd7d"
+        }
+      ]
+    },
+    "price": {
+      "path": "price.col",
+      "logical_type": "float64",
+      "sha256": "d8932337494dc4ad617f5eb95a1ba1092c0cb9cbca24ba66b68472c54bd154dd",
+      "total_rows": 8000,
+      "block_count": 55,
+      "footer_offset": 73894,
+      "index_length": 3520,
+      "blocks": [
+        {
+          "block_id": 0,
+          "row_group_id": 0,
+          "row_start": 0,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 64,
+          "total_block_length": 1299,
+          "payload_crc32": "5a5d9d42"
+        },
+        {
+          "block_id": 1,
+          "row_group_id": 1,
+          "row_start": 148,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 1363,
+          "total_block_length": 1283,
+          "payload_crc32": "e0f58015"
+        },
+        {
+          "block_id": 2,
+          "row_group_id": 2,
+          "row_start": 294,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 2646,
+          "total_block_length": 1283,
+          "payload_crc32": "d7bad4a6"
+        },
+        {
+          "block_id": 3,
+          "row_group_id": 3,
+          "row_start": 440,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 3929,
+          "total_block_length": 1275,
+          "payload_crc32": "959c343e"
+        },
+        {
+          "block_id": 4,
+          "row_group_id": 4,
+          "row_start": 585,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 5204,
+          "total_block_length": 1299,
+          "payload_crc32": "09c1d8ec"
+        },
+        {
+          "block_id": 5,
+          "row_group_id": 5,
+          "row_start": 733,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 6503,
+          "total_block_length": 1275,
+          "payload_crc32": "2e48a95e"
+        },
+        {
+          "block_id": 6,
+          "row_group_id": 6,
+          "row_start": 878,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 7778,
+          "total_block_length": 1307,
+          "payload_crc32": "c6eb46ea"
+        },
+        {
+          "block_id": 7,
+          "row_group_id": 7,
+          "row_start": 1027,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 9085,
+          "total_block_length": 1299,
+          "payload_crc32": "f80bf452"
+        },
+        {
+          "block_id": 8,
+          "row_group_id": 8,
+          "row_start": 1175,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 10384,
+          "total_block_length": 1299,
+          "payload_crc32": "7887f2ae"
+        },
+        {
+          "block_id": 9,
+          "row_group_id": 9,
+          "row_start": 1323,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 11683,
+          "total_block_length": 1299,
+          "payload_crc32": "efa9a978"
+        },
+        {
+          "block_id": 10,
+          "row_group_id": 10,
+          "row_start": 1471,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 12982,
+          "total_block_length": 1299,
+          "payload_crc32": "50215d05"
+        },
+        {
+          "block_id": 11,
+          "row_group_id": 11,
+          "row_start": 1619,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 14281,
+          "total_block_length": 1291,
+          "payload_crc32": "21dd04e8"
+        },
+        {
+          "block_id": 12,
+          "row_group_id": 12,
+          "row_start": 1766,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 15572,
+          "total_block_length": 1291,
+          "payload_crc32": "9b9c51b3"
+        },
+        {
+          "block_id": 13,
+          "row_group_id": 13,
+          "row_start": 1913,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 16863,
+          "total_block_length": 1275,
+          "payload_crc32": "1c169339"
+        },
+        {
+          "block_id": 14,
+          "row_group_id": 14,
+          "row_start": 2058,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 18138,
+          "total_block_length": 1283,
+          "payload_crc32": "791c398c"
+        },
+        {
+          "block_id": 15,
+          "row_group_id": 15,
+          "row_start": 2204,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 19421,
+          "total_block_length": 1283,
+          "payload_crc32": "ba45d667"
+        },
+        {
+          "block_id": 16,
+          "row_group_id": 16,
+          "row_start": 2350,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 20704,
+          "total_block_length": 1275,
+          "payload_crc32": "38ec8738"
+        },
+        {
+          "block_id": 17,
+          "row_group_id": 17,
+          "row_start": 2495,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 21979,
+          "total_block_length": 1283,
+          "payload_crc32": "1589bd50"
+        },
+        {
+          "block_id": 18,
+          "row_group_id": 18,
+          "row_start": 2641,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 23262,
+          "total_block_length": 1299,
+          "payload_crc32": "952f89db"
+        },
+        {
+          "block_id": 19,
+          "row_group_id": 19,
+          "row_start": 2789,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 24561,
+          "total_block_length": 1291,
+          "payload_crc32": "a658bea5"
+        },
+        {
+          "block_id": 20,
+          "row_group_id": 20,
+          "row_start": 2936,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 25852,
+          "total_block_length": 1283,
+          "payload_crc32": "e1ceb837"
+        },
+        {
+          "block_id": 21,
+          "row_group_id": 21,
+          "row_start": 3082,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 27135,
+          "total_block_length": 1299,
+          "payload_crc32": "fe5a8636"
+        },
+        {
+          "block_id": 22,
+          "row_group_id": 22,
+          "row_start": 3230,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 28434,
+          "total_block_length": 1291,
+          "payload_crc32": "953b91b6"
+        },
+        {
+          "block_id": 23,
+          "row_group_id": 23,
+          "row_start": 3377,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 29725,
+          "total_block_length": 1275,
+          "payload_crc32": "e5b5be36"
+        },
+        {
+          "block_id": 24,
+          "row_group_id": 24,
+          "row_start": 3522,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 31000,
+          "total_block_length": 1291,
+          "payload_crc32": "6ea8eb10"
+        },
+        {
+          "block_id": 25,
+          "row_group_id": 25,
+          "row_start": 3669,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 32291,
+          "total_block_length": 1307,
+          "payload_crc32": "41fdab2e"
+        },
+        {
+          "block_id": 26,
+          "row_group_id": 26,
+          "row_start": 3818,
+          "row_count": 143,
+          "encoding": "RAW",
+          "offset": 33598,
+          "total_block_length": 1258,
+          "payload_crc32": "153451e0"
+        },
+        {
+          "block_id": 27,
+          "row_group_id": 27,
+          "row_start": 3961,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 34856,
+          "total_block_length": 1299,
+          "payload_crc32": "72530fc2"
+        },
+        {
+          "block_id": 28,
+          "row_group_id": 28,
+          "row_start": 4109,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 36155,
+          "total_block_length": 1299,
+          "payload_crc32": "0cdbdbfa"
+        },
+        {
+          "block_id": 29,
+          "row_group_id": 29,
+          "row_start": 4257,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 37454,
+          "total_block_length": 1283,
+          "payload_crc32": "20189a3b"
+        },
+        {
+          "block_id": 30,
+          "row_group_id": 30,
+          "row_start": 4403,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 38737,
+          "total_block_length": 1291,
+          "payload_crc32": "331fb2fa"
+        },
+        {
+          "block_id": 31,
+          "row_group_id": 31,
+          "row_start": 4550,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 40028,
+          "total_block_length": 1299,
+          "payload_crc32": "280d3dff"
+        },
+        {
+          "block_id": 32,
+          "row_group_id": 32,
+          "row_start": 4698,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 41327,
+          "total_block_length": 1266,
+          "payload_crc32": "22fd61ee"
+        },
+        {
+          "block_id": 33,
+          "row_group_id": 33,
+          "row_start": 4842,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 42593,
+          "total_block_length": 1291,
+          "payload_crc32": "d61461c9"
+        },
+        {
+          "block_id": 34,
+          "row_group_id": 34,
+          "row_start": 4989,
+          "row_count": 150,
+          "encoding": "RAW",
+          "offset": 43884,
+          "total_block_length": 1315,
+          "payload_crc32": "bb1d73cd"
+        },
+        {
+          "block_id": 35,
+          "row_group_id": 35,
+          "row_start": 5139,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 45199,
+          "total_block_length": 1266,
+          "payload_crc32": "1aad9329"
+        },
+        {
+          "block_id": 36,
+          "row_group_id": 36,
+          "row_start": 5283,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 46465,
+          "total_block_length": 1299,
+          "payload_crc32": "45332915"
+        },
+        {
+          "block_id": 37,
+          "row_group_id": 37,
+          "row_start": 5431,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 47764,
+          "total_block_length": 1275,
+          "payload_crc32": "3779508e"
+        },
+        {
+          "block_id": 38,
+          "row_group_id": 38,
+          "row_start": 5576,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 49039,
+          "total_block_length": 1266,
+          "payload_crc32": "5df6336a"
+        },
+        {
+          "block_id": 39,
+          "row_group_id": 39,
+          "row_start": 5720,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 50305,
+          "total_block_length": 1299,
+          "payload_crc32": "ef528cdc"
+        },
+        {
+          "block_id": 40,
+          "row_group_id": 40,
+          "row_start": 5868,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 51604,
+          "total_block_length": 1307,
+          "payload_crc32": "cf9ea186"
+        },
+        {
+          "block_id": 41,
+          "row_group_id": 41,
+          "row_start": 6017,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 52911,
+          "total_block_length": 1275,
+          "payload_crc32": "a92f8a15"
+        },
+        {
+          "block_id": 42,
+          "row_group_id": 42,
+          "row_start": 6162,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 54186,
+          "total_block_length": 1291,
+          "payload_crc32": "149fe091"
+        },
+        {
+          "block_id": 43,
+          "row_group_id": 43,
+          "row_start": 6309,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 55477,
+          "total_block_length": 1291,
+          "payload_crc32": "6308fc25"
+        },
+        {
+          "block_id": 44,
+          "row_group_id": 44,
+          "row_start": 6456,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 56768,
+          "total_block_length": 1283,
+          "payload_crc32": "f0fdcd1e"
+        },
+        {
+          "block_id": 45,
+          "row_group_id": 45,
+          "row_start": 6602,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 58051,
+          "total_block_length": 1266,
+          "payload_crc32": "378ac2e9"
+        },
+        {
+          "block_id": 46,
+          "row_group_id": 46,
+          "row_start": 6746,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 59317,
+          "total_block_length": 1275,
+          "payload_crc32": "13db72c3"
+        },
+        {
+          "block_id": 47,
+          "row_group_id": 47,
+          "row_start": 6891,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 60592,
+          "total_block_length": 1291,
+          "payload_crc32": "d0400992"
+        },
+        {
+          "block_id": 48,
+          "row_group_id": 48,
+          "row_start": 7038,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 61883,
+          "total_block_length": 1291,
+          "payload_crc32": "cad280ab"
+        },
+        {
+          "block_id": 49,
+          "row_group_id": 49,
+          "row_start": 7185,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 63174,
+          "total_block_length": 1283,
+          "payload_crc32": "e5a2780a"
+        },
+        {
+          "block_id": 50,
+          "row_group_id": 50,
+          "row_start": 7331,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 64457,
+          "total_block_length": 1291,
+          "payload_crc32": "15a16788"
+        },
+        {
+          "block_id": 51,
+          "row_group_id": 51,
+          "row_start": 7478,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 65748,
+          "total_block_length": 1283,
+          "payload_crc32": "7a04c63e"
+        },
+        {
+          "block_id": 52,
+          "row_group_id": 52,
+          "row_start": 7624,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 67031,
+          "total_block_length": 1266,
+          "payload_crc32": "4ee8e223"
+        },
+        {
+          "block_id": 53,
+          "row_group_id": 53,
+          "row_start": 7768,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 68297,
+          "total_block_length": 1266,
+          "payload_crc32": "10b0b5ca"
+        },
+        {
+          "block_id": 54,
+          "row_group_id": 54,
+          "row_start": 7912,
+          "row_count": 88,
+          "encoding": "RAW",
+          "offset": 69563,
+          "total_block_length": 811,
+          "payload_crc32": "1973e186"
+        }
+      ]
+    },
+    "flag": {
+      "path": "flag.col",
+      "logical_type": "boolean",
+      "sha256": "dd03eaa3a20fc4a6fb9f73ff7b55d8687f12e36cfd4b78235e5860a80fb9232b",
+      "total_rows": 8000,
+      "block_count": 55,
+      "footer_offset": 10154,
+      "index_length": 3520,
+      "blocks": [
+        {
+          "block_id": 0,
+          "row_group_id": 0,
+          "row_start": 0,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 64,
+          "total_block_length": 120,
+          "payload_crc32": "086a56c9"
+        },
+        {
+          "block_id": 1,
+          "row_group_id": 1,
+          "row_start": 148,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 184,
+          "total_block_length": 120,
+          "payload_crc32": "66979f18"
+        },
+        {
+          "block_id": 2,
+          "row_group_id": 2,
+          "row_start": 294,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 304,
+          "total_block_length": 120,
+          "payload_crc32": "0e79e4e4"
+        },
+        {
+          "block_id": 3,
+          "row_group_id": 3,
+          "row_start": 440,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 424,
+          "total_block_length": 120,
+          "payload_crc32": "bdb2cbf3"
+        },
+        {
+          "block_id": 4,
+          "row_group_id": 4,
+          "row_start": 585,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 544,
+          "total_block_length": 120,
+          "payload_crc32": "5fb98d5f"
+        },
+        {
+          "block_id": 5,
+          "row_group_id": 5,
+          "row_start": 733,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 664,
+          "total_block_length": 120,
+          "payload_crc32": "4b882dbf"
+        },
+        {
+          "block_id": 6,
+          "row_group_id": 6,
+          "row_start": 878,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 784,
+          "total_block_length": 120,
+          "payload_crc32": "8a6305c1"
+        },
+        {
+          "block_id": 7,
+          "row_group_id": 7,
+          "row_start": 1027,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 904,
+          "total_block_length": 120,
+          "payload_crc32": "77cde13a"
+        },
+        {
+          "block_id": 8,
+          "row_group_id": 8,
+          "row_start": 1175,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 1024,
+          "total_block_length": 120,
+          "payload_crc32": "48d0127e"
+        },
+        {
+          "block_id": 9,
+          "row_group_id": 9,
+          "row_start": 1323,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 1144,
+          "total_block_length": 120,
+          "payload_crc32": "4122a5b2"
+        },
+        {
+          "block_id": 10,
+          "row_group_id": 10,
+          "row_start": 1471,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 1264,
+          "total_block_length": 120,
+          "payload_crc32": "349703d3"
+        },
+        {
+          "block_id": 11,
+          "row_group_id": 11,
+          "row_start": 1619,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 1384,
+          "total_block_length": 120,
+          "payload_crc32": "a031c309"
+        },
+        {
+          "block_id": 12,
+          "row_group_id": 12,
+          "row_start": 1766,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 1504,
+          "total_block_length": 120,
+          "payload_crc32": "5ae8c618"
+        },
+        {
+          "block_id": 13,
+          "row_group_id": 13,
+          "row_start": 1913,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 1624,
+          "total_block_length": 120,
+          "payload_crc32": "3d361a34"
+        },
+        {
+          "block_id": 14,
+          "row_group_id": 14,
+          "row_start": 2058,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 1744,
+          "total_block_length": 120,
+          "payload_crc32": "5452c037"
+        },
+        {
+          "block_id": 15,
+          "row_group_id": 15,
+          "row_start": 2204,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 1864,
+          "total_block_length": 120,
+          "payload_crc32": "796bb436"
+        },
+        {
+          "block_id": 16,
+          "row_group_id": 16,
+          "row_start": 2350,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 1984,
+          "total_block_length": 120,
+          "payload_crc32": "dcf8cc8c"
+        },
+        {
+          "block_id": 17,
+          "row_group_id": 17,
+          "row_start": 2495,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 2104,
+          "total_block_length": 120,
+          "payload_crc32": "dec8ffb1"
+        },
+        {
+          "block_id": 18,
+          "row_group_id": 18,
+          "row_start": 2641,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 2224,
+          "total_block_length": 120,
+          "payload_crc32": "b633f4e7"
+        },
+        {
+          "block_id": 19,
+          "row_group_id": 19,
+          "row_start": 2789,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 2344,
+          "total_block_length": 120,
+          "payload_crc32": "99591570"
+        },
+        {
+          "block_id": 20,
+          "row_group_id": 20,
+          "row_start": 2936,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 2464,
+          "total_block_length": 120,
+          "payload_crc32": "9530f5b8"
+        },
+        {
+          "block_id": 21,
+          "row_group_id": 21,
+          "row_start": 3082,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 2584,
+          "total_block_length": 120,
+          "payload_crc32": "2492081d"
+        },
+        {
+          "block_id": 22,
+          "row_group_id": 22,
+          "row_start": 3230,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 2704,
+          "total_block_length": 120,
+          "payload_crc32": "659e613e"
+        },
+        {
+          "block_id": 23,
+          "row_group_id": 23,
+          "row_start": 3377,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 2824,
+          "total_block_length": 120,
+          "payload_crc32": "595bfe2e"
+        },
+        {
+          "block_id": 24,
+          "row_group_id": 24,
+          "row_start": 3522,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 2944,
+          "total_block_length": 120,
+          "payload_crc32": "771f857a"
+        },
+        {
+          "block_id": 25,
+          "row_group_id": 25,
+          "row_start": 3669,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 3064,
+          "total_block_length": 120,
+          "payload_crc32": "51bc5ade"
+        },
+        {
+          "block_id": 26,
+          "row_group_id": 26,
+          "row_start": 3818,
+          "row_count": 143,
+          "encoding": "RAW",
+          "offset": 3184,
+          "total_block_length": 118,
+          "payload_crc32": "6bc1cb7a"
+        },
+        {
+          "block_id": 27,
+          "row_group_id": 27,
+          "row_start": 3961,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 3302,
+          "total_block_length": 120,
+          "payload_crc32": "d57e437e"
+        },
+        {
+          "block_id": 28,
+          "row_group_id": 28,
+          "row_start": 4109,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 3422,
+          "total_block_length": 120,
+          "payload_crc32": "961d665d"
+        },
+        {
+          "block_id": 29,
+          "row_group_id": 29,
+          "row_start": 4257,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 3542,
+          "total_block_length": 120,
+          "payload_crc32": "11aa786c"
+        },
+        {
+          "block_id": 30,
+          "row_group_id": 30,
+          "row_start": 4403,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 3662,
+          "total_block_length": 120,
+          "payload_crc32": "d7083e61"
+        },
+        {
+          "block_id": 31,
+          "row_group_id": 31,
+          "row_start": 4550,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 3782,
+          "total_block_length": 120,
+          "payload_crc32": "93afc118"
+        },
+        {
+          "block_id": 32,
+          "row_group_id": 32,
+          "row_start": 4698,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 3902,
+          "total_block_length": 118,
+          "payload_crc32": "f5ec0b9f"
+        },
+        {
+          "block_id": 33,
+          "row_group_id": 33,
+          "row_start": 4842,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 4020,
+          "total_block_length": 120,
+          "payload_crc32": "c273ab47"
+        },
+        {
+          "block_id": 34,
+          "row_group_id": 34,
+          "row_start": 4989,
+          "row_count": 150,
+          "encoding": "RAW",
+          "offset": 4140,
+          "total_block_length": 120,
+          "payload_crc32": "1ea27b90"
+        },
+        {
+          "block_id": 35,
+          "row_group_id": 35,
+          "row_start": 5139,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 4260,
+          "total_block_length": 118,
+          "payload_crc32": "b55002c9"
+        },
+        {
+          "block_id": 36,
+          "row_group_id": 36,
+          "row_start": 5283,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 4378,
+          "total_block_length": 120,
+          "payload_crc32": "7c0e99b6"
+        },
+        {
+          "block_id": 37,
+          "row_group_id": 37,
+          "row_start": 5431,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 4498,
+          "total_block_length": 120,
+          "payload_crc32": "3bbfd842"
+        },
+        {
+          "block_id": 38,
+          "row_group_id": 38,
+          "row_start": 5576,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 4618,
+          "total_block_length": 118,
+          "payload_crc32": "ba46f22b"
+        },
+        {
+          "block_id": 39,
+          "row_group_id": 39,
+          "row_start": 5720,
+          "row_count": 148,
+          "encoding": "RAW",
+          "offset": 4736,
+          "total_block_length": 120,
+          "payload_crc32": "cb02a117"
+        },
+        {
+          "block_id": 40,
+          "row_group_id": 40,
+          "row_start": 5868,
+          "row_count": 149,
+          "encoding": "RAW",
+          "offset": 4856,
+          "total_block_length": 120,
+          "payload_crc32": "761e1bc3"
+        },
+        {
+          "block_id": 41,
+          "row_group_id": 41,
+          "row_start": 6017,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 4976,
+          "total_block_length": 120,
+          "payload_crc32": "acb6d203"
+        },
+        {
+          "block_id": 42,
+          "row_group_id": 42,
+          "row_start": 6162,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 5096,
+          "total_block_length": 120,
+          "payload_crc32": "bce9e918"
+        },
+        {
+          "block_id": 43,
+          "row_group_id": 43,
+          "row_start": 6309,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 5216,
+          "total_block_length": 120,
+          "payload_crc32": "1753ffff"
+        },
+        {
+          "block_id": 44,
+          "row_group_id": 44,
+          "row_start": 6456,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 5336,
+          "total_block_length": 120,
+          "payload_crc32": "d7bda808"
+        },
+        {
+          "block_id": 45,
+          "row_group_id": 45,
+          "row_start": 6602,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 5456,
+          "total_block_length": 118,
+          "payload_crc32": "1c2986aa"
+        },
+        {
+          "block_id": 46,
+          "row_group_id": 46,
+          "row_start": 6746,
+          "row_count": 145,
+          "encoding": "RAW",
+          "offset": 5574,
+          "total_block_length": 120,
+          "payload_crc32": "6cf1926a"
+        },
+        {
+          "block_id": 47,
+          "row_group_id": 47,
+          "row_start": 6891,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 5694,
+          "total_block_length": 120,
+          "payload_crc32": "5cb95595"
+        },
+        {
+          "block_id": 48,
+          "row_group_id": 48,
+          "row_start": 7038,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 5814,
+          "total_block_length": 120,
+          "payload_crc32": "2314432a"
+        },
+        {
+          "block_id": 49,
+          "row_group_id": 49,
+          "row_start": 7185,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 5934,
+          "total_block_length": 120,
+          "payload_crc32": "d4222a40"
+        },
+        {
+          "block_id": 50,
+          "row_group_id": 50,
+          "row_start": 7331,
+          "row_count": 147,
+          "encoding": "RAW",
+          "offset": 6054,
+          "total_block_length": 120,
+          "payload_crc32": "bd19b153"
+        },
+        {
+          "block_id": 51,
+          "row_group_id": 51,
+          "row_start": 7478,
+          "row_count": 146,
+          "encoding": "RAW",
+          "offset": 6174,
+          "total_block_length": 120,
+          "payload_crc32": "86a396d5"
+        },
+        {
+          "block_id": 52,
+          "row_group_id": 52,
+          "row_start": 7624,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 6294,
+          "total_block_length": 118,
+          "payload_crc32": "b34e90a0"
+        },
+        {
+          "block_id": 53,
+          "row_group_id": 53,
+          "row_start": 7768,
+          "row_count": 144,
+          "encoding": "RAW",
+          "offset": 6412,
+          "total_block_length": 118,
+          "payload_crc32": "27e07307"
+        },
+        {
+          "block_id": 54,
+          "row_group_id": 54,
+          "row_start": 7912,
+          "row_count": 88,
+          "encoding": "RAW",
+          "offset": 6530,
+          "total_block_length": 104,
+          "payload_crc32": "ee466abd"
+        }
+      ]
+    },
+    "score": {
+      "path": "score.col",
+      "logical_type": "int64",
+      "sha256": "94a372c250bb4f91f49ac0e4c74bf51bff4890b01f28a30df774f4a410287086",
+      "total_rows": 8000,
+      "block_count": 55,
+      "footer_offset": 51220,
+      "index_length": 3520,
+      "blocks": [
+        {
+          "block_id": 0,
+          "row_group_id": 0,
+          "row_start": 0,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 64,
+          "total_block_length": 902,
+          "payload_crc32": "fb3070b2"
+        },
+        {
+          "block_id": 1,
+          "row_group_id": 1,
+          "row_start": 148,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 966,
+          "total_block_length": 916,
+          "payload_crc32": "d0f2fc1e"
+        },
+        {
+          "block_id": 2,
+          "row_group_id": 2,
+          "row_start": 294,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 1882,
+          "total_block_length": 876,
+          "payload_crc32": "f8008085"
+        },
+        {
+          "block_id": 3,
+          "row_group_id": 3,
+          "row_start": 440,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 2758,
+          "total_block_length": 843,
+          "payload_crc32": "fbd65893"
+        },
+        {
+          "block_id": 4,
+          "row_group_id": 4,
+          "row_start": 585,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 3601,
+          "total_block_length": 862,
+          "payload_crc32": "d8cb3b2e"
+        },
+        {
+          "block_id": 5,
+          "row_group_id": 5,
+          "row_start": 733,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 4463,
+          "total_block_length": 859,
+          "payload_crc32": "963c9086"
+        },
+        {
+          "block_id": 6,
+          "row_group_id": 6,
+          "row_start": 878,
+          "row_count": 149,
+          "encoding": "DICTIONARY",
+          "offset": 5322,
+          "total_block_length": 927,
+          "payload_crc32": "f53de7f6"
+        },
+        {
+          "block_id": 7,
+          "row_group_id": 7,
+          "row_start": 1027,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 6249,
+          "total_block_length": 870,
+          "payload_crc32": "b96a6943"
+        },
+        {
+          "block_id": 8,
+          "row_group_id": 8,
+          "row_start": 1175,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 7119,
+          "total_block_length": 854,
+          "payload_crc32": "52c18f21"
+        },
+        {
+          "block_id": 9,
+          "row_group_id": 9,
+          "row_start": 1323,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 7973,
+          "total_block_length": 870,
+          "payload_crc32": "258d9cfe"
+        },
+        {
+          "block_id": 10,
+          "row_group_id": 10,
+          "row_start": 1471,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 8843,
+          "total_block_length": 886,
+          "payload_crc32": "8575858f"
+        },
+        {
+          "block_id": 11,
+          "row_group_id": 11,
+          "row_start": 1619,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 9729,
+          "total_block_length": 837,
+          "payload_crc32": "f04d05af"
+        },
+        {
+          "block_id": 12,
+          "row_group_id": 12,
+          "row_start": 1766,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 10566,
+          "total_block_length": 861,
+          "payload_crc32": "7993233c"
+        },
+        {
+          "block_id": 13,
+          "row_group_id": 13,
+          "row_start": 1913,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 11427,
+          "total_block_length": 843,
+          "payload_crc32": "13f4142b"
+        },
+        {
+          "block_id": 14,
+          "row_group_id": 14,
+          "row_start": 2058,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 12270,
+          "total_block_length": 860,
+          "payload_crc32": "ab61acf7"
+        },
+        {
+          "block_id": 15,
+          "row_group_id": 15,
+          "row_start": 2204,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 13130,
+          "total_block_length": 884,
+          "payload_crc32": "78d02b83"
+        },
+        {
+          "block_id": 16,
+          "row_group_id": 16,
+          "row_start": 2350,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 14014,
+          "total_block_length": 859,
+          "payload_crc32": "baa1e810"
+        },
+        {
+          "block_id": 17,
+          "row_group_id": 17,
+          "row_start": 2495,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 14873,
+          "total_block_length": 884,
+          "payload_crc32": "7baa29f6"
+        },
+        {
+          "block_id": 18,
+          "row_group_id": 18,
+          "row_start": 2641,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 15757,
+          "total_block_length": 830,
+          "payload_crc32": "5d2a75fa"
+        },
+        {
+          "block_id": 19,
+          "row_group_id": 19,
+          "row_start": 2789,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 16587,
+          "total_block_length": 877,
+          "payload_crc32": "041bfa61"
+        },
+        {
+          "block_id": 20,
+          "row_group_id": 20,
+          "row_start": 2936,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 17464,
+          "total_block_length": 844,
+          "payload_crc32": "30c12bea"
+        },
+        {
+          "block_id": 21,
+          "row_group_id": 21,
+          "row_start": 3082,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 18308,
+          "total_block_length": 878,
+          "payload_crc32": "3b481d7b"
+        },
+        {
+          "block_id": 22,
+          "row_group_id": 22,
+          "row_start": 3230,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 19186,
+          "total_block_length": 853,
+          "payload_crc32": "ae52b854"
+        },
+        {
+          "block_id": 23,
+          "row_group_id": 23,
+          "row_start": 3377,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 20039,
+          "total_block_length": 883,
+          "payload_crc32": "1a422f0d"
+        },
+        {
+          "block_id": 24,
+          "row_group_id": 24,
+          "row_start": 3522,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 20922,
+          "total_block_length": 853,
+          "payload_crc32": "ac04ec4b"
+        },
+        {
+          "block_id": 25,
+          "row_group_id": 25,
+          "row_start": 3669,
+          "row_count": 149,
+          "encoding": "DICTIONARY",
+          "offset": 21775,
+          "total_block_length": 879,
+          "payload_crc32": "46c1151d"
+        },
+        {
+          "block_id": 26,
+          "row_group_id": 26,
+          "row_start": 3818,
+          "row_count": 143,
+          "encoding": "DICTIONARY",
+          "offset": 22654,
+          "total_block_length": 873,
+          "payload_crc32": "8ca95063"
+        },
+        {
+          "block_id": 27,
+          "row_group_id": 27,
+          "row_start": 3961,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 23527,
+          "total_block_length": 830,
+          "payload_crc32": "db6d41fd"
+        },
+        {
+          "block_id": 28,
+          "row_group_id": 28,
+          "row_start": 4109,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 24357,
+          "total_block_length": 870,
+          "payload_crc32": "d746b1b0"
+        },
+        {
+          "block_id": 29,
+          "row_group_id": 29,
+          "row_start": 4257,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 25227,
+          "total_block_length": 828,
+          "payload_crc32": "6c106c6b"
+        },
+        {
+          "block_id": 30,
+          "row_group_id": 30,
+          "row_start": 4403,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 26055,
+          "total_block_length": 893,
+          "payload_crc32": "83d794f0"
+        },
+        {
+          "block_id": 31,
+          "row_group_id": 31,
+          "row_start": 4550,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 26948,
+          "total_block_length": 862,
+          "payload_crc32": "5837b159"
+        },
+        {
+          "block_id": 32,
+          "row_group_id": 32,
+          "row_start": 4698,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 27810,
+          "total_block_length": 857,
+          "payload_crc32": "5359d49a"
+        },
+        {
+          "block_id": 33,
+          "row_group_id": 33,
+          "row_start": 4842,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 28667,
+          "total_block_length": 861,
+          "payload_crc32": "72f97e4d"
+        },
+        {
+          "block_id": 34,
+          "row_group_id": 34,
+          "row_start": 4989,
+          "row_count": 150,
+          "encoding": "DICTIONARY",
+          "offset": 29528,
+          "total_block_length": 880,
+          "payload_crc32": "7aedb81a"
+        },
+        {
+          "block_id": 35,
+          "row_group_id": 35,
+          "row_start": 5139,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 30408,
+          "total_block_length": 865,
+          "payload_crc32": "1840f5f3"
+        },
+        {
+          "block_id": 36,
+          "row_group_id": 36,
+          "row_start": 5283,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 31273,
+          "total_block_length": 894,
+          "payload_crc32": "f6c9c145"
+        },
+        {
+          "block_id": 37,
+          "row_group_id": 37,
+          "row_start": 5431,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 32167,
+          "total_block_length": 875,
+          "payload_crc32": "ad9518d4"
+        },
+        {
+          "block_id": 38,
+          "row_group_id": 38,
+          "row_start": 5576,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 33042,
+          "total_block_length": 849,
+          "payload_crc32": "15e3fcf4"
+        },
+        {
+          "block_id": 39,
+          "row_group_id": 39,
+          "row_start": 5720,
+          "row_count": 148,
+          "encoding": "DICTIONARY",
+          "offset": 33891,
+          "total_block_length": 878,
+          "payload_crc32": "78100fac"
+        },
+        {
+          "block_id": 40,
+          "row_group_id": 40,
+          "row_start": 5868,
+          "row_count": 149,
+          "encoding": "DICTIONARY",
+          "offset": 34769,
+          "total_block_length": 911,
+          "payload_crc32": "5c3a2930"
+        },
+        {
+          "block_id": 41,
+          "row_group_id": 41,
+          "row_start": 6017,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 35680,
+          "total_block_length": 915,
+          "payload_crc32": "0f0ae8e6"
+        },
+        {
+          "block_id": 42,
+          "row_group_id": 42,
+          "row_start": 6162,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 36595,
+          "total_block_length": 885,
+          "payload_crc32": "c4edd47b"
+        },
+        {
+          "block_id": 43,
+          "row_group_id": 43,
+          "row_start": 6309,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 37480,
+          "total_block_length": 901,
+          "payload_crc32": "6493c7a8"
+        },
+        {
+          "block_id": 44,
+          "row_group_id": 44,
+          "row_start": 6456,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 38381,
+          "total_block_length": 852,
+          "payload_crc32": "3dbed6b9"
+        },
+        {
+          "block_id": 45,
+          "row_group_id": 45,
+          "row_start": 6602,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 39233,
+          "total_block_length": 833,
+          "payload_crc32": "91efd4f7"
+        },
+        {
+          "block_id": 46,
+          "row_group_id": 46,
+          "row_start": 6746,
+          "row_count": 145,
+          "encoding": "DICTIONARY",
+          "offset": 40066,
+          "total_block_length": 907,
+          "payload_crc32": "38ef2350"
+        },
+        {
+          "block_id": 47,
+          "row_group_id": 47,
+          "row_start": 6891,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 40973,
+          "total_block_length": 853,
+          "payload_crc32": "61dfface"
+        },
+        {
+          "block_id": 48,
+          "row_group_id": 48,
+          "row_start": 7038,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 41826,
+          "total_block_length": 917,
+          "payload_crc32": "c61f4392"
+        },
+        {
+          "block_id": 49,
+          "row_group_id": 49,
+          "row_start": 7185,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 42743,
+          "total_block_length": 908,
+          "payload_crc32": "b1bf8e7b"
+        },
+        {
+          "block_id": 50,
+          "row_group_id": 50,
+          "row_start": 7331,
+          "row_count": 147,
+          "encoding": "DICTIONARY",
+          "offset": 43651,
+          "total_block_length": 877,
+          "payload_crc32": "e1f14591"
+        },
+        {
+          "block_id": 51,
+          "row_group_id": 51,
+          "row_start": 7478,
+          "row_count": 146,
+          "encoding": "DICTIONARY",
+          "offset": 44528,
+          "total_block_length": 828,
+          "payload_crc32": "5d2a236a"
+        },
+        {
+          "block_id": 52,
+          "row_group_id": 52,
+          "row_start": 7624,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 45356,
+          "total_block_length": 873,
+          "payload_crc32": "89bc9b3c"
+        },
+        {
+          "block_id": 53,
+          "row_group_id": 53,
+          "row_start": 7768,
+          "row_count": 144,
+          "encoding": "DICTIONARY",
+          "offset": 46229,
+          "total_block_length": 841,
+          "payload_crc32": "7498980f"
+        },
+        {
+          "block_id": 54,
+          "row_group_id": 54,
+          "row_start": 7912,
+          "row_count": 88,
+          "encoding": "DICTIONARY",
+          "offset": 47070,
+          "total_block_length": 630,
+          "payload_crc32": "2b2538f4"
+        }
+      ]
+    }
+  }
+}
