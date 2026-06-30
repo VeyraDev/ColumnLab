@@ -483,7 +483,8 @@ def _finalize_groups(
     rows: list[list[Any]] = []
     group_cols = list(agg_node.group_keys)
     agg_names = [a.get("alias") or _agg_default_name(a) for a in agg_node.aggregates]
-    for key, bucket in sorted(groups.items(), key=lambda kv: kv[0]):
+    items = groups.items() if groups else [(() , {})]
+    for key, bucket in sorted(items, key=lambda kv: kv[0]):
         row: list[Any] = list(key)
         for name in agg_names:
             state = bucket.get(name, _AggState())

@@ -61,16 +61,14 @@ watch(() => props.datasetId, loadStructure)
             <tr>
               <th>列名</th>
               <th>类型</th>
-              <th>块数</th>
-              <th aria-hidden="true" />
+              <th class="th-count">块数</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="col in columns" :key="col.id">
-              <td class="col-name mono">{{ col.name }}</td>
+              <td class="col-name mono" :title="col.name">{{ col.name }}</td>
               <td class="col-type">{{ displayLogicalType(col.logical_type) }}</td>
               <td class="col-blocks mono">{{ col.block_count }}</td>
-              <td class="col-chevron" aria-hidden="true">›</td>
             </tr>
           </tbody>
         </table>
@@ -89,6 +87,7 @@ watch(() => props.datasetId, loadStructure)
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  min-width: 0;
   background: var(--bg-panel);
   border-right: 1px solid var(--border-default);
 }
@@ -98,7 +97,9 @@ watch(() => props.datasetId, loadStructure)
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 10px;
+  height: var(--workspace-panel-header-height);
+  min-height: var(--workspace-panel-header-height);
+  padding: 0 10px;
   font-weight: 600;
   font-size: 12px;
   border-bottom: 1px solid var(--border-default);
@@ -128,8 +129,10 @@ watch(() => props.datasetId, loadStructure)
 .panel-body {
   flex: 1;
   overflow: auto;
+  overflow-x: hidden;
   padding: 0;
   min-height: 0;
+  min-width: 0;
 }
 
 .empty-hint {
@@ -143,6 +146,7 @@ watch(() => props.datasetId, loadStructure)
   width: 100%;
   border-collapse: collapse;
   font-size: 11px;
+  table-layout: fixed;
 }
 
 .column-table th {
@@ -156,6 +160,15 @@ watch(() => props.datasetId, loadStructure)
   border-bottom: 1px solid var(--border-default);
 }
 
+.column-table th.th-count {
+  width: 36px;
+  text-align: right;
+}
+
+.column-table th:nth-child(2) {
+  width: 72px;
+}
+
 .column-table td {
   padding: 5px 8px;
   border-bottom: 1px solid var(--border-subtle, var(--border-default));
@@ -164,16 +177,22 @@ watch(() => props.datasetId, loadStructure)
 
 .col-name {
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
+.col-type {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .col-blocks {
   text-align: right;
-}
-
-.col-chevron {
-  width: 16px;
-  color: var(--text-tertiary);
-  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
 }
 
 .panel-footer {

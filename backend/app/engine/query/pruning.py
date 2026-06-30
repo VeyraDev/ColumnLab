@@ -85,6 +85,7 @@ class BlockPruningEntry:
 def prune_blocks(plan: Any, snapshot: TableBlocksSnapshot) -> tuple[BlockPruningEntry, ...]:
     required = _required_columns(plan)
     predicate = _find_filter_predicate(plan)
+    conservative = _or_spans_multiple_columns(predicate)
     entries: list[BlockPruningEntry] = []
     for col in snapshot.columns:
         if col.name not in required:
@@ -101,7 +102,7 @@ def prune_blocks(plan: Any, snapshot: TableBlocksSnapshot) -> tuple[BlockPruning
             continue
         col_pred = extract_column_predicate(predicate, col.name) if predicate else None
         for block in col.blocks:
-            entries.append(_prune_block(col.name, col.logical_type, block, col_pred))
+            entries.append(_prune_block(col.name, col.logical_type, block, col_pred, conservative=conservative))
     return tuple(entries)
 
 
@@ -165,8 +166,39 @@ def _find_filter_predicate(plan: Any) -> Any | None:
 def extract_column_predicate(predicate: Any, column: str) -> Any | None:
     if predicate is None:
         return None
-    if _predicate_uses_column(predicate, column):
-        return predicate
+    return _extract_for_column(predicate, column)
+
+
+def _extract_for_column(expr: Any, column: str) -> Any | None:
+    if isinstance(expr, ColumnRef):
+        return expr if expr.name == column else None
+    if isinstance(expr, Compare):
+        return expr if _predicate_uses_column(expr.left, column) else None
+    if isinstance(expr, And):
+        left = _extract_for_column(expr.left, column)
+        right = _extract_for_column(expr.right, column)
+        if left is None:
+            return right
+        if right is None:
+            return left
+        return And(left=left, right=right)
+    if isinstance(expr, Or):
+        left = _extract_for_column(expr.left, column)
+        right = _extract_for_column(expr.right, column)
+        if left is None:
+            return right
+        if right is None:
+            return left
+        return Or(left=left, right=right)
+    if isinstance(expr, Not):
+        inner = _extract_for_column(expr.operand, column)
+        return Not(operand=inner) if inner is not None else None
+    if isinstance(expr, In):
+        return expr if _predicate_uses_column(expr.expr, column) else None
+    if isinstance(expr, Between):
+        return expr if _predicate_uses_column(expr.expr, column) else None
+    if isinstance(expr, IsNull):
+        return expr if _predicate_uses_column(expr.expr, column) else None
     return None
 
 
@@ -188,7 +220,47 @@ def _predicate_uses_column(expr: Any, column: str) -> bool:
     return False
 
 
-def _prune_block(column: str, logical_type: str, block: BlockStatsSnapshot, predicate: Any | None) -> BlockPruningEntry:
+def _or_spans_multiple_columns(predicate: Any | None) -> bool:
+    if predicate is None:
+        return False
+    if isinstance(predicate, Or):
+        left_cols = _columns_in_predicate(predicate.left)
+        right_cols = _columns_in_predicate(predicate.right)
+        return bool(left_cols and right_cols and left_cols != right_cols)
+    return False
+
+
+def _columns_in_predicate(expr: Any) -> frozenset[str]:
+    if isinstance(expr, ColumnRef):
+        return frozenset({expr.name})
+    if isinstance(expr, Compare):
+        out: set[str] = set()
+        if isinstance(expr.left, ColumnRef):
+            out.add(expr.left.name)
+        if isinstance(expr.right, ColumnRef):
+            out.add(expr.right.name)
+        return frozenset(out)
+    if isinstance(expr, (And, Or)):
+        return _columns_in_predicate(expr.left) | _columns_in_predicate(expr.right)
+    if isinstance(expr, Not):
+        return _columns_in_predicate(expr.operand)
+    if isinstance(expr, In) and isinstance(expr.expr, ColumnRef):
+        return frozenset({expr.expr.name})
+    if isinstance(expr, Between) and isinstance(expr.expr, ColumnRef):
+        return frozenset({expr.expr.name})
+    if isinstance(expr, IsNull) and isinstance(expr.expr, ColumnRef):
+        return frozenset({expr.expr.name})
+    return frozenset()
+
+
+def _prune_block(
+    column: str,
+    logical_type: str,
+    block: BlockStatsSnapshot,
+    predicate: Any | None,
+    *,
+    conservative: bool = False,
+) -> BlockPruningEntry:
     if predicate is None:
         return BlockPruningEntry(
             column=column,
@@ -198,7 +270,7 @@ def _prune_block(column: str, logical_type: str, block: BlockStatsSnapshot, pred
             reason="no_predicate",
         )
     verdict, reason, used_metadata = evaluate_predicate(predicate, logical_type, block)
-    if verdict == BlockVerdict.ALWAYS_FALSE:
+    if verdict == BlockVerdict.ALWAYS_FALSE and not conservative:
         return BlockPruningEntry(
             column=column,
             block_id=block.block_id,

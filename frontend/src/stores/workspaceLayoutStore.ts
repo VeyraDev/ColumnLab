@@ -14,11 +14,11 @@ type LayoutState = {
   lowerCollapsed: boolean
 }
 
-const DEFAULT_LOWER_HEIGHT_PX = 220
+const DEFAULT_LOWER_HEIGHT_PX = 160
 
 const DEFAULT: LayoutState = {
-  leftWidth: 200,
-  rightWidth: 280,
+  leftWidth: 196,
+  rightWidth: 220,
   lowerHeightPx: DEFAULT_LOWER_HEIGHT_PX,
   leftCollapsed: false,
   rightCollapsed: false,

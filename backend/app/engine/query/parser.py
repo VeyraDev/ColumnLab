@@ -242,9 +242,12 @@ def _aggregate_expr(node: exp.AggFunc) -> AggregateExpr:
                 arg = _value_expr(inner, allow_aggregate=False)
         distinct = bool(node.args.get("distinct"))
     else:
-        if not node.expressions:
+        if node.expressions:
+            arg = _value_expr(node.expressions[0], allow_aggregate=False)
+        elif getattr(node, "this", None) is not None:
+            arg = _value_expr(node.this, allow_aggregate=False)
+        else:
             raise ParseError(message=f"{func_name} 需要参数", **_pos(node))
-        arg = _value_expr(node.expressions[0], allow_aggregate=False)
         distinct = bool(node.args.get("distinct"))
 
     return AggregateExpr(func=func, arg=arg, distinct=distinct)

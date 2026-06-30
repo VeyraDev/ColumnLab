@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import csv
 import io
+import asyncio
 import tempfile
-from collections.abc import AsyncIterator
 from pathlib import Path
 from typing import Any
 
@@ -57,24 +57,29 @@ def infer_schema_from_upload(filename: str, data: bytes, *, sample_rows: int = 5
 
 async def infer_schema_from_upload_stream(
     filename: str,
-    stream: AsyncIterator[bytes] | Any,
+    upload: Any,
     *,
     sample_rows: int = 500,
     max_bytes: int | None = None,
 ) -> tuple[list[dict[str, Any]], int]:
     suffix = Path(filename).suffix.lower()
     if suffix == ".csv":
-        return await _infer_schema_from_csv_stream(stream, sample_rows=sample_rows, max_bytes=max_bytes)
+        return await _infer_schema_from_csv_stream(upload, sample_rows=sample_rows, max_bytes=max_bytes)
     if suffix == ".xlsx":
-        return await _infer_schema_from_xlsx_stream(stream, sample_rows=sample_rows, max_bytes=max_bytes)
+        return await _infer_schema_from_xlsx_stream(upload, sample_rows=sample_rows, max_bytes=max_bytes)
     raise ValueError(f"unsupported file type: {suffix}")
 
 
-async def _read_preview_bytes(stream: Any, max_bytes: int) -> bytes:
+async def _read_preview_bytes(upload: Any, max_bytes: int) -> bytes:
     chunks: list[bytes] = []
     total = 0
+    read = getattr(upload, "read", None)
+    if read is None:
+        raise TypeError("upload stream has no read()")
     while total < max_bytes:
-        chunk = await stream.read(65536)
+        chunk = read(65536)
+        if asyncio.iscoroutine(chunk):
+            chunk = await chunk
         if not chunk:
             break
         chunks.append(chunk)
@@ -83,13 +88,13 @@ async def _read_preview_bytes(stream: Any, max_bytes: int) -> bytes:
 
 
 async def _infer_schema_from_csv_stream(
-    stream: Any,
+    upload: Any,
     *,
     sample_rows: int,
     max_bytes: int | None,
 ) -> tuple[list[dict[str, Any]], int]:
     cap = max_bytes or _SCHEMA_PREVIEW_MAX_BYTES
-    data = await _read_preview_bytes(stream, cap)
+    data = await _read_preview_bytes(upload, cap)
     encoding = _detect_encoding_from_bytes(data)
     text = io.TextIOWrapper(io.BytesIO(data), encoding=encoding, newline="")
     reader = csv.reader(text)
@@ -117,7 +122,7 @@ async def _infer_schema_from_csv_stream(
 
 
 async def _infer_schema_from_xlsx_stream(
-    stream: Any,
+    upload: Any,
     *,
     sample_rows: int,
     max_bytes: int | None,
@@ -125,8 +130,11 @@ async def _infer_schema_from_xlsx_stream(
     cap = max_bytes or _XLSX_PREVIEW_MAX_BYTES
     with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as tmp:
         total = 0
+        read = upload.read
         while total < cap:
-            chunk = await stream.read(65536)
+            chunk = read(65536)
+            if asyncio.iscoroutine(chunk):
+                chunk = await chunk
             if not chunk:
                 break
             tmp.write(chunk)

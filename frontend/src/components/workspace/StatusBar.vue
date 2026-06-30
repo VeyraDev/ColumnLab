@@ -104,8 +104,9 @@ watch(() => props.datasetId, loadDataset)
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 4px 12px;
-  min-height: 26px;
+  padding: 0 12px;
+  height: var(--workspace-statusbar-height);
+  min-height: var(--workspace-statusbar-height);
   font-size: 11px;
   color: var(--text-tertiary);
   background: var(--bg-muted);

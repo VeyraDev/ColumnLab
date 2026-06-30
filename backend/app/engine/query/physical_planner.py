@@ -5,6 +5,7 @@ from typing import Any
 
 from app.engine.query.expr import (
     And,
+    Between,
     ColumnRef,
     Compare,
     In,
@@ -235,6 +236,8 @@ def _predicate_column(pred: Any) -> str | None:
         if isinstance(pred.right, ColumnRef):
             return pred.right.name
     if isinstance(pred, In) and isinstance(pred.expr, ColumnRef):
+        return pred.expr.name
+    if isinstance(pred, Between) and isinstance(pred.expr, ColumnRef):
         return pred.expr.name
     if isinstance(pred, IsNull) and isinstance(pred.expr, ColumnRef):
         return pred.expr.name

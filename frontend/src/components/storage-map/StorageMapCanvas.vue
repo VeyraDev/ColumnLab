@@ -5,11 +5,16 @@ import ColumnTrack, { type StorageBlock } from './ColumnTrack.vue'
 import MapEncodingLegend from '@/components/workspace/MapEncodingLegend.vue'
 import { useStorageMapStore } from '@/stores/storageMapStore'
 import { useStorageMapViewStore } from '@/stores/storageMapViewStore'
-import { formatBlockLabel } from '@/utils/format'
+import {
+  TRACK_LABEL_WIDTH,
+  buildBlockWindow,
+  capacityFromWidth,
+} from './blockWindow'
 import type { BlockPruningState } from '@/api/queries'
 
-const ROW_HEIGHT = 26
-const WINDOW_BUFFER_ROWS = 3
+const TRACK_ROW_HEIGHT = 32
+const TRACK_GAP = 4
+const LABEL_GAP = 8
 
 const props = defineProps<{
   datasetId?: string
@@ -24,7 +29,7 @@ const emit = defineEmits<{
 const mapStore = useStorageMapStore()
 const viewStore = useStorageMapViewStore()
 const { mapData, loading, error, hasData } = storeToRefs(mapStore)
-const { blocksPerRow } = storeToRefs(viewStore)
+const { visibleBlockDensity } = storeToRefs(viewStore)
 
 const blockPruningMap = computed(() => {
   const map: Record<string, { state: string; reason: string }> = {}
@@ -35,11 +40,10 @@ const blockPruningMap = computed(() => {
 })
 
 const scrollRoot = ref<HTMLElement | null>(null)
-const cellWidth = 32
-const labelWidth = 96
-const labelGap = 8
-const visibleBlockStart = ref(0)
-const visibleBlockEnd = ref(64)
+const trackAreaRef = ref<HTMLElement | null>(null)
+const trackAreaWidth = ref(480)
+const visibleColumnStart = ref(0)
+const visibleColumnEnd = ref(32)
 
 const data = computed(() => mapData.value)
 
@@ -47,44 +51,52 @@ const maxBlocks = computed(() =>
   Math.max(...(data.value?.columns.map((col) => col.blocks.length) ?? [0]), 0),
 )
 
-function updateVisibleWindow() {
-  const el = scrollRoot.value
-  if (!el || maxBlocks.value === 0) return
-  const perRow = Math.max(1, blocksPerRow.value)
-  const startRow = Math.max(0, Math.floor(el.scrollTop / ROW_HEIGHT) - WINDOW_BUFFER_ROWS)
-  const visibleRows =
-    Math.ceil(el.clientHeight / ROW_HEIGHT) + WINDOW_BUFFER_ROWS * 2
-  const startBlock = startRow * perRow
-  const endBlock = Math.min(maxBlocks.value - 1, startBlock + visibleRows * perRow - 1)
-  visibleBlockStart.value = startBlock
-  visibleBlockEnd.value = Math.max(startBlock, endBlock)
-}
-
-watch([maxBlocks, blocksPerRow], () => updateVisibleWindow())
-
-const headerIndices = computed(() => {
-  const n = Math.max(maxBlocks.value, blocksPerRow.value)
-  return Array.from({ length: Math.min(n, blocksPerRow.value) }, (_, i) => i)
+const effectiveCapacity = computed(() => {
+  const auto = capacityFromWidth(trackAreaWidth.value, maxBlocks.value)
+  if (visibleBlockDensity.value === 0) return auto
+  return Math.min(visibleBlockDensity.value, auto)
 })
 
-const rowAxisTicks = computed(() => {
+const blockWindow = computed(() =>
+  buildBlockWindow(maxBlocks.value, effectiveCapacity.value, selectedBlockId.value),
+)
+
+const axisBlocks = computed(() => {
   if (!data.value?.columns.length) return []
-  const blocks = data.value.columns[0]?.blocks ?? []
-  if (!blocks.length) return []
-  const ticks: number[] = []
-  const step = Math.max(1, Math.ceil(blocks.length / 8))
-  for (let i = 0; i < blocks.length; i += step) {
-    ticks.push(blocks[i].row_start)
-  }
-  const last = blocks[blocks.length - 1]
-  if (ticks[ticks.length - 1] !== last.row_start) {
-    ticks.push(last.row_start + last.row_count)
-  }
-  return ticks
+  return data.value.columns[0]?.blocks ?? []
 })
+
+function axisTickLabel(index: number): string {
+  const block = axisBlocks.value[index]
+  if (!block) return ''
+  return block.row_start.toLocaleString()
+}
 
 const selectedBlockId = ref<number | null>(null)
 const selectedColumn = ref<string | null>(null)
+
+const visibleColumns = computed(() => {
+  if (!data.value) return []
+  const start = Math.max(0, visibleColumnStart.value)
+  const end = Math.min(data.value.columns.length, visibleColumnEnd.value + 1)
+  return data.value.columns.slice(start, end)
+})
+
+function updateVisibleWindow() {
+  const el = scrollRoot.value
+  if (!el || !data.value) return
+  const start = Math.max(0, Math.floor(el.scrollTop / (TRACK_ROW_HEIGHT + TRACK_GAP)) - 2)
+  const visibleCount = Math.ceil(el.clientHeight / (TRACK_ROW_HEIGHT + TRACK_GAP)) + 4
+  visibleColumnStart.value = start
+  visibleColumnEnd.value = Math.min(data.value.columns.length - 1, start + visibleCount)
+}
+
+function updateTrackAreaWidth() {
+  if (!trackAreaRef.value) return
+  trackAreaWidth.value = Math.max(0, trackAreaRef.value.clientWidth - TRACK_LABEL_WIDTH - LABEL_GAP)
+}
+
+let resizeObserver: ResizeObserver | null = null
 
 function onSelectBlock(column: string, block: StorageBlock) {
   selectedColumn.value = column
@@ -118,6 +130,11 @@ onMounted(() => {
   if (props.datasetId) void mapStore.load(Number(props.datasetId))
   window.addEventListener('keydown', onKeydown)
   scrollRoot.value?.addEventListener('scroll', updateVisibleWindow, { passive: true })
+  if (trackAreaRef.value) {
+    resizeObserver = new ResizeObserver(updateTrackAreaWidth)
+    resizeObserver.observe(trackAreaRef.value)
+    updateTrackAreaWidth()
+  }
   updateVisibleWindow()
 })
 
@@ -130,33 +147,34 @@ watch(
   },
 )
 
+watch(maxBlocks, updateVisibleWindow)
+
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeydown)
   scrollRoot.value?.removeEventListener('scroll', updateVisibleWindow)
+  resizeObserver?.disconnect()
 })
 </script>
 
 <template>
   <section class="storage-map-canvas" tabindex="0">
     <div class="panel-header">
-      <div class="header-left">
-        <span class="panel-title">列块存储映射</span>
-        <MapEncodingLegend />
-      </div>
+      <span class="panel-title">列块存储映射</span>
+      <MapEncodingLegend class="header-legend" />
       <div class="header-tools">
         <label class="tool-item">
-          <span>显示：</span>
+          <span class="tool-label">显示</span>
           <select class="tool-select" disabled>
             <option>逻辑行范围</option>
           </select>
         </label>
         <label class="tool-item">
-          <span>每行块数：</span>
-          <select v-model.number="blocksPerRow" class="tool-select">
-            <option :value="4">4</option>
-            <option :value="6">6</option>
-            <option :value="8">8</option>
-            <option :value="12">12</option>
+          <span class="tool-label">密度</span>
+          <select v-model.number="visibleBlockDensity" class="tool-select">
+            <option :value="0">自动</option>
+            <option :value="7">7</option>
+            <option :value="9">9</option>
+            <option :value="11">11</option>
           </select>
         </label>
         <span v-if="data" class="tool-summary">{{ data.column_count }} 列 · {{ data.total_blocks }} 块</span>
@@ -169,46 +187,42 @@ onUnmounted(() => {
       <p v-else-if="error" class="state-hint error">{{ error }}</p>
       <p v-else-if="!hasData" class="state-hint">暂无块数据，请先导入数据集</p>
       <div v-else-if="data" class="map-content">
-        <div class="block-index-row" :style="{ paddingLeft: `${labelWidth + labelGap}px` }">
-          <span
-            v-for="idx in headerIndices"
-            :key="idx"
-            class="block-index mono"
-            :style="{ width: `${cellWidth}px` }"
-          >
-            {{ formatBlockLabel(idx) }}
-          </span>
-        </div>
-        <div class="map-grid">
-          <ColumnTrack
-            v-for="column in data.columns"
-            :key="column.name"
-            :name="column.name"
-            :blocks="column.blocks"
-            :blocks-per-row="blocksPerRow"
-            :cell-width="cellWidth"
-            :visible-start="visibleBlockStart"
-            :visible-end="visibleBlockEnd"
-            :selected-block-id="selectedColumn === column.name ? selectedBlockId : null"
-            :active-block-id="
-              activeScanBlock?.column === column.name
-                ? activeScanBlock.block_id
-                : selectedColumn === column.name
-                  ? selectedBlockId
-                  : null
-            "
-            :block-pruning-map="blockPruningMap"
-            @select-block="(block) => onSelectBlock(column.name, block)"
-          />
-        </div>
-        <div class="row-axis" :style="{ paddingLeft: `${labelWidth + labelGap}px` }">
-          <span
-            v-for="(tick, i) in rowAxisTicks"
-            :key="i"
-            class="row-tick mono"
-          >
-            {{ tick.toLocaleString() }}
-          </span>
+        <div ref="trackAreaRef" class="tracks-shell">
+          <div class="map-grid">
+            <ColumnTrack
+              v-for="column in visibleColumns"
+              :key="column.name"
+              :name="column.name"
+              :logical-type="column.logical_type"
+              :blocks="column.blocks"
+              :block-window="blockWindow"
+              :selected-block-id="selectedColumn === column.name ? selectedBlockId : null"
+              :active-block-id="
+                activeScanBlock?.column === column.name
+                  ? activeScanBlock.block_id
+                  : selectedColumn === column.name
+                    ? selectedBlockId
+                    : null
+              "
+              :block-pruning-map="blockPruningMap"
+              @select-block="(block) => onSelectBlock(column.name, block)"
+            />
+          </div>
+          <div class="row-axis">
+            <span class="axis-title">逻辑行号</span>
+            <div class="axis-track">
+              <template v-for="(item, idx) in blockWindow" :key="`axis-${item.kind}-${idx}`">
+                <span
+                  v-if="item.kind === 'ellipsis'"
+                  class="axis-ellipsis"
+                  aria-hidden="true"
+                />
+                <span v-else class="axis-tick mono" :title="`块 ${item.index + 1}`">
+                  {{ axisTickLabel(item.index) }}
+                </span>
+              </template>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -225,55 +239,64 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: var(--bg-raised);
+  background: var(--bg-panel);
   outline: none;
 }
 
 .panel-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 8px 10px;
+  align-items: center;
+  height: var(--workspace-panel-header-height);
+  min-height: var(--workspace-panel-header-height);
+  padding: 0 10px;
   font-size: 12px;
   border-bottom: 1px solid var(--border-default);
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 10px;
   flex-shrink: 0;
-}
-
-.header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .panel-title {
   font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.header-legend {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .header-tools {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
   font-size: 11px;
   color: var(--text-tertiary);
+  white-space: nowrap;
 }
 
 .tool-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
+.tool-label {
+  color: var(--text-tertiary);
+}
+
 .tool-select {
-  height: 24px;
+  height: 22px;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-control);
+  border-radius: 2px;
   background: var(--bg-panel);
   font-size: 11px;
   color: var(--text-secondary);
-  padding: 0 6px;
+  padding: 0 4px;
 }
 
 .tool-summary {
@@ -284,7 +307,7 @@ onUnmounted(() => {
   flex: 1;
   overflow: auto;
   min-height: 0;
-  padding: 8px 12px 8px 10px;
+  padding: 6px 10px 6px 8px;
 }
 
 .state-hint {
@@ -298,56 +321,83 @@ onUnmounted(() => {
 }
 
 .map-content {
-  min-width: max-content;
-}
-
-.block-index-row {
   display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
-  position: sticky;
-  top: 0;
-  background: var(--bg-raised);
-  z-index: 2;
-  padding-bottom: 4px;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
 }
 
-.block-index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: var(--text-tertiary);
-  flex-shrink: 0;
+.tracks-shell {
+  width: 100%;
+  min-width: 0;
 }
 
 .map-grid {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .row-axis {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
   gap: 8px;
-  margin-top: 8px;
-  padding-top: 6px;
+  align-items: end;
+  margin-top: 4px;
+  padding-top: 4px;
   border-top: 1px solid var(--border-default);
-  min-width: 200px;
 }
 
-.row-tick {
-  font-size: 10px;
+.axis-title {
+  font-size: 9px;
   color: var(--text-tertiary);
+  text-align: right;
+  padding-right: 2px;
+  white-space: nowrap;
+}
+
+.axis-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 3px;
+  min-width: 0;
+}
+
+.axis-tick {
+  flex-shrink: 0;
+  width: 40px;
+  font-size: 9px;
+  color: var(--text-tertiary);
+  text-align: center;
+  border-top: 1px solid var(--border-strong);
+  padding-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.axis-ellipsis {
+  flex-shrink: 0;
+  width: 20px;
+  height: 1px;
+  border-top: 1px dashed var(--border-default);
+  margin-bottom: 3px;
 }
 
 .map-footer {
   margin: 0;
-  padding: 6px 10px;
+  padding: 4px 10px;
   font-size: 11px;
   color: var(--text-tertiary);
   border-top: 1px solid var(--border-default);
   flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .tool-label {
+    display: none;
+  }
 }
 </style>

@@ -96,7 +96,8 @@ class CatalogBinder:
         if agg.arg is None:
             raise TypeMismatchError(message=f"{agg.func.value} 需要列参数")
         arg = self._bind_value(agg.arg, ctx="SELECT")
-        if agg.func in {AggFunc.SUM, AggFunc.AVG} and not _is_numeric(arg.logical_type):
+        arg_type = self._expr_type(arg)
+        if agg.func in {AggFunc.SUM, AggFunc.AVG} and not _is_numeric(arg_type):
             raise TypeMismatchError(message=f"{agg.func.value} 需要数值列")
         return AggregateExpr(func=agg.func, arg=arg, distinct=agg.distinct, alias=agg.alias)
 

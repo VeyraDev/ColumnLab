@@ -14,6 +14,7 @@ const datasetStore = useDatasetStore()
 const queryStore = useQueryStore()
 const router = useRouter()
 const searchRef = ref<HTMLInputElement | null>(null)
+const menuOpen = ref(false)
 
 const canRunQuery = computed(() => Boolean(props.datasetId) && !queryStore.loading)
 
@@ -57,6 +58,7 @@ async function runQuery() {
 }
 
 function logout() {
+  menuOpen.value = false
   userStore.logout()
   router.push('/login')
 }
@@ -93,7 +95,14 @@ function logout() {
         运行查询
       </button>
       <span class="user-label">{{ userStore.user?.username }}</span>
-      <button type="button" class="btn-ghost" @click="logout">退出</button>
+      <button type="button" class="btn-ghost logout-btn" @click="logout">退出</button>
+      <div class="user-menu">
+        <button type="button" class="btn-ghost menu-btn" @click="menuOpen = !menuOpen">⋯</button>
+        <div v-if="menuOpen" class="menu-pop">
+          <span class="menu-user">{{ userStore.user?.username }}</span>
+          <button type="button" @click="logout">退出</button>
+        </div>
+      </div>
     </div>
   </header>
 </template>
@@ -101,32 +110,37 @@ function logout() {
 <style scoped>
 .top-bar {
   display: grid;
-  grid-template-columns: minmax(160px, 200px) minmax(0, 1fr) auto;
-  gap: 12px;
+  grid-template-columns: 168px minmax(0, 1fr) auto;
+  gap: 10px;
   align-items: center;
-  padding: 6px 12px;
+  padding: 0 10px;
   background: var(--bg-raised);
   border-bottom: 1px solid var(--border-default);
-  min-height: 44px;
+  height: var(--workspace-topbar-height);
+  min-height: var(--workspace-topbar-height);
 }
 
 .brand {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0;
   min-width: 0;
+  width: 168px;
 }
 
 .brand-title {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.2;
 }
 
 .brand-sub {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-tertiary);
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .top-center {
@@ -137,9 +151,9 @@ function logout() {
 
 .dataset-select,
 .search-input {
-  height: 28px;
+  height: 26px;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-control);
+  border-radius: 2px;
   background: var(--bg-panel);
   padding: 0 8px;
   font-size: 12px;
@@ -148,7 +162,7 @@ function logout() {
 }
 
 .dataset-select {
-  width: 168px;
+  width: 152px;
   flex-shrink: 0;
 }
 
@@ -159,10 +173,10 @@ function logout() {
   gap: 6px;
   min-width: 0;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-control);
+  border-radius: 2px;
   background: var(--bg-panel);
   padding: 0 8px;
-  height: 28px;
+  height: 26px;
 }
 
 .search-icon {
@@ -181,15 +195,15 @@ function logout() {
 .top-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .btn-ghost,
 .btn-primary {
-  height: 28px;
+  height: 26px;
   padding: 0 10px;
-  border-radius: var(--radius-control);
+  border-radius: 2px;
   font-size: 12px;
   cursor: pointer;
   border: 1px solid var(--border-default);
@@ -198,6 +212,7 @@ function logout() {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -218,6 +233,65 @@ function logout() {
 .user-label {
   font-size: 12px;
   color: var(--text-secondary);
-  padding-left: 2px;
+}
+
+.user-menu {
+  display: none;
+  position: relative;
+}
+
+.menu-btn {
+  width: 26px;
+  padding: 0;
+  justify-content: center;
+}
+
+.menu-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  min-width: 120px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-default);
+  border-radius: 2px;
+  padding: 4px;
+  z-index: 20;
+}
+
+.menu-user {
+  display: block;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.menu-pop button {
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.menu-pop button:hover {
+  background: var(--bg-muted);
+}
+
+@media (max-width: 1024px) {
+  .user-label {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .logout-btn {
+    display: none;
+  }
+
+  .user-menu {
+    display: block;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useQueryStore } from '@/stores/query'
 import LogicalPlanTreeNode from '@/components/execution-plan/LogicalPlanTreeNode.vue'
@@ -13,19 +13,23 @@ const {
   physicalPlanTree,
   metrics,
   history,
+  currentQueryId,
 } = storeToRefs(queryStore)
 
 const summary = computed(() => {
   const m = metrics.value
   if (!m) return null
+  const total = m.scanned_blocks + m.pruned_blocks
+  const scannedPct = total > 0 ? ((m.scanned_blocks / total) * 100).toFixed(1) : '0.0'
   return {
     scanned: m.scanned_blocks,
     pruned: m.pruned_blocks,
+    scannedPct,
+    prunedPct: total > 0 ? ((m.pruned_blocks / total) * 100).toFixed(1) : '0.0',
     decoded: m.decoded_blocks,
     bytesRead: m.bytes_read,
     rowsOut: m.rows_output,
-    cacheHits: m.cache_hits,
-    elapsed: m.execute_time,
+    totalTime: (m as { total_time?: number }).total_time ?? m.execute_time,
   }
 })
 
@@ -34,17 +38,14 @@ const filterText = computed(() => {
   if (!sql) return null
   const match = sql.match(/\bwhere\b([\s\S]*?)(?:\bgroup\b|\border\b|\blimit\b|$)/i)
   if (match?.[1]?.trim()) return `WHERE ${match[1].trim()}`
-  const group = sql.match(/\bgroup\s+by\b[\s\S]*/i)
-  if (group) return group[0].trim()
-  return sql.length > 120 ? `${sql.slice(0, 120)}…` : sql
+  const groupMatch = sql.match(/\bgroup\s+by\b([\s\S]*?)(?:\border\b|\blimit\b|$)/i)
+  if (groupMatch?.[1]?.trim()) return `GROUP BY ${groupMatch[1].trim()}`
+  return sql.length > 80 ? `${sql.slice(0, 80)}…` : sql
 })
 
 const runMeta = computed(() => {
   const item = history.value[0]
-  return {
-    createdAt: item?.created_at ?? null,
-    threadCount: 1,
-  }
+  return { createdAt: item?.created_at ?? null }
 })
 
 const statusLabel = computed(() => {
@@ -70,61 +71,74 @@ const statusDotClass = computed(() => {
 
 <template>
   <section class="execution-workbench">
-    <div class="bench-pane trace-pane">
-      <header class="pane-header">执行轨迹</header>
-      <div class="pane-body">
-        <div v-if="physicalPlanTree" class="plan-tree">
-          <LogicalPlanTreeNode :node="physicalPlanTree" />
+    <div class="bench-grid">
+      <div class="bench-pane trace-pane">
+        <header class="pane-header">执行轨迹</header>
+        <div class="pane-body">
+          <div v-if="physicalPlanTree" class="plan-tree">
+            <LogicalPlanTreeNode :node="physicalPlanTree" />
+          </div>
+          <p v-else class="empty">运行查询后显示算子树</p>
         </div>
-        <p v-else class="empty">运行查询后显示物理算子树</p>
       </div>
-    </div>
 
-    <div class="bench-pane stats-pane">
-      <header class="pane-header">执行统计</header>
-      <div class="pane-body">
-        <dl v-if="summary" class="stats-list">
-          <div><dt>扫描块数</dt><dd class="mono">{{ summary.scanned }}</dd></div>
-          <div><dt>跳过块数</dt><dd class="mono">{{ summary.pruned }}</dd></div>
-          <div><dt>解码块数</dt><dd class="mono">{{ summary.decoded }}</dd></div>
-          <div><dt>读取数据量</dt><dd class="mono">{{ formatBytes(summary.bytesRead) }}</dd></div>
-          <div><dt>输出行数</dt><dd class="mono">{{ summary.rowsOut }}</dd></div>
-          <div><dt>缓存命中</dt><dd class="mono">{{ summary.cacheHits }}</dd></div>
-          <div><dt>耗时</dt><dd class="mono">{{ formatDurationMs(summary.elapsed) }}</dd></div>
-        </dl>
-        <p v-else class="empty">暂无执行统计</p>
-      </div>
-    </div>
-
-    <div class="bench-pane filter-pane">
-      <header class="pane-header">筛选条件</header>
-      <div class="pane-body">
-        <pre v-if="filterText" class="filter-box mono">{{ filterText }}</pre>
-        <p v-else class="empty">运行查询后显示 WHERE / GROUP BY 条件</p>
-      </div>
-    </div>
-
-    <div class="bench-pane status-pane">
-      <header class="pane-header">运行状态</header>
-      <div class="pane-body">
-        <div class="status-row">
-          <span class="status-dot" :class="statusDotClass" />
-          <span class="status-text">{{ statusLabel }}</span>
+      <div class="bench-pane stats-pane">
+        <header class="pane-header">执行统计</header>
+        <div class="pane-body">
+          <template v-if="summary">
+            <div class="stat-row">
+              <span class="stat-label">扫描块</span>
+              <span class="stat-value mono">{{ summary.scanned }} / {{ summary.scanned + summary.pruned }} ({{ summary.scannedPct }}%)</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">跳过块</span>
+              <span class="stat-value mono">{{ summary.pruned }} ({{ summary.prunedPct }}%)</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">解码块</span>
+              <span class="stat-value mono">{{ summary.decoded }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">读取量</span>
+              <span class="stat-value mono">{{ formatBytes(summary.bytesRead) }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">输出行</span>
+              <span class="stat-value mono">{{ summary.rowsOut }}</span>
+            </div>
+            <div v-if="summary.totalTime != null" class="stat-row">
+              <span class="stat-label">耗时</span>
+              <span class="stat-value mono">{{ formatDurationMs(summary.totalTime) }}</span>
+            </div>
+          </template>
+          <p v-else class="empty">暂无执行统计</p>
         </div>
-        <dl class="meta-list">
-          <div v-if="runMeta.createdAt">
-            <dt>开始</dt>
-            <dd class="mono">{{ runMeta.createdAt }}</dd>
+      </div>
+
+      <div class="bench-pane filter-pane">
+        <header class="pane-header">筛选条件</header>
+        <div class="pane-body">
+          <p v-if="filterText" class="filter-text mono">{{ filterText }}</p>
+          <p v-else class="empty">暂无筛选条件</p>
+        </div>
+      </div>
+
+      <div class="bench-pane status-pane">
+        <header class="pane-header">运行状态</header>
+        <div class="pane-body">
+          <div class="status-line">
+            <span class="status-dot" :class="statusDotClass" />
+            <span class="status-label">{{ statusLabel }}</span>
           </div>
-          <div v-if="summary?.elapsed != null">
-            <dt>总耗时</dt>
-            <dd class="mono">{{ formatDurationMs(summary.elapsed) }}</dd>
+          <div v-if="runMeta.createdAt" class="meta-row">
+            <span class="meta-label">开始</span>
+            <span class="meta-value mono">{{ runMeta.createdAt }}</span>
           </div>
-          <div>
-            <dt>线程数</dt>
-            <dd class="mono">{{ runMeta.threadCount }}</dd>
+          <div v-if="currentQueryId" class="meta-row">
+            <span class="meta-label">Query</span>
+            <span class="meta-value mono">#{{ currentQueryId }}</span>
           </div>
-        </dl>
+        </div>
       </div>
     </div>
   </section>
@@ -132,11 +146,22 @@ const statusDotClass = computed(() => {
 
 <style scoped>
 .execution-workbench {
-  display: grid;
-  grid-template-columns: 1.2fr 0.9fr 1fr 0.8fr;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   min-height: 0;
   background: var(--bg-panel);
+}
+
+.bench-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.45fr)
+    minmax(150px, 0.8fr)
+    minmax(170px, 0.95fr)
+    minmax(150px, 0.8fr);
 }
 
 .bench-pane {
@@ -147,80 +172,83 @@ const statusDotClass = computed(() => {
   border-right: 1px solid var(--border-default);
 }
 
-.bench-pane:last-child {
+.status-pane {
   border-right: none;
 }
 
 .pane-header {
-  padding: 6px 10px;
+  flex-shrink: 0;
+  height: 27px;
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-default);
   background: var(--bg-raised);
-  flex-shrink: 0;
 }
 
 .pane-body {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   overflow: auto;
-  padding: 8px 10px;
+  overflow-x: hidden;
+  padding: 7px 9px;
 }
 
 .plan-tree {
   font-size: 11px;
+  line-height: 1.45;
 }
 
-.stats-list,
-.meta-list {
-  margin: 0;
-}
-
-.stats-list div,
-.meta-list div {
-  display: grid;
-  grid-template-columns: 88px 1fr;
+.stat-row,
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   gap: 8px;
-  padding: 3px 0;
+  min-height: 20px;
   font-size: 11px;
 }
 
-.stats-list dt,
-.meta-list dt {
+.stat-label,
+.meta-label {
   color: var(--text-tertiary);
+  flex-shrink: 0;
 }
 
-.stats-list dd,
-.meta-list dd {
-  margin: 0;
+.stat-value,
+.meta-value {
   color: var(--text-primary);
+  text-align: right;
 }
 
-.filter-box {
+.filter-text {
   margin: 0;
-  padding: 8px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-control);
-  background: var(--bg-muted);
   font-size: 11px;
-  line-height: 1.5;
-  white-space: pre-wrap;
+  line-height: 1.45;
+  color: var(--text-secondary);
   word-break: break-word;
 }
 
-.status-row {
+.status-line {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 6px;
+  min-height: 22px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--text-tertiary);
+  flex-shrink: 0;
 }
 
 .status-dot.ok {
@@ -228,17 +256,11 @@ const statusDotClass = computed(() => {
 }
 
 .status-dot.running {
-  background: var(--accent);
+  background: var(--text-secondary);
 }
 
 .status-dot.fail {
   background: var(--danger);
-}
-
-.status-text {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
 }
 
 .empty {
@@ -248,10 +270,19 @@ const statusDotClass = computed(() => {
   line-height: 1.5;
 }
 
-@media (max-width: 1366px) {
-  .execution-workbench {
+@media (max-width: 900px) {
+  .bench-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+  }
+
+  .filter-pane {
+    border-right: none;
+  }
+
+  .stats-pane,
+  .trace-pane {
+    border-bottom: 1px solid var(--border-default);
   }
 }
 </style>

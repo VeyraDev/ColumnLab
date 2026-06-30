@@ -32,7 +32,8 @@ const TYPE_DISPLAY: Record<string, string> = {
 }
 
 export function displayLogicalType(logicalType: string): string {
-  return TYPE_DISPLAY[logicalType] ?? logicalType
+  const key = logicalType.toUpperCase()
+  return TYPE_DISPLAY[key] ?? key
 }
 
 export function encodingShortLabel(encoding: string): string {

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import { Database, FlaskConical, SearchCode, Settings, Upload, ChevronDown, ChevronUp } from 'lucide-vue-next'
 import { usePanelResize } from '@/composables/usePanelResize'
 import { useQueryStore } from '@/stores/query'
 import { useStorageMapStore } from '@/stores/storageMapStore'
@@ -51,10 +52,10 @@ function onSelectBlock(payload: { column: string; block: StorageBlock }) {
 }
 
 const railItems = [
-  { id: 'import', icon: '↑', label: '数据导入', title: '数据导入' },
-  { id: 'map', icon: '▦', label: '存储映射', title: '存储映射' },
-  { id: 'query', icon: '⌕', label: '查询执行', title: '查询执行' },
-  { id: 'lab', icon: '⊞', label: '压缩实验', title: '压缩实验' },
+  { id: 'import', icon: Upload, label: '数据导入', title: '数据导入' },
+  { id: 'map', icon: Database, label: '存储映射', title: '存储映射' },
+  { id: 'query', icon: SearchCode, label: '查询执行', title: '查询执行' },
+  { id: 'lab', icon: FlaskConical, label: '压缩实验', title: '压缩实验' },
 ]
 
 function containerWidth() {
@@ -143,10 +144,10 @@ const lowerGridRows = () => {
           @click="onRailClick(item.id)"
         />
         <FunctionRail
-          icon="⚙"
           label="设置"
           title="设置"
           class="rail-settings"
+          :icon="Settings"
           :active="activeRail === 'settings'"
           @click="activeRail = 'settings'"
         />
@@ -223,17 +224,18 @@ const lowerGridRows = () => {
           <PanelSplitter
             v-if="!lowerCollapsed"
             orientation="horizontal"
+            class="lower-splitter"
             title="拖拽调整执行轨迹高度"
             @resize-start="onResizeLower"
           />
           <button
             type="button"
             class="lower-toggle"
-            :title="lowerCollapsed ? '展开执行轨迹' : '收起执行轨迹'"
+            :title="lowerCollapsed ? '展开执行区' : '收起执行区'"
             @click="layoutStore.toggleLower()"
           >
-            <span aria-hidden="true">{{ lowerCollapsed ? '▲' : '▼' }}</span>
-            执行轨迹
+            <ChevronDown v-if="!lowerCollapsed" :size="12" :stroke-width="2" />
+            <ChevronUp v-else :size="12" :stroke-width="2" />
           </button>
         </div>
 
@@ -258,7 +260,7 @@ const lowerGridRows = () => {
 
 .workspace-body {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: var(--workspace-rail-width) minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
 }
@@ -267,8 +269,8 @@ const lowerGridRows = () => {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 2px;
-  padding: 8px 4px;
+  gap: 0;
+  padding: 4px 0;
   background: var(--bg-muted);
   border-right: 1px solid var(--border-default);
 }
@@ -311,34 +313,45 @@ const lowerGridRows = () => {
 }
 
 .lower-splitter-bar {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  flex-shrink: 0;
+  height: 8px;
   background: var(--bg-muted);
   border-top: 1px solid var(--border-default);
 }
 
-.lower-row {
-  min-height: 0;
-  overflow: hidden;
-  border-top: 1px solid var(--border-default);
+.lower-splitter-bar :deep(.panel-splitter.horizontal) {
+  height: 8px;
+  margin: 0;
 }
 
 .lower-toggle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 21;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  height: 22px;
-  border: none;
-  background: var(--bg-muted);
-  font-size: 11px;
+  width: 22px;
+  height: 14px;
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: 2px;
+  background: var(--bg-panel);
   color: var(--text-secondary);
   cursor: pointer;
 }
 
 .lower-toggle:hover {
   color: var(--text-primary);
-  background: var(--bg-panel);
+  border-color: var(--border-strong);
+}
+
+.lower-row {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .edge-expand {

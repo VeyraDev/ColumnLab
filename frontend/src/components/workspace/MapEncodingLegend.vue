@@ -1,8 +1,8 @@
 <template>
   <div class="map-encoding-legend" aria-label="编码与块状态图例">
-    <div v-for="item in items" :key="item.key" class="legend-item">
+    <div v-for="item in items" :key="item.key" class="legend-item" :title="item.label">
       <span class="swatch" :class="item.key" />
-      <span>{{ item.label }}</span>
+      <span class="legend-text">{{ item.label }}</span>
     </div>
   </div>
 </template>
@@ -21,21 +21,24 @@ const items = [
 <style scoped>
 .map-encoding-legend {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: 11px;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
   color: var(--text-tertiary);
+  overflow: hidden;
 }
 
 .legend-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .swatch {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border: 1px solid var(--border-default);
   border-radius: 2px;
   flex-shrink: 0;
@@ -87,5 +90,15 @@ const items = [
 .swatch.active {
   border: 2px solid var(--state-active-border);
   background: var(--state-active-bg);
+}
+
+@media (max-width: 960px) {
+  .legend-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
 }
 </style>

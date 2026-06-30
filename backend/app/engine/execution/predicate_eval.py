@@ -65,6 +65,13 @@ def predicate_dict_to_codec(pred: dict[str, Any]) -> object | None:
         if pred.get("negated"):
             return ("not_in", values)
         return PredicateIn(values=values)
+    if ptype == "Between":
+        low = pred.get("low", {}).get("value")
+        high = pred.get("high", {}).get("value")
+        range_pred = PredicateRange(lower=low, upper=high, lower_inclusive=True, upper_inclusive=True)
+        if pred.get("negated"):
+            return ("not_range", range_pred)
+        return range_pred
     if ptype == "IsNull":
         return ("is_null", pred.get("negated", False))
     if ptype == "Not":

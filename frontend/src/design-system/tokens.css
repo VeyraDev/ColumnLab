@@ -1,15 +1,16 @@
 :root {
-  --bg-app: #f3f3f0;
-  --bg-panel: #fafaf7;
-  --bg-raised: #ffffff;
-  --bg-muted: #eeefea;
+  --bg-app: #ecece8;
+  --bg-panel: #f6f6f2;
+  --bg-raised: #fbfbf8;
+  --bg-muted: #e8e9e4;
 
   --text-primary: #242621;
   --text-secondary: #666b62;
   --text-tertiary: #92978e;
 
-  --border-default: #d8dad3;
-  --border-strong: #bfc3b8;
+  --border-default: #cacdc5;
+  --border-subtle: #dcddd7;
+  --border-strong: #b3b8ad;
 
   --accent: #747f62;
   --accent-hover: #657055;
@@ -21,33 +22,68 @@
 
   --state-active-border: #647c61;
   --state-active-bg: #e8efe6;
-  --state-scanned-border: #bfc3b8;
+  --state-scanned-border: #b3b8ad;
   --state-skipped-opacity: 0.45;
+
+  --scroll-thumb: #c3c7be;
+  --scroll-thumb-hover: #a6aaa1;
 
   --radius-panel: 4px;
   --radius-control: 4px;
 
   --font-mono: 'Consolas', 'Courier New', monospace;
   --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --workspace-rail-width: 56px;
+  --workspace-topbar-height: 44px;
+  --workspace-statusbar-height: 24px;
+  --workspace-panel-header-height: 32px;
+  --workspace-left-panel-width: 196px;
+  --workspace-right-panel-width: 220px;
+  --workspace-lower-panel-height: 160px;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
 }
 
 html,
-body,
-#app {
+body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: var(--font-sans);
   font-size: 13px;
   color: var(--text-primary);
   background: var(--bg-app);
+}
+
+#app {
+  min-height: 100%;
 }
 
 button {

@@ -80,7 +80,7 @@ async def schema_preview(
     try:
         columns, row_sample_count = await infer_schema_from_upload_stream(
             filename,
-            file.file,
+            file,
             sample_rows=500,
             max_bytes=preview_cap,
         )

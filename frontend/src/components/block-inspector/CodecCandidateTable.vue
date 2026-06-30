@@ -70,7 +70,8 @@ function formatGain(gain: number): string {
 }
 
 .candidate-table tr.selected {
-  background: var(--accent-soft);
+  background: var(--state-active-bg);
+  box-shadow: inset 2px 0 0 var(--state-active-border);
 }
 
 .tag {
