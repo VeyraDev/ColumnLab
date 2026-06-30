@@ -32,7 +32,8 @@ def test_index_stats_offset_roundtrip_int_one():
 def test_infer_schema_from_csv(tmp_path):
     csv_path = tmp_path / "sample.csv"
     csv_path.write_text("id,name,qty\n1,alice,10\n2,bob,20\n", encoding="utf-8")
-    columns = infer_schema_from_path(csv_path)
+    columns, sample_count = infer_schema_from_path(csv_path)
+    assert sample_count == 2
     names = {c["name"]: c["logical_type"] for c in columns}
     assert names["id"] == "INT64"
     assert names["name"] == "UTF8"

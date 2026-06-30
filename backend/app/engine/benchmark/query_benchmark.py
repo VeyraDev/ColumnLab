@@ -8,6 +8,15 @@ from typing import Any
 from app.engine.benchmark.codec_benchmark import BenchmarkSampleRow
 from app.engine.benchmark.config import BenchmarkConfig
 from app.engine.benchmark.stats import summarize
+
+_COUNTER_METRICS = (
+    "scanned_blocks",
+    "decoded_blocks",
+    "bytes_read",
+    "compressed_operator_blocks",
+    "cache_hits",
+    "block_accesses",
+)
 from app.engine.cache.block_cache import get_block_cache
 
 
@@ -36,6 +45,7 @@ def run_query_benchmark(
     cache = get_block_cache()
     samples: list[BenchmarkSampleRow] = []
     timed: dict[str, list[float]] = {}
+    counter_series: dict[str, list[float]] = {name: [] for name in _COUNTER_METRICS}
     total_iters = config.warmup_runs + config.repeat_runs
 
     for iteration in range(total_iters):
@@ -80,6 +90,9 @@ def run_query_benchmark(
         )
         if phase == "timed":
             timed.setdefault(metric_name, []).append(elapsed_ns)
+            if isinstance(result, dict):
+                for name in _COUNTER_METRICS:
+                    counter_series[name].append(float(result.get(name, 0)))
 
     summary = {
         "kind": "query",
@@ -89,5 +102,8 @@ def run_query_benchmark(
         "dataset_id": config.dataset_id,
         "sql": config.sql,
         "metrics": {name: summarize(vals) for name, vals in timed.items()},
+        "counters": {
+            name: summarize(vals) for name, vals in counter_series.items() if vals
+        },
     }
     return QueryBenchmarkResult(samples=samples, summary=summary)

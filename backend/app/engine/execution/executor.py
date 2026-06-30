@@ -128,11 +128,14 @@ def _compressed_global_agg(
     groups: dict[tuple[Any, ...], dict[str, _AggState]],
     filter_root: Any,
 ) -> bool:
-    bucket = groups.setdefault((), {})
+    temp: dict[tuple[Any, ...], dict[str, _AggState]] = {}
+    temp_bucket = temp.setdefault((), {})
+    compressed = 0
+
     for agg_spec in agg_node.aggregates:
         func = AggFunc(agg_spec["func"])
         name = agg_spec.get("alias") or _agg_default_name(agg_spec)
-        state = bucket.setdefault(name, _AggState())
+        state = temp_bucket.setdefault(name, _AggState())
 
         if func == AggFunc.COUNT and not agg_spec.get("arg"):
             scan = _first_scan(filter_root)
@@ -151,7 +154,7 @@ def _compressed_global_agg(
 
             nulls, _ = NullBitmap.deserialize(block.payload)
             state.count += nulls.length
-            ctx.metrics.compressed_operator_blocks += 1
+            compressed += 1
             continue
 
         arg = agg_spec.get("arg")
@@ -180,7 +183,12 @@ def _compressed_global_agg(
         if partial is NOT_SUPPORTED or not isinstance(partial, PartialAggregate):
             return False
         _merge_partial(state, partial, func)
-        ctx.metrics.compressed_operator_blocks += 1
+        compressed += 1
+
+    bucket = groups.setdefault((), {})
+    for name, temp_state in temp_bucket.items():
+        _merge_agg_states(bucket.setdefault(name, _AggState()), temp_state)
+    ctx.metrics.compressed_operator_blocks += compressed
     return True
 
 
@@ -295,6 +303,33 @@ def _merge_partial(state: _AggState, partial: PartialAggregate, func: AggFunc) -
         state.max = partial.max if state.max is None else max(state.max, partial.max)
 
 
+def _merge_agg_states(dst: _AggState, src: _AggState) -> None:
+    dst.count += src.count
+    if src.sum is not None:
+        dst.sum = src.sum if dst.sum is None else dst.sum + src.sum
+    if src.min is not None:
+        dst.min = src.min if dst.min is None else min(dst.min, src.min)
+    if src.max is not None:
+        dst.max = src.max if dst.max is None else max(dst.max, src.max)
+
+
+def _bitmap_and_with_na(left: SelectionVector, right: SelectionVector) -> SelectionVector:
+    """length==0 means the column scan does not cover this block (pruned / N/A)."""
+    if left.length == 0 and right.length == 0:
+        return SelectionVector.all_false(0)
+    if left.length == 0:
+        return SelectionVector.all_false(right.length)
+    return SelectionVector.all_false(left.length)
+
+
+def _pad_selection(sel: SelectionVector, n: int) -> SelectionVector:
+    if sel.length >= n:
+        return sel
+    buf = bytearray((n + 7) // 8)
+    buf[: len(sel.bits)] = sel.bits
+    return SelectionVector(length=n, bits=bytes(buf))
+
+
 def _decode_block_once(ctx: ExecutionContext, column: str, block_id: int) -> ValueVector | None:
     key = (column, block_id)
     if key in ctx.decoded_vectors:
@@ -371,18 +406,13 @@ def _eval_filter(node: Any, ctx: ExecutionContext, block_id: int) -> SelectionVe
         return filter_from_dict(ctx, block, node.predicate, operator_id=node.operator_id, operator_type=op_type)
     if isinstance(node, BitmapAnd):
         left = _eval_filter(node.children[0], ctx, block_id)
-        if left.length == 0:
-            right = _eval_filter(node.children[1], ctx, block_id)
-            return right
         right = _eval_filter(node.children[1], ctx, block_id)
-        if right.length == 0:
-            return left
+        if left.length == 0 or right.length == 0:
+            return _bitmap_and_with_na(left, right)
         if left.length != right.length:
             n = max(left.length, right.length)
-            if left.length == 0:
-                left = SelectionVector.all_true(n)
-            if right.length == 0:
-                right = SelectionVector.all_true(n)
+            left = _pad_selection(left, n)
+            right = _pad_selection(right, n)
         return bitmap_and(ctx, left, right, operator_id=node.operator_id)
     if isinstance(node, BitmapOr):
         left = _eval_filter(node.children[0], ctx, block_id)

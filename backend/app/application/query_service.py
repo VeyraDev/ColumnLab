@@ -285,15 +285,18 @@ class QueryService:
             },
             pruning={(e.column, e.block_id): e for e in pruning},
         )
-        t2 = time.perf_counter()
-        result = QueryExecutor().execute(physical, exec_ctx)
-        execute_time = time.perf_counter() - t2
-        metrics = result.metrics.to_dict()
-        metrics["parse_time"] = parse_time
-        metrics["optimize_time"] = optimize_time
-        metrics["execute_time"] = execute_time
-        metrics["total_time"] = parse_time + optimize_time + execute_time
-        return metrics
+        try:
+            t2 = time.perf_counter()
+            result = QueryExecutor().execute(physical, exec_ctx)
+            execute_time = time.perf_counter() - t2
+            metrics = result.metrics.to_dict()
+            metrics["parse_time"] = parse_time
+            metrics["optimize_time"] = optimize_time
+            metrics["execute_time"] = execute_time
+            metrics["total_time"] = parse_time + optimize_time + execute_time
+            return metrics
+        finally:
+            exec_ctx.close()
 
     def history(self, *, user_id: int, dataset_id: int, limit: int = 20) -> list[dict[str, Any]]:
         dataset = self.datasets.get_for_user(dataset_id, user_id)

@@ -1,0 +1,390 @@
+{
+  "package": "ColumnLab 后端算法测试集",
+  "version": "1.0",
+  "table_name": "data",
+  "datasets": [
+    {
+      "file": "01_rle_runs.csv",
+      "rows": 4096,
+      "purpose": "验证长连续游程、RLE 选择、RLE 过滤与压缩态聚合",
+      "recommended_block_bytes": 4096,
+      "expected_encoding": {
+        "id": "RAW",
+        "phase": "RLE",
+        "qty": "RLE",
+        "active": "RLE"
+      }
+    },
+    {
+      "file": "02_dictionary_low_cardinality.csv",
+      "rows": 8192,
+      "purpose": "验证低基数字符串、Dictionary + bit packing、等值/IN、按 code 分组",
+      "recommended_block_bytes": 16384,
+      "expected_encoding": {
+        "order_id": "RAW",
+        "region": "DICTIONARY",
+        "category": "DICTIONARY",
+        "channel": "DICTIONARY"
+      }
+    },
+    {
+      "file": "03_raw_high_cardinality.csv",
+      "rows": 4096,
+      "purpose": "验证高基数列不应被强制字典压缩，候选收益不足时回退 RAW",
+      "recommended_block_bytes": 16384,
+      "expected_encoding": {
+        "id": "RAW",
+        "token": "RAW",
+        "hash_like": "RAW",
+        "metric": "RAW"
+      }
+    },
+    {
+      "file": "04_pruning_multicolumn.csv",
+      "rows": 12000,
+      "purpose": "验证 min/max 块裁剪、字典快速否定、多列 AND/OR 位图语义",
+      "recommended_block_bytes": 4096,
+      "expected_encoding": {
+        "id": "RAW",
+        "region": "RLE_OR_DICTIONARY",
+        "amount": "RLE_OR_DICTIONARY",
+        "status": "DICTIONARY"
+      }
+    },
+    {
+      "file": "05_mixed_aggregate_dictionary.csv",
+      "rows": 8192,
+      "purpose": "验证同一查询混合 COUNT/SUM/MIN/MAX 时压缩态失败回退不能重复累计",
+      "recommended_block_bytes": 16384,
+      "expected_encoding": {
+        "id": "RAW",
+        "code": "DICTIONARY",
+        "label": "DICTIONARY"
+      }
+    },
+    {
+      "file": "06_types_nulls_unicode.csv",
+      "rows": 512,
+      "purpose": "验证全部逻辑类型、NULL bitmap、Unicode、日期、时间戳与 DECIMAL64",
+      "recommended_block_bytes": 16384,
+      "schema_override": {
+        "id": "INT64",
+        "int_value": "INT64",
+        "float_value": "FLOAT64",
+        "bool_value": "BOOLEAN",
+        "text_value": "UTF8",
+        "date_value": "DATE32",
+        "timestamp_value": "TIMESTAMP64",
+        "decimal_value": "DECIMAL64(scale=2)"
+      }
+    },
+    {
+      "file": "06b_invalid_strict_coerce.csv",
+      "rows": 8,
+      "purpose": "验证 strict 模式失败、coerce 模式置 NULL 并记录错误样本",
+      "recommended_block_bytes": 4096,
+      "schema_override": {
+        "id": "INT64",
+        "int_value": "INT64",
+        "float_value": "FLOAT64",
+        "bool_value": "BOOLEAN",
+        "date_value": "DATE32",
+        "timestamp_value": "TIMESTAMP64",
+        "decimal_value": "DECIMAL64(scale=2)"
+      },
+      "expected": {
+        "strict": "首次无效值处失败",
+        "coerce_error_count": 6,
+        "coerce_null_cells": 6
+      }
+    },
+    {
+      "file": "07_realistic_orders_100k.csv",
+      "rows": 100000,
+      "purpose": "接近业务数据形态的综合性能与演示数据；同时包含高基数、低基数、日期、数值和偏斜类别",
+      "recommended_block_bytes": 65536,
+      "note": "这是确定性合成业务数据，不是真实公开数据集。"
+    },
+    {
+      "file": "08_xlsx_import_sample.xlsx",
+      "rows": 1000,
+      "purpose": "验证 XLSX read_only 导入、日期单元格、数字和低基数字符串",
+      "recommended_block_bytes": 16384
+    }
+  ],
+  "queries": [
+    {
+      "dataset": "01_rle_runs.csv",
+      "sql": "SELECT phase, COUNT(*) AS c FROM data GROUP BY phase ORDER BY phase",
+      "expected_rows": [
+        [
+          "A",
+          2048
+        ],
+        [
+          "B",
+          1024
+        ],
+        [
+          "C",
+          1024
+        ]
+      ]
+    },
+    {
+      "dataset": "01_rle_runs.csv",
+      "sql": "SELECT COUNT(*) AS n, SUM(qty) AS s, AVG(qty) AS a, MIN(qty) AS lo, MAX(qty) AS hi FROM data",
+      "expected_rows": [
+        [
+          4096,
+          71680,
+          17.5,
+          10,
+          30
+        ]
+      ]
+    },
+    {
+      "dataset": "01_rle_runs.csv",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE phase = 'B'",
+      "expected_rows": [
+        [
+          1024
+        ]
+      ]
+    },
+    {
+      "dataset": "02_dictionary_low_cardinality.csv",
+      "sql": "SELECT region, COUNT(*) AS c FROM data GROUP BY region ORDER BY region",
+      "expected_rows": [
+        [
+          "east",
+          1996
+        ],
+        [
+          "north",
+          2034
+        ],
+        [
+          "south",
+          2141
+        ],
+        [
+          "west",
+          2021
+        ]
+      ]
+    },
+    {
+      "dataset": "02_dictionary_low_cardinality.csv",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE region IN ('north', 'east')",
+      "expected_rows": [
+        [
+          4030
+        ]
+      ]
+    },
+    {
+      "dataset": "02_dictionary_low_cardinality.csv",
+      "sql": "SELECT SUM(amount) AS s FROM data",
+      "expected_rows": [
+        [
+          2050668
+        ]
+      ]
+    },
+    {
+      "dataset": "03_raw_high_cardinality.csv",
+      "sql": "SELECT COUNT(*) AS n, MIN(metric) AS lo, MAX(metric) AS hi FROM data",
+      "expected_rows": [
+        [
+          4096,
+          100100,
+          409612385
+        ]
+      ]
+    },
+    {
+      "dataset": "03_raw_high_cardinality.csv",
+      "sql": "SELECT id, metric FROM data WHERE id BETWEEN 100 AND 105 ORDER BY id",
+      "expected_rows": [
+        [
+          100,
+          10000397
+        ],
+        [
+          101,
+          10100400
+        ],
+        [
+          102,
+          10200403
+        ],
+        [
+          103,
+          10300406
+        ],
+        [
+          104,
+          10400409
+        ],
+        [
+          105,
+          10500412
+        ]
+      ]
+    },
+    {
+      "dataset": "04_pruning_multicolumn.csv",
+      "name": "关键正确性：AND 中一侧块被裁剪时结果必须为空",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'",
+      "expected_rows": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "dataset": "04_pruning_multicolumn.csv",
+      "name": "关键正确性：OR 不能误裁剪",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 OR region = 'north'",
+      "expected_rows": [
+        [
+          6000
+        ]
+      ]
+    },
+    {
+      "dataset": "04_pruning_multicolumn.csv",
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE amount BETWEEN 1000 AND 1099 GROUP BY region ORDER BY region",
+      "expected_rows": [
+        [
+          "south",
+          3000
+        ]
+      ]
+    },
+    {
+      "dataset": "04_pruning_multicolumn.csv",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE region = 'missing-region'",
+      "expected_rows": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "dataset": "05_mixed_aggregate_dictionary.csv",
+      "name": "关键正确性：压缩态部分成功后回退不得导致 COUNT 双计",
+      "sql": "SELECT COUNT(*) AS n, SUM(code) AS s, MIN(code) AS lo, MAX(code) AS hi FROM data",
+      "expected_rows": [
+        [
+          8192,
+          12274,
+          0,
+          3
+        ]
+      ]
+    },
+    {
+      "dataset": "05_mixed_aggregate_dictionary.csv",
+      "sql": "SELECT label, COUNT(*) AS c FROM data GROUP BY label ORDER BY label",
+      "expected_rows": [
+        [
+          "one",
+          2086
+        ],
+        [
+          "three",
+          2052
+        ],
+        [
+          "two",
+          2016
+        ],
+        [
+          "zero",
+          2038
+        ]
+      ]
+    },
+    {
+      "dataset": "06_types_nulls_unicode.csv",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE int_value IS NULL",
+      "expected_rows": [
+        [
+          30
+        ]
+      ]
+    },
+    {
+      "dataset": "06_types_nulls_unicode.csv",
+      "sql": "SELECT text_value, COUNT(*) AS c FROM data GROUP BY text_value ORDER BY text_value",
+      "expected_rows": [
+        [
+          "München",
+          85
+        ],
+        [
+          "São Paulo",
+          86
+        ],
+        [
+          "北京",
+          85
+        ],
+        [
+          "東京",
+          85
+        ],
+        [
+          "武汉",
+          86
+        ],
+        [
+          "🙂",
+          85
+        ]
+      ]
+    },
+    {
+      "dataset": "07_realistic_orders_100k.csv",
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE status = '已完成'",
+      "expected_rows": [
+        [
+          60129
+        ]
+      ]
+    },
+    {
+      "dataset": "07_realistic_orders_100k.csv",
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region",
+      "expected_rows": [
+        [
+          "东北",
+          10150
+        ],
+        [
+          "华东",
+          10081
+        ],
+        [
+          "华中",
+          9784
+        ],
+        [
+          "华北",
+          10100
+        ],
+        [
+          "华南",
+          10040
+        ],
+        [
+          "西南",
+          9974
+        ]
+      ]
+    }
+  ]
+}

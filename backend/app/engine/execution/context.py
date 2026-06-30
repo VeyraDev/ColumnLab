@@ -98,6 +98,11 @@ class ExecutionContext:
             self.readers[column] = ColumnReader.open(Path(meta.file_path))
         return self.readers[column]
 
+    def close(self) -> None:
+        for reader in self.readers.values():
+            reader.close()
+        self.readers.clear()
+
     def is_block_pruned(self, column: str, block_id: int) -> bool:
         entry = self.pruning.get((column, block_id))
         return entry is not None and entry.state == BlockPruneState.SKIPPED

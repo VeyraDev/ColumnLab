@@ -74,20 +74,19 @@ async def schema_preview(
     if suffix not in {".csv", ".xlsx"}:
         raise HTTPException(status_code=400, detail="仅支持 CSV 或 XLSX 文件")
     max_bytes = settings.MAX_UPLOAD_MB * 1024 * 1024
-    chunks: list[bytes] = []
-    total = 0
-    while True:
-        chunk = await file.read(1024 * 1024)
-        if not chunk:
-            break
-        total += len(chunk)
-        if total > max_bytes:
-            raise HTTPException(status_code=413, detail="文件超过大小限制")
-        chunks.append(chunk)
-    from app.engine.import_pipeline.schema_preview import infer_schema_from_upload
+    preview_cap = min(max_bytes, 2 * 1024 * 1024)
+    from app.engine.import_pipeline.schema_preview import infer_schema_from_upload_stream
 
-    columns = infer_schema_from_upload(filename, b"".join(chunks))
-    return success({"columns": columns, "row_sample_count": min(500, total)})
+    try:
+        columns, row_sample_count = await infer_schema_from_upload_stream(
+            filename,
+            file.file,
+            sample_rows=500,
+            max_bytes=preview_cap,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return success({"columns": columns, "row_sample_count": row_sample_count})
 
 
 @router.post("/datasets/uploads")

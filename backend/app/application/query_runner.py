@@ -89,6 +89,7 @@ class QueryRunner:
         queries.update(record)
         self._publish(query_id, "running", "开始执行")
 
+        exec_ctx = None
         try:
             dataset_repo = DatasetRepository(db)
             dataset = dataset_repo.get(record.dataset_id)
@@ -174,6 +175,8 @@ class QueryRunner:
             queries.update(record)
             self._publish(query_id, "failed", str(exc))
         finally:
+            if exec_ctx is not None:
+                exec_ctx.close()
             with _lock:
                 _active_queries.pop(query_id, None)
                 _cancel_flags.pop(query_id, None)
