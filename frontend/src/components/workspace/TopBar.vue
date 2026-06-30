@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { User } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/user'
 import { useDatasetStore } from '@/stores/dataset'
 import { useQueryStore } from '@/stores/query'
@@ -28,18 +29,20 @@ const selectedId = computed({
 onMounted(() => {
   void datasetStore.fetchDatasets()
   window.addEventListener('keydown', onGlobalKeydown)
+  document.addEventListener('click', onDocClick)
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onGlobalKeydown)
+  document.removeEventListener('click', onDocClick)
 })
 
-watch(
-  () => props.datasetId,
-  () => {
-    void datasetStore.fetchDatasets()
-  },
-)
+watch(() => props.datasetId, () => void datasetStore.fetchDatasets())
+
+function onDocClick(e: MouseEvent) {
+  const target = e.target as HTMLElement
+  if (!target.closest('.user-menu-wrap')) menuOpen.value = false
+}
 
 function onGlobalKeydown(event: KeyboardEvent) {
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
@@ -74,7 +77,7 @@ function logout() {
       <select v-model="selectedId" class="dataset-select">
         <option value="">未选择数据集</option>
         <option v-for="ds in datasetStore.datasets" :key="ds.id" :value="String(ds.id)">
-          {{ ds.name }} ({{ ds.row_count }} 行)
+          {{ ds.name }} ({{ ds.row_count.toLocaleString() }} 行)
         </option>
       </select>
       <div class="search-wrap">
@@ -89,17 +92,22 @@ function logout() {
       </div>
     </div>
     <div class="top-actions">
-      <button type="button" class="btn-ghost" @click="goImport">导入数据</button>
+      <button type="button" class="btn-outline" @click="goImport">导入数据</button>
       <button type="button" class="btn-primary" :disabled="!canRunQuery" @click="runQuery">
         <span class="play-icon" aria-hidden="true">▶</span>
         运行查询
       </button>
-      <span class="user-label">{{ userStore.user?.username }}</span>
-      <button type="button" class="btn-ghost logout-btn" @click="logout">退出</button>
-      <div class="user-menu">
-        <button type="button" class="btn-ghost menu-btn" @click="menuOpen = !menuOpen">⋯</button>
+      <div class="user-menu-wrap">
+        <button
+          type="button"
+          class="user-menu-btn"
+          :title="userStore.user?.username ?? '用户菜单'"
+          @click.stop="menuOpen = !menuOpen"
+        >
+          <User :size="16" :stroke-width="1.5" />
+        </button>
         <div v-if="menuOpen" class="menu-pop">
-          <span class="menu-user">{{ userStore.user?.username }}</span>
+          <span class="menu-user">{{ userStore.user?.username ?? '未登录' }}</span>
           <button type="button" @click="logout">退出</button>
         </div>
       </div>
@@ -110,10 +118,10 @@ function logout() {
 <style scoped>
 .top-bar {
   display: grid;
-  grid-template-columns: 168px minmax(0, 1fr) auto;
+  grid-template-columns: 180px minmax(360px, 1fr) auto;
   gap: 10px;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 12px;
   background: var(--bg-raised);
   border-bottom: 1px solid var(--border-default);
   height: var(--workspace-topbar-height);
@@ -123,20 +131,21 @@ function logout() {
 .brand {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 1px;
+  width: 180px;
   min-width: 0;
-  width: 168px;
 }
 
 .brand-title {
   font-weight: 600;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.2;
+  color: var(--text-primary);
 }
 
 .brand-sub {
-  font-size: 9px;
-  color: var(--text-tertiary);
+  font-size: 11px;
+  color: var(--text-muted);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
@@ -145,42 +154,44 @@ function logout() {
 
 .top-center {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
+  max-width: 1080px;
 }
 
 .dataset-select,
 .search-input {
-  height: 26px;
+  height: var(--workspace-control-height);
   border: 1px solid var(--border-default);
-  border-radius: 2px;
+  border-radius: var(--radius-control);
   background: var(--bg-panel);
-  padding: 0 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--text-primary);
   min-width: 0;
 }
 
 .dataset-select {
-  width: 152px;
+  width: 240px;
   flex-shrink: 0;
 }
 
 .search-wrap {
   flex: 1;
+  max-width: 760px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   border: 1px solid var(--border-default);
-  border-radius: 2px;
+  border-radius: var(--radius-control);
   background: var(--bg-panel);
-  padding: 0 8px;
-  height: 26px;
+  padding: 0 10px;
+  height: var(--workspace-control-height);
 }
 
 .search-icon {
-  color: var(--text-tertiary);
+  color: var(--text-muted);
   font-size: 13px;
 }
 
@@ -192,33 +203,46 @@ function logout() {
   height: auto;
 }
 
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
 .top-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
-.btn-ghost,
-.btn-primary {
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 2px;
-  font-size: 12px;
+.btn-outline,
+.btn-primary,
+.user-menu-btn {
+  height: var(--workspace-control-height);
+  border-radius: var(--radius-control);
+  font-size: 13px;
   cursor: pointer;
-  border: 1px solid var(--border-default);
-  background: var(--bg-panel);
-  color: var(--text-secondary);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
   white-space: nowrap;
 }
 
+.btn-outline {
+  min-width: 92px;
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+}
+
 .btn-primary {
+  min-width: 106px;
+  padding: 0 14px;
+  border: 1px solid var(--accent);
   background: var(--accent);
-  border-color: var(--accent);
   color: #fff;
+  font-weight: 500;
 }
 
 .btn-primary:disabled {
@@ -227,71 +251,53 @@ function logout() {
 }
 
 .play-icon {
-  font-size: 10px;
+  font-size: 11px;
 }
 
-.user-label {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.user-menu {
-  display: none;
+.user-menu-wrap {
   position: relative;
 }
 
-.menu-btn {
-  width: 26px;
+.user-menu-btn {
+  width: 32px;
   padding: 0;
-  justify-content: center;
+  border: 1px solid var(--border-default);
+  background: var(--bg-panel);
+  color: var(--text-primary);
 }
 
 .menu-pop {
   position: absolute;
   right: 0;
-  top: calc(100% + 4px);
-  min-width: 120px;
+  top: calc(100% + 6px);
+  min-width: 140px;
   background: var(--bg-raised);
   border: 1px solid var(--border-default);
-  border-radius: 2px;
+  border-radius: var(--radius-control);
   padding: 4px;
-  z-index: 20;
+  z-index: 30;
+  box-shadow: none;
 }
 
 .menu-user {
   display: block;
-  padding: 4px 8px;
-  font-size: 11px;
-  color: var(--text-tertiary);
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .menu-pop button {
   width: 100%;
   text-align: left;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border: none;
   background: transparent;
-  font-size: 12px;
+  font-size: 13px;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .menu-pop button:hover {
   background: var(--bg-muted);
-}
-
-@media (max-width: 1024px) {
-  .user-label {
-    display: none;
-  }
-}
-
-@media (max-width: 900px) {
-  .logout-btn {
-    display: none;
-  }
-
-  .user-menu {
-    display: block;
-  }
 }
 </style>

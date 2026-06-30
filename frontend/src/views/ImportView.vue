@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import ImportPipeline from '@/components/import-progress/ImportPipeline.vue'
 import PageBackNav from '@/components/workspace/PageBackNav.vue'
 import { previewSchema, type SchemaColumnPreview } from '@/api/import'
+import { useDatasetStore } from '@/stores/dataset'
 import { useImportJobStore } from '@/stores/importJob'
 
 const router = useRouter()
 const importStore = useImportJobStore()
+const datasetStore = useDatasetStore()
 
 const LOGICAL_TYPES = ['INT64', 'FLOAT64', 'BOOLEAN', 'UTF8', 'DATE32', 'TIMESTAMP64', 'DECIMAL64']
 
@@ -75,6 +77,7 @@ function watchJob(jobId: number, datasetId: number) {
     (status) => {
       if (status === 'completed') {
         stop()
+        void datasetStore.fetchDatasets()
         void router.push(`/workspace/${datasetId}`)
       }
     },
@@ -86,6 +89,28 @@ async function onCancel() {
     await importStore.cancel(importStore.currentJob.id)
   }
 }
+
+function openDataset(id: number) {
+  void router.push(`/workspace/${id}`)
+}
+
+async function onDeleteDataset(id: number, name: string) {
+  const ok = window.confirm(`确定删除数据集「${name}」？\n\n将移除该数据集及其表结构与列块数据，且不可恢复。`)
+  if (!ok) return
+  try {
+    await datasetStore.removeDataset(id)
+    const cur = router.currentRoute.value
+    if (cur.name === 'workspace' && Number(cur.params.datasetId) === id) {
+      await router.replace('/imports')
+    }
+  } catch {
+    /* 错误已由 request 拦截器提示 */
+  }
+}
+
+onMounted(() => {
+  void datasetStore.fetchDatasets()
+})
 
 onUnmounted(() => importStore.stopTracking())
 </script>
@@ -180,6 +205,47 @@ onUnmounted(() => importStore.stopTracking())
       </div>
     </form>
     <ImportPipeline :job="importStore.currentJob" />
+
+    <section class="dataset-panel">
+      <div class="dataset-header">
+        <span class="dataset-title">已导入数据集</span>
+        <button type="button" class="btn-ghost" :disabled="datasetStore.loading" @click="datasetStore.fetchDatasets()">
+          {{ datasetStore.loading ? '刷新中…' : '刷新' }}
+        </button>
+      </div>
+      <p v-if="datasetStore.loading && !datasetStore.datasets.length" class="state-hint">加载数据集…</p>
+      <p v-else-if="!datasetStore.datasets.length" class="state-hint">暂无已就绪的数据集。完成导入后将显示在此。</p>
+      <table v-else class="dataset-table">
+        <thead>
+          <tr>
+            <th>名称</th>
+            <th>源文件</th>
+            <th>行数</th>
+            <th>表数</th>
+            <th class="th-actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="ds in datasetStore.datasets" :key="ds.id">
+            <td class="mono">{{ ds.name }}</td>
+            <td class="source-file" :title="ds.source_file_name">{{ ds.source_file_name || '—' }}</td>
+            <td class="mono">{{ ds.row_count.toLocaleString() }}</td>
+            <td class="mono">{{ ds.table_count }}</td>
+            <td class="td-actions">
+              <button type="button" class="btn-link" @click="openDataset(ds.id)">打开</button>
+              <button
+                type="button"
+                class="btn-link danger"
+                :disabled="datasetStore.deletingId === ds.id"
+                @click="onDeleteDataset(ds.id, ds.name)"
+              >
+                {{ datasetStore.deletingId === ds.id ? '删除中…' : '删除' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
   </div>
 </template>
 
@@ -314,6 +380,86 @@ onUnmounted(() => importStore.stopTracking())
 
 .btn-ghost {
   background: var(--bg-panel);
+  color: var(--text-secondary);
+}
+
+.btn-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.btn-link.danger {
+  color: var(--danger);
+}
+
+.dataset-panel {
+  margin-top: 24px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+  padding: 10px;
+  background: var(--bg-panel);
+}
+
+.dataset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dataset-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dataset-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.dataset-table th,
+.dataset-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-default);
+  text-align: left;
+}
+
+.dataset-table tr:last-child td {
+  border-bottom: none;
+}
+
+.th-actions,
+.td-actions {
+  width: 120px;
+  white-space: nowrap;
+}
+
+.td-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.source-file {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--text-secondary);
 }
 </style>

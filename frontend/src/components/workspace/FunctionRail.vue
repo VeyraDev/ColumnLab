@@ -22,7 +22,7 @@ const emit = defineEmits<{
     :aria-label="title"
     @click="emit('click')"
   >
-    <component :is="icon" class="rail-icon" :size="22" :stroke-width="1.5" aria-hidden="true" />
+    <component :is="icon" class="rail-icon" :size="18" :stroke-width="1.5" aria-hidden="true" />
     <span class="rail-label">{{ label }}</span>
   </button>
 </template>
@@ -31,9 +31,9 @@ const emit = defineEmits<{
 .rail-btn {
   position: relative;
   width: 100%;
-  min-height: 48px;
+  min-height: 46px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
@@ -41,8 +41,9 @@ const emit = defineEmits<{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   padding: 4px 2px;
+  margin: 0 2px;
 }
 
 .rail-btn:hover {
@@ -62,9 +63,9 @@ const emit = defineEmits<{
 .rail-btn.active::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 4px;
-  bottom: 4px;
+  left: -4px;
+  top: 8px;
+  bottom: 8px;
   width: 2px;
   background: var(--accent);
   border-radius: 0 1px 1px 0;
@@ -72,7 +73,8 @@ const emit = defineEmits<{
 
 .rail-label {
   font-size: 9px;
-  line-height: 1.15;
+  line-height: 1.2;
   text-align: center;
+  color: inherit;
 }
 </style>

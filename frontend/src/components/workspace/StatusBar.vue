@@ -103,11 +103,11 @@ watch(() => props.datasetId, loadDataset)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 0 12px;
+  gap: 12px;
+  padding: 0 8px;
   height: var(--workspace-statusbar-height);
   min-height: var(--workspace-statusbar-height);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-tertiary);
   background: var(--bg-muted);
   border-top: 1px solid var(--border-default);

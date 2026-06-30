@@ -1,19 +1,22 @@
 :root {
-  --bg-app: #ecece8;
-  --bg-panel: #f6f6f2;
-  --bg-raised: #fbfbf8;
-  --bg-muted: #e8e9e4;
+  --bg-app: #e8e9e4;
+  --bg-panel: #fafaf7;
+  --bg-raised: #ffffff;
+  --bg-muted: #eeefea;
 
-  --text-primary: #242621;
-  --text-secondary: #666b62;
-  --text-tertiary: #92978e;
+  --text-primary: #1d1f1b;
+  --text-body: #282b26;
+  --text-secondary: #4e534b;
+  --text-muted: #7f847b;
+  --text-disabled: #a4a8a0;
+  --text-tertiary: var(--text-muted);
 
   --border-default: #cacdc5;
   --border-subtle: #dcddd7;
   --border-strong: #b3b8ad;
 
-  --accent: #747f62;
-  --accent-hover: #657055;
+  --accent: #647c61;
+  --accent-hover: #556d52;
   --accent-soft: #e4e7de;
 
   --success: #647c61;
@@ -22,25 +25,29 @@
 
   --state-active-border: #647c61;
   --state-active-bg: #e8efe6;
-  --state-scanned-border: #b3b8ad;
-  --state-skipped-opacity: 0.45;
+  --state-scanned-border: #8a8f86;
+  --state-skipped-opacity: 0.5;
 
   --scroll-thumb: #c3c7be;
   --scroll-thumb-hover: #a6aaa1;
 
   --radius-panel: 4px;
-  --radius-control: 4px;
+  --radius-control: 3px;
 
   --font-mono: 'Consolas', 'Courier New', monospace;
   --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --workspace-rail-width: 56px;
-  --workspace-topbar-height: 44px;
-  --workspace-statusbar-height: 24px;
-  --workspace-panel-header-height: 32px;
-  --workspace-left-panel-width: 196px;
-  --workspace-right-panel-width: 220px;
-  --workspace-lower-panel-height: 160px;
+  --workspace-outer-padding: 4px;
+  --workspace-panel-gap: 6px;
+  --workspace-rail-width: 48px;
+  --workspace-topbar-height: 48px;
+  --workspace-statusbar-height: 22px;
+  --workspace-panel-header-height: 35px;
+  --workspace-left-panel-width: 220px;
+  --workspace-right-panel-width: 260px;
+  --workspace-lower-panel-height: 190px;
+  --workspace-control-height: 31px;
+  --workspace-center-min-ratio: 0.6;
 }
 
 *,
@@ -92,4 +99,15 @@ button {
 
 .mono {
   font-family: var(--font-mono);
+}
+
+.workspace-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-panel);
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }

@@ -2,75 +2,92 @@ export type BlockWindowItem =
   | { kind: 'block'; index: number }
   | { kind: 'ellipsis' }
 
-export const BLOCK_CELL_WIDTH = 40
-export const BLOCK_CELL_HEIGHT = 26
+export type BlockWindowAlign = 'start' | 'end'
+
+export type BlockWindowView = {
+  items: BlockWindowItem[]
+  align: BlockWindowAlign
+}
+
+export const BLOCK_CELL_WIDTH = 46
+export const BLOCK_CELL_HEIGHT = 30
 export const BLOCK_CELL_GAP = 3
-export const TRACK_LABEL_WIDTH = 88
+export const TRACK_LABEL_WIDTH = 108
+export const TRACK_ROW_HEIGHT = 40
 export const ELLIPSIS_WIDTH = 20
+
+/** 轨道块区左右内边距与标签列占用的总扣减（与 ColumnTrack / tracks-shell 一致）。 */
+export const TRACK_BLOCKS_WIDTH_INSET = 4 + 4 + TRACK_LABEL_WIDTH + 6 + 8
+
+const BLOCK_UNIT = BLOCK_CELL_WIDTH + BLOCK_CELL_GAP
 
 /** 不含省略号时可放下的块数。 */
 export function countBlocksThatFit(trackAreaWidth: number): number {
   if (trackAreaWidth <= 0) return 0
-  const unit = BLOCK_CELL_WIDTH + BLOCK_CELL_GAP
-  return Math.floor((trackAreaWidth + BLOCK_CELL_GAP) / unit)
+  return Math.floor((trackAreaWidth + BLOCK_CELL_GAP) / BLOCK_UNIT)
 }
 
-/**
- * 根据轨道可用宽度计算可见块数（含末块）。
- * 宽屏显示更多块；全部能放下时不使用省略号。
- */
+/** 含「… + 末块」窗口时最多可展示的块索引数。 */
 export function capacityFromWidth(trackAreaWidth: number, totalBlocks: number): number {
-  if (trackAreaWidth <= 0 || totalBlocks <= 0) return Math.max(totalBlocks, 7)
+  if (trackAreaWidth <= 0 || totalBlocks <= 0) return Math.max(totalBlocks, 9)
   const allFit = countBlocksThatFit(trackAreaWidth)
   if (allFit >= totalBlocks) return totalBlocks
 
-  const unit = BLOCK_CELL_WIDTH + BLOCK_CELL_GAP
   const headCount = Math.floor(
-    (trackAreaWidth - ELLIPSIS_WIDTH - BLOCK_CELL_GAP - BLOCK_CELL_WIDTH + BLOCK_CELL_GAP) / unit,
+    (trackAreaWidth - ELLIPSIS_WIDTH - BLOCK_CELL_GAP - BLOCK_CELL_WIDTH + BLOCK_CELL_GAP) /
+      BLOCK_UNIT,
   )
-  return Math.max(3, headCount + 1)
+  return Math.max(4, headCount + 1)
 }
 
 export function buildBlockWindow(
   totalBlocks: number,
-  maxBlocks: number,
+  maxVisibleBlocks: number,
   selectedIndex: number | null,
-): BlockWindowItem[] {
-  if (totalBlocks <= 0) return []
-  if (totalBlocks <= maxBlocks) {
-    return Array.from({ length: totalBlocks }, (_, index) => ({ kind: 'block', index }))
+): BlockWindowView {
+  if (totalBlocks <= 0) return { items: [], align: 'start' }
+  if (totalBlocks <= maxVisibleBlocks) {
+    return {
+      items: Array.from({ length: totalBlocks }, (_, index) => ({ kind: 'block', index })),
+      align: 'start',
+    }
   }
 
   const last = totalBlocks - 1
-  const headCount = maxBlocks - 1
+  const leadingCount = maxVisibleBlocks - 1
+  const tailSpan = maxVisibleBlocks - 2
+  const tailStart = last - tailSpan + 1
+
   const defaultVisible = new Set<number>()
-  for (let i = 0; i < headCount; i += 1) defaultVisible.add(i)
+  for (let i = 0; i < leadingCount; i += 1) defaultVisible.add(i)
   defaultVisible.add(last)
 
   if (selectedIndex == null || defaultVisible.has(selectedIndex)) {
     const items: BlockWindowItem[] = []
-    for (let i = 0; i < headCount; i += 1) items.push({ kind: 'block', index: i })
+    for (let i = 0; i < leadingCount; i += 1) items.push({ kind: 'block', index: i })
     items.push({ kind: 'ellipsis' })
     items.push({ kind: 'block', index: last })
-    return items
+    return { items, align: 'start' }
   }
 
-  const items: BlockWindowItem[] = []
-  items.push({ kind: 'block', index: 0 })
+  if (selectedIndex >= tailStart) {
+    const items: BlockWindowItem[] = [{ kind: 'block', index: 0 }]
+    items.push({ kind: 'ellipsis' })
+    for (let i = tailStart; i <= last; i += 1) items.push({ kind: 'block', index: i })
+    return { items, align: 'end' }
+  }
 
+  const items: BlockWindowItem[] = [{ kind: 'block', index: 0 }]
   const midStart = Math.max(1, selectedIndex - 1)
   const midEnd = Math.min(last - 1, selectedIndex + 1)
 
   if (midStart > 1) items.push({ kind: 'ellipsis' })
-  for (let i = midStart; i <= midEnd; i += 1) {
-    items.push({ kind: 'block', index: i })
-  }
+  for (let i = midStart; i <= midEnd; i += 1) items.push({ kind: 'block', index: i })
   if (midEnd < last - 1) items.push({ kind: 'ellipsis' })
   items.push({ kind: 'block', index: last })
-  return items
+  return { items, align: 'start' }
 }
 
-/** 估算窗口占用宽度，用于空白检测。 */
 export function windowPixelWidth(items: BlockWindowItem[]): number {
   let width = 0
   for (const item of items) {

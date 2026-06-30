@@ -6,15 +6,15 @@ import MapEncodingLegend from '@/components/workspace/MapEncodingLegend.vue'
 import { useStorageMapStore } from '@/stores/storageMapStore'
 import { useStorageMapViewStore } from '@/stores/storageMapViewStore'
 import {
-  TRACK_LABEL_WIDTH,
+  BLOCK_CELL_WIDTH,
+  TRACK_BLOCKS_WIDTH_INSET,
+  TRACK_ROW_HEIGHT,
   buildBlockWindow,
   capacityFromWidth,
 } from './blockWindow'
 import type { BlockPruningState } from '@/api/queries'
 
-const TRACK_ROW_HEIGHT = 32
-const TRACK_GAP = 4
-const LABEL_GAP = 8
+const TRACK_GAP = 0
 
 const props = defineProps<{
   datasetId?: string
@@ -40,7 +40,6 @@ const blockPruningMap = computed(() => {
 })
 
 const scrollRoot = ref<HTMLElement | null>(null)
-const trackAreaRef = ref<HTMLElement | null>(null)
 const trackAreaWidth = ref(480)
 const visibleColumnStart = ref(0)
 const visibleColumnEnd = ref(32)
@@ -57,9 +56,12 @@ const effectiveCapacity = computed(() => {
   return Math.min(visibleBlockDensity.value, auto)
 })
 
-const blockWindow = computed(() =>
+const blockWindowView = computed(() =>
   buildBlockWindow(maxBlocks.value, effectiveCapacity.value, selectedBlockId.value),
 )
+
+const blockWindow = computed(() => blockWindowView.value.items)
+const blockWindowAlign = computed(() => blockWindowView.value.align)
 
 const axisBlocks = computed(() => {
   if (!data.value?.columns.length) return []
@@ -92,8 +94,9 @@ function updateVisibleWindow() {
 }
 
 function updateTrackAreaWidth() {
-  if (!trackAreaRef.value) return
-  trackAreaWidth.value = Math.max(0, trackAreaRef.value.clientWidth - TRACK_LABEL_WIDTH - LABEL_GAP)
+  const el = scrollRoot.value
+  if (!el) return
+  trackAreaWidth.value = Math.max(0, el.clientWidth - TRACK_BLOCKS_WIDTH_INSET)
 }
 
 let resizeObserver: ResizeObserver | null = null
@@ -130,9 +133,9 @@ onMounted(() => {
   if (props.datasetId) void mapStore.load(Number(props.datasetId))
   window.addEventListener('keydown', onKeydown)
   scrollRoot.value?.addEventListener('scroll', updateVisibleWindow, { passive: true })
-  if (trackAreaRef.value) {
+  if (scrollRoot.value) {
     resizeObserver = new ResizeObserver(updateTrackAreaWidth)
-    resizeObserver.observe(trackAreaRef.value)
+    resizeObserver.observe(scrollRoot.value)
     updateTrackAreaWidth()
   }
   updateVisibleWindow()
@@ -157,7 +160,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="storage-map-canvas" tabindex="0">
+  <section class="storage-map-canvas workspace-panel" tabindex="0">
     <div class="panel-header">
       <span class="panel-title">列块存储映射</span>
       <MapEncodingLegend class="header-legend" />
@@ -187,15 +190,17 @@ onUnmounted(() => {
       <p v-else-if="error" class="state-hint error">{{ error }}</p>
       <p v-else-if="!hasData" class="state-hint">暂无块数据，请先导入数据集</p>
       <div v-else-if="data" class="map-content">
-        <div ref="trackAreaRef" class="tracks-shell">
+        <div class="tracks-shell">
           <div class="map-grid">
             <ColumnTrack
-              v-for="column in visibleColumns"
+              v-for="(column, colIdx) in visibleColumns"
               :key="column.name"
               :name="column.name"
               :logical-type="column.logical_type"
               :blocks="column.blocks"
               :block-window="blockWindow"
+              :block-window-align="blockWindowAlign"
+              :is-last="colIdx === visibleColumns.length - 1"
               :selected-block-id="selectedColumn === column.name ? selectedBlockId : null"
               :active-block-id="
                 activeScanBlock?.column === column.name
@@ -210,7 +215,7 @@ onUnmounted(() => {
           </div>
           <div class="row-axis">
             <span class="axis-title">逻辑行号</span>
-            <div class="axis-track">
+            <div class="axis-track" :class="{ 'align-end': blockWindowAlign === 'end' }">
               <template v-for="(item, idx) in blockWindow" :key="`axis-${item.kind}-${idx}`">
                 <span
                   v-if="item.kind === 'ellipsis'"
@@ -239,7 +244,6 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: var(--bg-panel);
   outline: none;
 }
 
@@ -248,17 +252,19 @@ onUnmounted(() => {
   align-items: center;
   height: var(--workspace-panel-header-height);
   min-height: var(--workspace-panel-header-height);
-  padding: 0 10px;
-  font-size: 12px;
-  border-bottom: 1px solid var(--border-default);
-  gap: 10px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 12px;
   flex-shrink: 0;
   flex-wrap: nowrap;
   overflow: hidden;
+  background: var(--bg-raised);
 }
 
 .panel-title {
   font-weight: 600;
+  color: var(--text-primary);
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -272,52 +278,54 @@ onUnmounted(() => {
 .header-tools {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
-  font-size: 11px;
-  color: var(--text-tertiary);
+  font-size: 12px;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .tool-item {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .tool-label {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .tool-select {
-  height: 22px;
+  height: 26px;
   border: 1px solid var(--border-default);
-  border-radius: 2px;
+  border-radius: var(--radius-control);
   background: var(--bg-panel);
-  font-size: 11px;
-  color: var(--text-secondary);
-  padding: 0 4px;
+  font-size: 12px;
+  color: var(--text-primary);
+  padding: 0 8px;
 }
 
 .tool-summary {
   white-space: nowrap;
+  color: var(--text-secondary);
 }
 
 .map-scroll {
   flex: 1;
   overflow: auto;
   min-height: 0;
-  padding: 6px 10px 6px 8px;
+  padding: 2px 0 4px;
 }
 
 .state-hint {
   margin: 0;
-  font-size: 12px;
-  color: var(--text-tertiary);
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .state-hint.error {
-  color: #b91c1c;
+  color: var(--danger);
 }
 
 .map-content {
@@ -330,28 +338,29 @@ onUnmounted(() => {
 .tracks-shell {
   width: 100%;
   min-width: 0;
+  padding: 0 4px;
 }
 
 .map-grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   min-width: 0;
+  width: 100%;
 }
 
 .row-axis {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 6px;
   align-items: end;
   margin-top: 4px;
-  padding-top: 4px;
-  border-top: 1px solid var(--border-default);
+  padding: 4px 8px 0 4px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .axis-title {
-  font-size: 9px;
-  color: var(--text-tertiary);
+  font-size: 10px;
+  color: var(--text-muted);
   text-align: right;
   padding-right: 2px;
   white-space: nowrap;
@@ -367,12 +376,12 @@ onUnmounted(() => {
 
 .axis-tick {
   flex-shrink: 0;
-  width: 40px;
-  font-size: 9px;
-  color: var(--text-tertiary);
+  width: 46px;
+  font-size: 10px;
+  color: var(--text-secondary);
   text-align: center;
   border-top: 1px solid var(--border-strong);
-  padding-top: 2px;
+  padding-top: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -383,15 +392,19 @@ onUnmounted(() => {
   width: 20px;
   height: 1px;
   border-top: 1px dashed var(--border-default);
-  margin-bottom: 3px;
+  margin-bottom: 4px;
+}
+
+.axis-track.align-end {
+  margin-left: auto;
 }
 
 .map-footer {
   margin: 0;
-  padding: 4px 10px;
+  padding: 2px 8px;
   font-size: 11px;
-  color: var(--text-tertiary);
-  border-top: 1px solid var(--border-default);
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
   flex-shrink: 0;
 }
 

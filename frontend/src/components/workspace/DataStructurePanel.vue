@@ -11,25 +11,17 @@ const props = defineProps<{
 const layoutStore = useWorkspaceLayoutStore()
 const columns = ref<ColumnSummary[]>([])
 const tableName = ref('')
-const datasetName = ref('')
 const loading = ref(false)
 
 const totalBlocks = computed(() => columns.value.reduce((sum, col) => sum + col.block_count, 0))
 
-const panelTitle = computed(() => {
-  if (!datasetName.value) return '数据结构'
-  return `${datasetName.value} (${columns.value.length} 列)`
-})
-
 async function loadStructure() {
   columns.value = []
   tableName.value = ''
-  datasetName.value = ''
   if (!props.datasetId) return
   loading.value = true
   try {
     const ds = await getDataset(Number(props.datasetId))
-    datasetName.value = ds.name
     const tables = await listTables(Number(props.datasetId))
     if (!tables.length) return
     tableName.value = tables[0].name
@@ -44,9 +36,9 @@ watch(() => props.datasetId, loadStructure)
 </script>
 
 <template>
-  <aside class="data-panel">
+  <aside class="data-panel workspace-panel">
     <div class="panel-header">
-      <span class="panel-title">{{ panelTitle }}</span>
+      <span class="panel-title">数据结构</span>
       <button type="button" class="collapse-btn" title="折叠面板" @click="layoutStore.toggleLeft()">
         ‹
       </button>
@@ -56,26 +48,32 @@ watch(() => props.datasetId, loadStructure)
       <p v-else-if="loading" class="empty-hint">加载中…</p>
       <p v-else-if="!columns.length" class="empty-hint">数据集尚未就绪或无表结构。</p>
       <template v-else>
-        <table class="column-table">
-          <thead>
-            <tr>
-              <th>列名</th>
-              <th>类型</th>
-              <th class="th-count">块数</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="col in columns" :key="col.id">
-              <td class="col-name mono" :title="col.name">{{ col.name }}</td>
-              <td class="col-type">{{ displayLogicalType(col.logical_type) }}</td>
-              <td class="col-blocks mono">{{ col.block_count }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="object-header">
+          <span class="object-name">{{ tableName }}</span>
+          <span class="object-meta">{{ columns.length }} 列</span>
+        </div>
+        <div class="table-wrap">
+          <table class="column-table">
+            <thead>
+              <tr>
+                <th>列名</th>
+                <th>类型</th>
+                <th class="th-count">块数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="col in columns" :key="col.id">
+                <td class="col-name mono" :title="col.name">{{ col.name }}</td>
+                <td class="col-type">{{ displayLogicalType(col.logical_type) }}</td>
+                <td class="col-blocks mono">{{ col.block_count }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </template>
     </div>
-    <div class="panel-footer">
-      <span class="mono">总计：{{ columns.length }} 列，{{ totalBlocks }} 块</span>
+    <div v-if="columns.length" class="panel-footer">
+      <span class="mono">总计 {{ totalBlocks }} 块</span>
       <button type="button" class="refresh-btn" title="刷新" @click="loadStructure">↻</button>
     </div>
   </aside>
@@ -83,13 +81,7 @@ watch(() => props.datasetId, loadStructure)
 
 <style scoped>
 .data-panel {
-  display: flex;
-  flex-direction: column;
   height: 100%;
-  min-height: 0;
-  min-width: 0;
-  background: var(--bg-panel);
-  border-right: 1px solid var(--border-default);
 }
 
 .panel-header {
@@ -99,115 +91,135 @@ watch(() => props.datasetId, loadStructure)
   gap: 8px;
   height: var(--workspace-panel-header-height);
   min-height: var(--workspace-panel-header-height);
-  padding: 0 10px;
+  padding: 0 12px;
   font-weight: 600;
-  font-size: 12px;
-  border-bottom: 1px solid var(--border-default);
+  font-size: 13px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-raised);
 }
 
-.panel-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .collapse-btn {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-control);
   background: var(--bg-panel);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   cursor: pointer;
-  flex-shrink: 0;
 }
 
 .panel-body {
   flex: 1;
   overflow: auto;
   overflow-x: hidden;
-  padding: 0;
+  padding: 8px;
   min-height: 0;
   min-width: 0;
 }
 
 .empty-hint {
-  margin: 8px 10px;
-  color: var(--text-tertiary);
-  font-size: 12px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
   line-height: 1.5;
+}
+
+.object-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  height: 36px;
+  padding: 0 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.object-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.object-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.table-wrap {
+  padding: 0 2px;
 }
 
 .column-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 13px;
   table-layout: fixed;
 }
 
 .column-table th {
-  position: sticky;
-  top: 0;
+  height: 32px;
   background: var(--bg-muted);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-weight: 500;
+  font-size: 12px;
   text-align: left;
-  padding: 5px 8px;
+  padding: 0 10px;
   border-bottom: 1px solid var(--border-default);
 }
 
 .column-table th.th-count {
-  width: 36px;
+  width: 48px;
   text-align: right;
 }
 
 .column-table th:nth-child(2) {
-  width: 72px;
+  width: 92px;
 }
 
 .column-table td {
-  padding: 5px 8px;
-  border-bottom: 1px solid var(--border-subtle, var(--border-default));
-  color: var(--text-secondary);
+  height: 34px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.column-table tbody tr:hover {
+  background: var(--bg-muted);
 }
 
 .col-name {
-  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 0;
 }
 
 .col-type {
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-body);
 }
 
 .col-blocks {
   text-align: right;
   font-variant-numeric: tabular-nums;
-  color: var(--text-secondary);
 }
 
 .panel-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
-  font-size: 11px;
-  color: var(--text-tertiary);
-  border-top: 1px solid var(--border-default);
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .refresh-btn {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-control);
   background: var(--bg-panel);

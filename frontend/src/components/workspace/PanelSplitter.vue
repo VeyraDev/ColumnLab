@@ -22,29 +22,34 @@ const emit = defineEmits<{
 
 <style scoped>
 .panel-splitter {
-  position: relative;
-  flex-shrink: 0;
+  position: absolute;
   z-index: 20;
   touch-action: none;
+  background: transparent;
 }
 
 .panel-splitter.vertical {
-  width: 10px;
-  margin: 0 -2px;
+  top: 0;
+  bottom: 0;
+  width: var(--workspace-panel-gap);
+  margin-left: calc(var(--workspace-panel-gap) / -2);
   cursor: col-resize;
 }
 
 .panel-splitter.horizontal {
-  height: 10px;
-  margin: -2px 0;
+  left: 0;
+  right: 0;
+  height: var(--workspace-panel-gap);
+  margin-top: calc(var(--workspace-panel-gap) / -2);
   cursor: row-resize;
 }
 
 .panel-splitter::after {
   content: '';
   position: absolute;
-  background: var(--border-default);
+  background: transparent;
   transition: background 0.12s;
+  pointer-events: none;
 }
 
 .panel-splitter.vertical::after {
@@ -68,16 +73,6 @@ const emit = defineEmits<{
   background: var(--accent);
 }
 
-.panel-splitter.vertical:hover::after,
-.panel-splitter.vertical:active::after {
-  width: 2px;
-}
-
-.panel-splitter.horizontal:hover::after,
-.panel-splitter.horizontal:active::after {
-  height: 2px;
-}
-
 .panel-splitter::before {
   content: '';
   position: absolute;
@@ -86,14 +81,14 @@ const emit = defineEmits<{
 .panel-splitter.vertical::before {
   top: 0;
   bottom: 0;
-  left: -3px;
-  right: -3px;
+  left: 0;
+  right: 0;
 }
 
 .panel-splitter.horizontal::before {
   left: 0;
   right: 0;
-  top: -3px;
-  bottom: -3px;
+  top: 0;
+  bottom: 0;
 }
 </style>

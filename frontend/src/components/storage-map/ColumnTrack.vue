@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import BlockCell from './BlockCell.vue'
-import type { BlockWindowItem } from './blockWindow'
-import { BLOCK_CELL_WIDTH, TRACK_LABEL_WIDTH } from './blockWindow'
+import type { BlockWindowAlign, BlockWindowItem } from './blockWindow'
+import { BLOCK_CELL_GAP, BLOCK_CELL_WIDTH, TRACK_LABEL_WIDTH, TRACK_ROW_HEIGHT } from './blockWindow'
 import { displayLogicalType } from '@/utils/format'
 
 export type StorageBlock = {
@@ -23,9 +23,11 @@ const props = defineProps<{
   logicalType?: string
   blocks: StorageBlock[]
   blockWindow: BlockWindowItem[]
+  blockWindowAlign?: BlockWindowAlign
   selectedBlockId?: number | null
   activeBlockId?: number | null
   blockPruningMap?: Record<string, { state: string; reason: string }>
+  isLast?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -56,12 +58,12 @@ function onSelect(index: number) {
 </script>
 
 <template>
-  <div class="column-track">
+  <div class="column-track" :class="{ 'is-last': isLast }">
     <div class="track-label" :style="{ width: `${TRACK_LABEL_WIDTH}px` }">
       <span class="track-name mono">{{ name }}</span>
       <span v-if="typeLabel" class="track-type mono">{{ typeLabel }}</span>
     </div>
-    <div class="track-blocks">
+    <div class="track-blocks" :class="{ 'align-end': blockWindowAlign === 'end' }">
       <template v-for="(item, idx) in blockWindow" :key="`${item.kind}-${idx}`">
         <span v-if="item.kind === 'ellipsis'" class="track-ellipsis" aria-hidden="true">…</span>
         <BlockCell
@@ -84,23 +86,30 @@ function onSelect(index: number) {
 <style scoped>
 .column-track {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 6px;
   align-items: center;
-  height: 32px;
-  min-height: 32px;
+  width: 100%;
+  min-height: 40px;
+  padding: 3px 8px 3px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.column-track.is-last {
+  border-bottom: none;
 }
 
 .track-label {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
   overflow: hidden;
+  padding-left: 2px;
 }
 
 .track-name {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   overflow: hidden;
@@ -109,8 +118,8 @@ function onSelect(index: number) {
 }
 
 .track-type {
-  font-size: 9px;
-  color: var(--text-tertiary);
+  font-size: 11px;
+  color: var(--text-body);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -131,12 +140,17 @@ function onSelect(index: number) {
   display: none;
 }
 
+.track-blocks.align-end {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
 .track-ellipsis {
   flex-shrink: 0;
   width: 20px;
   text-align: center;
-  font-size: 11px;
-  color: var(--text-tertiary);
+  font-size: 12px;
+  color: var(--text-muted);
   user-select: none;
 }
 </style>

@@ -68,6 +68,10 @@ export async function getDataset(id: number) {
   return data.data
 }
 
+export async function deleteDataset(id: number) {
+  await request.delete(`/datasets/${id}`)
+}
+
 export async function listTables(datasetId: number) {
   const { data } = await request.get<{ data: TableSummary[] }>(`/datasets/${datasetId}/tables`)
   return data.data

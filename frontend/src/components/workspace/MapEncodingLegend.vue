@@ -92,13 +92,8 @@ const items = [
   background: var(--state-active-bg);
 }
 
-@media (max-width: 960px) {
-  .legend-text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-  }
+.legend-text {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 </style>

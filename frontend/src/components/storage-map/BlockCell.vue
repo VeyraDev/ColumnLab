@@ -49,64 +49,78 @@ const idLabel = computed(() =>
 
 <style scoped>
 .block-cell {
-  padding: 1px 2px;
+  position: relative;
+  padding: 2px 3px;
   border: 1px solid var(--border-default);
-  border-radius: 2px;
+  border-radius: 3px;
   cursor: pointer;
   flex-shrink: 0;
-  background-color: var(--bg-panel);
+  background-color: var(--bg-raised);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
+  gap: 1px;
   overflow: hidden;
 }
 
+.block-cell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.26;
+  z-index: 0;
+}
+
 .cell-id {
-  font-size: 9px;
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
   line-height: 1.1;
-  color: var(--text-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
   pointer-events: none;
 }
 
 .cell-enc {
-  font-size: 8px;
+  position: relative;
+  z-index: 1;
+  font-size: 9px;
   line-height: 1.1;
-  color: var(--text-tertiary);
+  color: var(--text-body);
   pointer-events: none;
 }
 
-.block-cell.raw {
+.block-cell.raw::before {
   background: repeating-linear-gradient(
     -45deg,
-    var(--bg-muted),
-    var(--bg-muted) 2px,
-    var(--bg-panel) 2px,
-    var(--bg-panel) 4px
+    var(--text-muted),
+    var(--text-muted) 1px,
+    transparent 1px,
+    transparent 6px
   );
 }
 
-.block-cell.rle {
+.block-cell.rle::before {
   background: repeating-linear-gradient(
     0deg,
-    var(--bg-muted),
-    var(--bg-muted) 2px,
-    var(--bg-panel) 2px,
-    var(--bg-panel) 4px
+    var(--text-muted),
+    var(--text-muted) 1px,
+    transparent 1px,
+    transparent 5px
   );
 }
 
-.block-cell.dictionary,
-.block-cell.dict {
+.block-cell.dictionary::before,
+.block-cell.dict::before {
   background:
-    radial-gradient(circle, var(--text-tertiary) 1px, transparent 1px);
-  background-size: 4px 4px;
-  background-color: var(--bg-panel);
+    radial-gradient(circle, var(--text-muted) 1px, transparent 1px);
+  background-size: 6px 6px;
 }
 
 .block-cell.selected {
-  outline: 1px solid var(--text-secondary);
+  outline: 1px solid var(--text-body);
   outline-offset: -1px;
 }
 
@@ -129,18 +143,15 @@ const idLabel = computed(() =>
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
   background: repeating-linear-gradient(
     -45deg,
     transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.04) 2px,
-    rgba(0, 0, 0, 0.04) 3px
+    transparent 3px,
+    rgba(0, 0, 0, 0.06) 3px,
+    rgba(0, 0, 0, 0.06) 4px
   );
-}
-
-.block-cell {
-  position: relative;
 }
 
 .block-cell.to_read {

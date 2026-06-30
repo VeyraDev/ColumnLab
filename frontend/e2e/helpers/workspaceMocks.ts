@@ -10,21 +10,91 @@ const repoRoot = path.resolve(frontendDir, '..')
 export const DEMO_DATASET_ID = 1
 export const DEMO_TABLE_ID = 10
 
-const storageMap = JSON.parse(
+const storageMapRaw = JSON.parse(
   fs.readFileSync(path.join(frontendDir, 'src/fixtures/storage-map.json'), 'utf8'),
-) as {
+) as StorageMapFixture
+
+const VISUAL_BLOCK_COUNT = 72
+
+type StorageBlockFixture = {
+  block_id: number
+  row_group_id?: number
+  encoding: string
+  row_start: number
   row_count: number
-  columns: Array<{ name: string; logical_type: string; block_count: number }>
+  compressed_bytes: number
+  encoded_bytes: number
+  raw_bytes: number
+  null_count: number
+  payload_crc32: string
 }
+
+type StorageMapFixture = {
+  source: string
+  row_count: number
+  column_count: number
+  total_blocks: number
+  columns: Array<{
+    name: string
+    logical_type: string
+    block_count: number
+    blocks: StorageBlockFixture[]
+  }>
+}
+
+function expandBlocks(sourceBlocks: StorageBlockFixture[], targetCount: number): StorageBlockFixture[] {
+  if (!sourceBlocks.length) return []
+  if (sourceBlocks.length >= targetCount) {
+    return sourceBlocks.slice(0, targetCount).map((block, index) => ({
+      ...block,
+      block_id: index,
+      row_group_id: index,
+    }))
+  }
+
+  const result: StorageBlockFixture[] = []
+  let rowStart = 0
+  for (let i = 0; i < targetCount; i += 1) {
+    const template = sourceBlocks[i % sourceBlocks.length]
+    result.push({
+      ...template,
+      block_id: i,
+      row_group_id: i,
+      row_start: rowStart,
+    })
+    rowStart += template.row_count
+  }
+  return result
+}
+
+function buildVisualStorageMap(base: StorageMapFixture): StorageMapFixture {
+  const columns = base.columns.map((col) => {
+    const blocks = expandBlocks(col.blocks, VISUAL_BLOCK_COUNT)
+    return {
+      ...col,
+      block_count: blocks.length,
+      blocks,
+    }
+  })
+  return {
+    ...base,
+    column_count: columns.length,
+    total_blocks: columns.reduce((sum, col) => sum + col.blocks.length, 0),
+    columns,
+  }
+}
+
+const storageMap = buildVisualStorageMap(storageMapRaw)
 
 const blockPreview = JSON.parse(
   fs.readFileSync(path.join(frontendDir, 'src/fixtures/codec-selection.json'), 'utf8'),
 )
 
 export const LAYOUT_STORAGE = JSON.stringify({
-  leftWidth: 196,
-  rightWidth: 220,
-  lowerHeightPx: 160,
+  version: 4,
+  leftWidth: 220,
+  rightWidth: 260,
+  lowerHeightPx: 190,
   leftCollapsed: false,
   rightCollapsed: false,
   lowerCollapsed: false,
@@ -204,7 +274,7 @@ export async function installWorkspaceMocks(page: Page, queryMode: QueryMockMode
     id: DEMO_TABLE_ID,
     name: 'data',
     row_count: storageMap.row_count,
-    row_group_count: storageMap.columns[0]?.block_count ?? 55,
+    row_group_count: Math.ceil((storageMap.columns[0]?.block_count ?? VISUAL_BLOCK_COUNT) / 8),
   }
 
   const columns = columnsFromMap()
@@ -315,5 +385,5 @@ export async function runMockQuery(page: Page) {
 }
 
 export function screenshotPath(name: string) {
-  return path.join(repoRoot, 'docs', 'screenshots', 'batch-1-1', name)
+  return path.join(repoRoot, 'docs', 'screenshots', 'batch-2', name)
 }

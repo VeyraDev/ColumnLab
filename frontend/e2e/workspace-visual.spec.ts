@@ -15,53 +15,57 @@ test.beforeAll(() => {
   fs.mkdirSync(outDir, { recursive: true })
 })
 
-test.describe('Workspace visual regression', () => {
-  test('1024×576 completed workspace', async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 576 })
-    await seedSession(page)
-    await installWorkspaceMocks(page, 'completed')
-    await gotoWorkspace(page)
-    await runMockQuery(page)
-    await page.screenshot({ path: screenshotPath('workspace-1024x576.png') })
-    await page.screenshot({ path: screenshotPath('02-query-completed.png') })
-  })
+const VIEWPORT = { width: 1918, height: 952 }
 
-  test('1440×900 completed workspace', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 })
-    await seedSession(page)
-    await installWorkspaceMocks(page, 'completed')
-    await gotoWorkspace(page)
-    await runMockQuery(page)
-    await page.screenshot({ path: screenshotPath('workspace-1440x900.png') })
-  })
-
-  test('01 idle state', async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 576 })
+test.describe('Workspace visual regression · 1918×952', () => {
+  test('idle', async ({ page }) => {
+    await page.setViewportSize(VIEWPORT)
     await seedSession(page)
     await installWorkspaceMocks(page, 'idle')
     await gotoWorkspace(page)
-    await page.screenshot({ path: screenshotPath('01-idle.png') })
+    await page.screenshot({ path: screenshotPath('1918-idle.png') })
   })
 
-  test('03 block active and skipped', async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 576 })
+  test('completed', async ({ page }) => {
+    await page.setViewportSize(VIEWPORT)
+    await seedSession(page)
+    await installWorkspaceMocks(page, 'completed')
+    await gotoWorkspace(page)
+    await runMockQuery(page)
+    await page.screenshot({ path: screenshotPath('1918-completed.png') })
+  })
+
+  test('active and skipped', async ({ page }) => {
+    await page.setViewportSize(VIEWPORT)
     await seedSession(page)
     await installWorkspaceMocks(page, 'pruning')
     await gotoWorkspace(page)
     await runMockQuery(page)
-
     await page.locator('.storage-map-canvas .block-cell').first().click()
     await page.waitForTimeout(400)
-    await page.screenshot({ path: screenshotPath('03-block-active-and-skipped.png') })
+    await page.screenshot({ path: screenshotPath('1918-active-skipped.png') })
   })
 
-  test('04 query failed', async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 576 })
+  test('inspector dictionary selected', async ({ page }) => {
+    await page.setViewportSize(VIEWPORT)
+    await seedSession(page)
+    await installWorkspaceMocks(page, 'completed')
+    await gotoWorkspace(page)
+    await page.locator('.storage-map-canvas .block-cell').nth(2).click()
+    await page.waitForTimeout(500)
+    await page.screenshot({ path: screenshotPath('1918-inspector-dictionary.png') })
+  })
+
+  test('query failed', async ({ page }) => {
+    await page.setViewportSize(VIEWPORT)
     await seedSession(page)
     await installWorkspaceMocks(page, 'failed')
     await gotoWorkspace(page)
     await page.getByRole('button', { name: '运行查询' }).click()
-    await page.getByText('失败').waitFor({ state: 'visible', timeout: 15_000 })
-    await page.screenshot({ path: screenshotPath('04-query-failed.png') })
+    await page.locator('.status-pane .status-label').filter({ hasText: '失败' }).waitFor({
+      state: 'visible',
+      timeout: 15_000,
+    })
+    await page.screenshot({ path: screenshotPath('1918-failed.png') })
   })
 })

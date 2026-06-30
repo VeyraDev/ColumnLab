@@ -80,12 +80,12 @@ function onResizeLeft(event: PointerEvent) {
   startHorizontalResize({
     event,
     startSize: leftWidth.value,
-    min: 140,
+    min: 220,
     max: layoutStore.clampLeftWidth(9999, containerWidth()),
     captureTarget: event.currentTarget as HTMLElement,
     onEnd: endResize,
     onMove: (size) => {
-      leftWidth.value = layoutStore.clampLeftWidth(size, containerWidth())
+      leftWidth.value = layoutStore.clampLeftWidth(size, containerWidth(), rightWidth.value)
     },
   })
 }
@@ -96,13 +96,13 @@ function onResizeRight(event: PointerEvent) {
   startHorizontalResize({
     event,
     startSize: rightWidth.value,
-    min: 180,
+    min: 260,
     max: layoutStore.clampRightWidth(9999, containerWidth()),
     invert: true,
     captureTarget: event.currentTarget as HTMLElement,
     onEnd: endResize,
     onMove: (size) => {
-      rightWidth.value = layoutStore.clampRightWidth(size, containerWidth())
+      rightWidth.value = layoutStore.clampRightWidth(size, containerWidth(), leftWidth.value)
     },
   })
 }
@@ -113,7 +113,7 @@ function onResizeLower(event: PointerEvent) {
   startVerticalResize({
     event,
     startSize: lowerHeightPx.value,
-    min: 120,
+    min: 190,
     max: layoutStore.clampLowerHeight(9999, mainHeight()),
     captureTarget: event.currentTarget as HTMLElement,
     onEnd: endResize,
@@ -181,6 +181,8 @@ const lowerGridRows = () => {
           <PanelSplitter
             v-if="!leftCollapsed"
             orientation="vertical"
+            class="splitter-left"
+            :style="{ left: `${leftWidth}px` }"
             title="拖拽调整数据结构宽度"
             @resize-start="onResizeLeft"
           />
@@ -197,6 +199,8 @@ const lowerGridRows = () => {
           <PanelSplitter
             v-if="!rightCollapsed"
             orientation="vertical"
+            class="splitter-right"
+            :style="{ right: `${rightWidth}px` }"
             title="拖拽调整块检查器宽度"
             @resize-start="onResizeRight"
           />
@@ -263,16 +267,18 @@ const lowerGridRows = () => {
   grid-template-columns: var(--workspace-rail-width) minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
+  padding: 4px 4px 0 0;
+  gap: var(--workspace-panel-gap);
+  background: var(--bg-app);
 }
 
 .function-rail {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0;
+  gap: 1px;
   padding: 4px 0;
-  background: var(--bg-muted);
-  border-right: 1px solid var(--border-default);
+  background: transparent;
 }
 
 .rail-settings {
@@ -283,6 +289,9 @@ const lowerGridRows = () => {
   display: grid;
   min-height: 0;
   overflow: hidden;
+  padding: 0 4px 4px 0;
+  gap: 0;
+  background: transparent;
 }
 
 .workspace-main.is-resizing .upper-row,
@@ -294,30 +303,45 @@ const lowerGridRows = () => {
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  gap: var(--workspace-panel-gap);
   min-height: 0;
   overflow: hidden;
   position: relative;
 }
 
-.side-panel,
+.side-panel {
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
 .center-panel {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex: 1 1 0;
 }
 
-.center-panel {
-  flex: 1;
+.splitter-left,
+.splitter-right {
+  transform: translateX(calc(var(--workspace-panel-gap) / 2));
+}
+
+.splitter-right {
+  transform: translateX(calc(var(--workspace-panel-gap) / -2));
 }
 
 .lower-splitter-bar {
   position: relative;
   flex-shrink: 0;
-  height: 8px;
-  background: var(--bg-muted);
-  border-top: 1px solid var(--border-default);
+  height: 6px;
+  margin: 0;
+  background: transparent;
 }
 
 .lower-splitter-bar :deep(.panel-splitter.horizontal) {

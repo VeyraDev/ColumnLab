@@ -20,12 +20,10 @@ const summary = computed(() => {
   const m = metrics.value
   if (!m) return null
   const total = m.scanned_blocks + m.pruned_blocks
-  const scannedPct = total > 0 ? ((m.scanned_blocks / total) * 100).toFixed(1) : '0.0'
   return {
     scanned: m.scanned_blocks,
     pruned: m.pruned_blocks,
-    scannedPct,
-    prunedPct: total > 0 ? ((m.pruned_blocks / total) * 100).toFixed(1) : '0.0',
+    total,
     decoded: m.decoded_blocks,
     bytesRead: m.bytes_read,
     rowsOut: m.rows_output,
@@ -40,7 +38,7 @@ const filterText = computed(() => {
   if (match?.[1]?.trim()) return `WHERE ${match[1].trim()}`
   const groupMatch = sql.match(/\bgroup\s+by\b([\s\S]*?)(?:\border\b|\blimit\b|$)/i)
   if (groupMatch?.[1]?.trim()) return `GROUP BY ${groupMatch[1].trim()}`
-  return sql.length > 80 ? `${sql.slice(0, 80)}…` : sql
+  return sql.length > 120 ? `${sql.slice(0, 120)}…` : sql
 })
 
 const runMeta = computed(() => {
@@ -72,27 +70,27 @@ const statusDotClass = computed(() => {
 <template>
   <section class="execution-workbench">
     <div class="bench-grid">
-      <div class="bench-pane trace-pane">
-        <header class="pane-header">执行轨迹</header>
-        <div class="pane-body">
-          <div v-if="physicalPlanTree" class="plan-tree">
+      <div class="bench-card trace-pane">
+        <header class="card-header">执行轨迹</header>
+        <div class="card-body">
+          <div v-if="physicalPlanTree" class="plan-tree mono">
             <LogicalPlanTreeNode :node="physicalPlanTree" />
           </div>
           <p v-else class="empty">运行查询后显示算子树</p>
         </div>
       </div>
 
-      <div class="bench-pane stats-pane">
-        <header class="pane-header">执行统计</header>
-        <div class="pane-body">
+      <div class="bench-card stats-pane">
+        <header class="card-header">执行统计</header>
+        <div class="card-body">
           <template v-if="summary">
             <div class="stat-row">
               <span class="stat-label">扫描块</span>
-              <span class="stat-value mono">{{ summary.scanned }} / {{ summary.scanned + summary.pruned }} ({{ summary.scannedPct }}%)</span>
+              <span class="stat-value mono">{{ summary.scanned }} / {{ summary.total }}</span>
             </div>
             <div class="stat-row">
               <span class="stat-label">跳过块</span>
-              <span class="stat-value mono">{{ summary.pruned }} ({{ summary.prunedPct }}%)</span>
+              <span class="stat-value mono">{{ summary.pruned }}</span>
             </div>
             <div class="stat-row">
               <span class="stat-label">解码块</span>
@@ -115,24 +113,28 @@ const statusDotClass = computed(() => {
         </div>
       </div>
 
-      <div class="bench-pane filter-pane">
-        <header class="pane-header">筛选条件</header>
-        <div class="pane-body">
+      <div class="bench-card filter-pane">
+        <header class="card-header">筛选条件</header>
+        <div class="card-body">
           <p v-if="filterText" class="filter-text mono">{{ filterText }}</p>
           <p v-else class="empty">暂无筛选条件</p>
         </div>
       </div>
 
-      <div class="bench-pane status-pane">
-        <header class="pane-header">运行状态</header>
-        <div class="pane-body">
+      <div class="bench-card status-pane">
+        <header class="card-header">运行状态</header>
+        <div class="card-body">
           <div class="status-line">
             <span class="status-dot" :class="statusDotClass" />
             <span class="status-label">{{ statusLabel }}</span>
           </div>
           <div v-if="runMeta.createdAt" class="meta-row">
-            <span class="meta-label">开始</span>
+            <span class="meta-label">开始时间</span>
             <span class="meta-value mono">{{ runMeta.createdAt }}</span>
+          </div>
+          <div v-if="summary?.totalTime != null" class="meta-row">
+            <span class="meta-label">查询耗时</span>
+            <span class="meta-value mono">{{ formatDurationMs(summary.totalTime) }}</span>
           </div>
           <div v-if="currentQueryId" class="meta-row">
             <span class="meta-label">Query</span>
@@ -146,61 +148,57 @@ const statusDotClass = computed(() => {
 
 <style scoped>
 .execution-workbench {
-  display: flex;
-  flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: var(--bg-panel);
+  padding: 4px;
+  background: var(--bg-app);
 }
 
 .bench-grid {
-  flex: 1;
+  height: 100%;
   min-height: 0;
   display: grid;
-  grid-template-columns:
-    minmax(260px, 1.45fr)
-    minmax(150px, 0.8fr)
-    minmax(170px, 0.95fr)
-    minmax(150px, 0.8fr);
+  grid-template-columns: 1.45fr 0.8fr 0.9fr 0.8fr;
+  gap: var(--workspace-panel-gap);
 }
 
-.bench-pane {
+.bench-card {
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  border-right: 1px solid var(--border-default);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
 }
 
-.status-pane {
-  border-right: none;
-}
-
-.pane-header {
+.card-header {
   flex-shrink: 0;
-  height: 27px;
-  padding: 0 9px;
+  height: 32px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-raised);
 }
 
-.pane-body {
+.card-body {
   flex: 1;
   min-height: 0;
   min-width: 0;
   overflow: auto;
   overflow-x: hidden;
-  padding: 7px 9px;
+  padding: 6px 8px;
 }
 
 .plan-tree {
-  font-size: 11px;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-primary);
 }
 
 .stat-row,
@@ -208,14 +206,14 @@ const statusDotClass = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 8px;
-  min-height: 20px;
-  font-size: 11px;
+  gap: 10px;
+  min-height: 22px;
+  font-size: 13px;
 }
 
 .stat-label,
 .meta-label {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 
@@ -227,27 +225,28 @@ const statusDotClass = computed(() => {
 
 .filter-text {
   margin: 0;
-  font-size: 11px;
-  line-height: 1.45;
-  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-primary);
   word-break: break-word;
 }
 
 .status-line {
   display: flex;
   align-items: center;
-  gap: 6px;
-  min-height: 22px;
-  font-size: 11px;
+  gap: 8px;
+  min-height: 24px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
+  margin-bottom: 4px;
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--text-tertiary);
+  background: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -265,24 +264,15 @@ const statusDotClass = computed(() => {
 
 .empty {
   margin: 0;
-  font-size: 11px;
-  color: var(--text-tertiary);
+  font-size: 13px;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .bench-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-  }
-
-  .filter-pane {
-    border-right: none;
-  }
-
-  .stats-pane,
-  .trace-pane {
-    border-bottom: 1px solid var(--border-default);
   }
 }
 </style>
