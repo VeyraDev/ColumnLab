@@ -76,10 +76,15 @@ class BenchmarkRunner:
             self._publish(run_id, "env", "环境快照已采集", 0.2)
 
             if config.kind == "query" and config.dataset_id:
+                self._publish(run_id, "query", "运行 query benchmark", 0.35)
                 result = self._run_query_benchmark(db, config, record)
             else:
-                self._publish(run_id, "codec", "运行 codec benchmark", 0.4)
-                result = run_codec_benchmark(config)
+                self._publish(run_id, "codec", "运行 codec benchmark", 0.25)
+
+                def on_codec_progress(fraction: float, message: str) -> None:
+                    self._publish(run_id, "codec", message, 0.25 + 0.55 * fraction)
+
+                result = run_codec_benchmark(config, on_progress=on_codec_progress)
 
             self._publish(run_id, "persist", "写入样本", 0.8)
             for sample in result.samples:

@@ -83,6 +83,28 @@ def export_benchmark_json(
     return PlainTextResponse(json_text, media_type="application/json")
 
 
+@router.get("/benchmarks/{run_id}/progress")
+def get_benchmark_progress(
+    run_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    service = BenchmarkService(db)
+    record = service.get(run_id, user.id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="benchmark 不存在")
+    events = get_benchmark_runner().get_events(run_id)
+    latest = events[-1] if events else None
+    return success(
+        {
+            "status": record["status"],
+            "progress": latest.progress if latest else 0.0,
+            "stage": latest.stage if latest else None,
+            "message": latest.message if latest else None,
+        }
+    )
+
+
 @router.get("/benchmarks/{run_id}/events")
 async def benchmark_events(
     run_id: int,

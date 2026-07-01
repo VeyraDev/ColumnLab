@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import tracemalloc
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -37,7 +38,11 @@ class CodecBenchmarkResult:
     summary: dict[str, Any] = field(default_factory=dict)
 
 
-def run_codec_benchmark(config: BenchmarkConfig) -> CodecBenchmarkResult:
+def run_codec_benchmark(
+    config: BenchmarkConfig,
+    *,
+    on_progress: Callable[[float, str], None] | None = None,
+) -> CodecBenchmarkResult:
     dataset = generate_dataset(config.distribution, config.row_count, seed=config.seed)
     qty_vector = ValueVector.from_typed(dataset["logical_types"]["qty"], dataset["qty"])
     nulls = qty_vector.null_bitmap()
@@ -64,6 +69,11 @@ def run_codec_benchmark(config: BenchmarkConfig) -> CodecBenchmarkResult:
 
     for iteration in range(total_iters):
         phase = "warmup" if iteration < config.warmup_runs else "timed"
+        if on_progress is not None:
+            on_progress(
+                (iteration + 1) / total_iters,
+                f"codec 迭代 {iteration + 1}/{total_iters}",
+            )
         for col_name, vector, col_nulls in vectors:
             eq_target, lo_bound, hi_bound = column_targets[col_name]
             for encoding, codec in CODECS.items():

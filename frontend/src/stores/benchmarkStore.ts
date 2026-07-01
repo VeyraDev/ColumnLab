@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import {
+  benchmarkEventsUrl,
   exportBenchmarkCsv,
   exportBenchmarkJson,
   fetchBenchmark,
+  fetchBenchmarkProgress,
   fetchBenchmarkSamples,
   submitBenchmark,
   type BenchmarkConfig,
@@ -88,14 +90,17 @@ export const useBenchmarkStore = defineStore('benchmark', () => {
     }
   }
 
+  function applyProgressEvent(payload: BenchmarkEvent) {
+    events.value.push(payload)
+    progress.value = payload.progress
+  }
+
   function subscribeEvents(runId: number) {
     closeEvents()
-    const es = new EventSource(`/api/benchmarks/${runId}/events`, { withCredentials: true })
+    const es = new EventSource(benchmarkEventsUrl(runId))
     es.onmessage = (ev) => {
       try {
-        const payload = JSON.parse(ev.data) as BenchmarkEvent
-        events.value.push(payload)
-        progress.value = payload.progress
+        applyProgressEvent(JSON.parse(ev.data) as BenchmarkEvent)
       } catch {
         /* ignore malformed */
       }
@@ -103,12 +108,36 @@ export const useBenchmarkStore = defineStore('benchmark', () => {
     eventSource.value = es
   }
 
+  async function syncProgress(runId: number) {
+    try {
+      const snap = await fetchBenchmarkProgress(runId)
+      if (snap.progress > progress.value) {
+        progress.value = snap.progress
+      }
+      if (snap.stage && snap.message) {
+        const last = events.value[events.value.length - 1]
+        if (!last || last.stage !== snap.stage || last.message !== snap.message) {
+          applyProgressEvent({
+            run_id: runId,
+            stage: snap.stage,
+            message: snap.message,
+            progress: snap.progress,
+          })
+        }
+      }
+    } catch {
+      /* polling fallback should not abort run */
+    }
+  }
+
   async function pollUntilDone(runId: number) {
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 600; i++) {
+      await syncProgress(runId)
       const run = await fetchBenchmark(runId)
       currentRun.value = run
       if (['completed', 'failed', 'cancelled'].includes(run.status)) {
         if (run.status === 'failed') error.value = run.error_message ?? 'benchmark 失败'
+        progress.value = run.status === 'completed' ? 1 : progress.value
         return
       }
       await new Promise((r) => setTimeout(r, 400))

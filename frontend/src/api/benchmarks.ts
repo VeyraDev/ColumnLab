@@ -1,4 +1,5 @@
 import request from './request'
+import { TOKEN_KEY } from '@/types/api'
 
 export interface BenchmarkConfig {
   kind: 'codec' | 'query'
@@ -82,15 +83,26 @@ export async function fetchBenchmarkSamples(
   return data.data
 }
 
+export interface BenchmarkProgress {
+  status: string
+  progress: number
+  stage: string | null
+  message: string | null
+}
+
+export async function fetchBenchmarkProgress(runId: number): Promise<BenchmarkProgress> {
+  const { data } = await request.get<{ data: BenchmarkProgress }>(`/benchmarks/${runId}/progress`)
+  return data.data
+}
+
 export function benchmarkEventsUrl(runId: number): string {
-  const token = localStorage.getItem('columnlab_token')
-  const base = '/api/benchmarks'
+  const token = localStorage.getItem(TOKEN_KEY)
   const qs = token ? `?token=${encodeURIComponent(token)}` : ''
-  return `${base}/${runId}/events${qs}`
+  return `/api/benchmarks/${runId}/events${qs}`
 }
 
 export async function exportBenchmarkCsv(runId: number): Promise<string> {
-  const token = localStorage.getItem('columnlab_token')
+  const token = localStorage.getItem(TOKEN_KEY)
   const resp = await fetch(`/api/benchmarks/${runId}/export.csv`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
@@ -99,7 +111,7 @@ export async function exportBenchmarkCsv(runId: number): Promise<string> {
 }
 
 export async function exportBenchmarkJson(runId: number): Promise<string> {
-  const token = localStorage.getItem('columnlab_token')
+  const token = localStorage.getItem(TOKEN_KEY)
   const resp = await fetch(`/api/benchmarks/${runId}/export.json`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
