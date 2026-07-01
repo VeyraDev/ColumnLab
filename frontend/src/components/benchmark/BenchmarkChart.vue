@@ -1,23 +1,27 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { encodingLabel } from '@/utils/terminology'
+import { formatBytes } from '@/utils/format'
 
 export interface ChartBar {
   key: string
   label: string
   value: number
-  group?: string
+  absoluteBytes?: number
+  relativePercent?: number
 }
 
 const props = defineProps<{
   bars: ChartBar[]
   title?: string
   yLabel?: string
+  relativeMode?: boolean
 }>()
 
 const EXPORT_WIDTH = 1600
 const EXPORT_HEIGHT = 420
-const CHART_HEIGHT = 280
-const PAD = { top: 24, right: 16, bottom: 48, left: 48 }
+const CHART_HEIGHT = 300
+const PAD = { top: 28, right: 16, bottom: 52, left: 56 }
 
 const containerRef = ref<HTMLElement | null>(null)
 const chartWidth = ref(640)
@@ -42,23 +46,44 @@ onUnmounted(() => {
 const innerWidth = computed(() => chartWidth.value - PAD.left - PAD.right)
 const innerHeight = computed(() => CHART_HEIGHT - PAD.top - PAD.bottom)
 
-const maxVal = computed(() => Math.max(...props.bars.map((b) => b.value), 1))
+const maxVal = computed(() => {
+  if (props.relativeMode) return Math.max(100, ...props.bars.map((b) => b.relativePercent ?? b.value), 1)
+  return Math.max(...props.bars.map((b) => b.value), 1)
+})
+
+const baselineY = computed(() => {
+  if (!props.relativeMode) return null
+  const y = PAD.top + innerHeight.value - (100 / maxVal.value) * innerHeight.value
+  return y
+})
 
 const barLayout = computed(() => {
   const n = props.bars.length || 1
-  const gap = 8
-  const barW = Math.max(12, (innerWidth.value - gap * (n - 1)) / n)
+  const gap = 12
+  const barW = Math.max(36, (innerWidth.value - gap * (n - 1)) / n)
   return props.bars.map((bar, idx) => {
-    const h = (bar.value / maxVal.value) * innerHeight.value
+    const val = props.relativeMode ? (bar.relativePercent ?? bar.value) : bar.value
+    const h = (val / maxVal.value) * innerHeight.value
     return {
       ...bar,
+      displayLabel: encodingLabel(bar.label),
       x: PAD.left + idx * (barW + gap),
       y: PAD.top + innerHeight.value - h,
       w: barW,
       h,
+      val,
     }
   })
 })
+
+function valueLabel(bar: ChartBar & { val: number }): string {
+  if (props.relativeMode) {
+    const pct = `${(bar.relativePercent ?? bar.val).toFixed(1)}%`
+    const bytes = bar.absoluteBytes != null ? formatBytes(bar.absoluteBytes) : ''
+    return bytes ? `${pct}\n${bytes}` : pct
+  }
+  return String(Math.round(bar.val))
+}
 
 function exportPng() {
   const svg = svgRef.value
@@ -98,7 +123,7 @@ function exportPng() {
   <section class="chart-panel">
     <header>
       <h2>{{ title ?? '实验指标' }}</h2>
-      <button type="button" class="export-btn" @click="exportPng">导出 PNG (1600px)</button>
+      <button type="button" class="export-btn" @click="exportPng">导出 PNG</button>
     </header>
     <div ref="containerRef" class="chart-wrap">
       <svg
@@ -117,41 +142,64 @@ function exportPng() {
           stroke="#d1d5db"
           stroke-width="1"
         />
+        <line
+          v-if="relativeMode && baselineY != null"
+          :x1="PAD.left"
+          :y1="baselineY"
+          :x2="chartWidth - PAD.right"
+          :y2="baselineY"
+          stroke="#9ca3af"
+          stroke-width="1"
+          stroke-dasharray="4 3"
+        />
+        <text
+          v-if="relativeMode"
+          :x="chartWidth - PAD.right"
+          :y="(baselineY ?? 0) - 4"
+          text-anchor="end"
+          font-size="10"
+          fill="#6b7280"
+        >
+          RAW 基准 100%
+        </text>
         <g v-for="bar in barLayout" :key="bar.key">
-          <rect
-            :x="bar.x"
-            :y="bar.y"
-            :width="bar.w"
-            :height="bar.h"
-            fill="#6b7280"
-            rx="2"
-          />
+          <rect :x="bar.x" :y="bar.y" :width="bar.w" :height="bar.h" fill="#6b7280" rx="2" />
           <text
             :x="bar.x + bar.w / 2"
-            :y="PAD.top + innerHeight + 16"
+            :y="PAD.top + innerHeight + 18"
             text-anchor="middle"
-            font-size="10"
-            fill="#6b7280"
+            font-size="11"
+            fill="#374151"
           >
-            {{ bar.label }}
+            {{ bar.displayLabel }}
           </text>
           <text
             :x="bar.x + bar.w / 2"
-            :y="bar.y - 4"
+            :y="bar.y - 6"
             text-anchor="middle"
-            font-size="9"
+            font-size="10"
             fill="#374151"
           >
-            {{ Math.round(bar.value) }}
+            {{ valueLabel(bar).split('\n')[0] }}
+          </text>
+          <text
+            v-if="valueLabel(bar).includes('\n')"
+            :x="bar.x + bar.w / 2"
+            :y="bar.y - 18"
+            text-anchor="middle"
+            font-size="9"
+            fill="#6b7280"
+          >
+            {{ valueLabel(bar).split('\n')[1] }}
           </text>
         </g>
         <text
-          :x="12"
+          :x="14"
           :y="PAD.top + innerHeight / 2"
           font-size="10"
           fill="#9ca3af"
-          transform-origin="12 center"
-          transform="rotate(-90 12 80)"
+          transform-origin="14 center"
+          transform="rotate(-90 14 90)"
         >
           {{ yLabel ?? 'value' }}
         </text>
@@ -166,9 +214,6 @@ function exportPng() {
   border-radius: var(--radius-panel);
   padding: 10px 12px;
   background: var(--bg-panel);
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
 }
 
 header {
@@ -176,12 +221,11 @@ header {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
-  flex-shrink: 0;
 }
 
 h2 {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -192,12 +236,10 @@ h2 {
   border-radius: var(--radius-control);
   background: var(--bg-muted);
   cursor: pointer;
-  color: var(--text-secondary);
 }
 
 .chart-wrap {
-  flex: 1;
-  min-height: 280px;
+  min-height: 300px;
   width: 100%;
 }
 </style>

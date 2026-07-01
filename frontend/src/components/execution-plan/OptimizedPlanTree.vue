@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { LogicalPlanNode, OptimizerTraceEntry } from '@/api/queries'
+import { buildBlockPruningStats } from '@/utils/executionSummary'
+import {
+  optimizerLabel,
+  optimizerStatusLabels,
+  optimizerSummarySentence,
+} from '@/utils/terminology'
 import LogicalPlanTreeNode from './LogicalPlanTreeNode.vue'
 
-defineProps<{
+const props = defineProps<{
   logicalNode: LogicalPlanNode | null
   optimizedNode: LogicalPlanNode | null
   trace: OptimizerTraceEntry[]
@@ -13,6 +19,33 @@ defineProps<{
 }>()
 
 const showOptimized = ref(true)
+
+const traceRows = computed(() => {
+  const knownRules = [
+    'projection_pruning',
+    'constant_folding',
+    'predicate_normalization',
+    'predicate_pushdown',
+    'aggregate_pushdown',
+    'limit_pushdown',
+  ]
+  const byRule = new Map(props.trace.map((e) => [e.rule, e]))
+  return knownRules.map((rule) => {
+    const entry = byRule.get(rule)
+    if (entry?.changed) return { rule, label: optimizerLabel(rule), status: optimizerStatusLabels.applied }
+    if (entry && !entry.changed) return { rule, label: optimizerLabel(rule), status: optimizerStatusLabels.unchanged }
+    return { rule, label: optimizerLabel(rule), status: optimizerStatusLabels.notApplicable }
+  })
+})
+
+const appliedRules = computed(() => props.trace.filter((e) => e.changed).map((e) => e.rule))
+
+const optimizationSummary = computed(() => optimizerSummarySentence(appliedRules.value))
+
+const pruningStats = computed(() => {
+  if (!props.totalBlocks) return null
+  return buildBlockPruningStats(props.prunedBlocks ?? 0, props.totalBlocks)
+})
 </script>
 
 <template>
@@ -23,18 +56,32 @@ const showOptimized = ref(true)
         <button type="button" :class="{ active: !showOptimized }" @click="showOptimized = false">优化前</button>
         <button type="button" :class="{ active: showOptimized }" @click="showOptimized = true">优化后</button>
       </div>
-      <span v-if="summary" class="plan-summary mono">{{ summary }}</span>
     </div>
-    <p v-if="totalBlocks" class="prune-stats">
-      块裁剪：{{ prunedBlocks ?? 0 }} / {{ totalBlocks }} 跳过
-    </p>
-    <ul v-if="trace.length" class="trace-list">
-      <li v-for="(entry, idx) in trace" :key="idx">
-        <span class="rule">{{ entry.rule }}</span>
-        <span v-if="entry.changed" class="changed">已应用</span>
-        <span v-else class="unchanged">未变化</span>
-      </li>
-    </ul>
+
+    <section v-if="pruningStats" class="pruning-panel">
+      <div class="pruning-title">块裁剪结果</div>
+      <dl class="pruning-grid">
+        <div><dt>候选列块</dt><dd class="mono">{{ pruningStats.totalBlocks }}</dd></div>
+        <div><dt>提前排除</dt><dd class="mono">{{ pruningStats.prunedBlocks }}</dd></div>
+        <div><dt>进入执行</dt><dd class="mono">{{ pruningStats.entered }}</dd></div>
+        <div><dt>裁剪率</dt><dd class="mono">{{ pruningStats.rate.toFixed(1) }}%</dd></div>
+      </dl>
+      <p class="pruning-note">
+        被排除的列块与查询条件的数值范围或字典内容不相交，因此无需读取编码载荷。
+      </p>
+    </section>
+
+    <section v-if="trace.length" class="trace-panel">
+      <div class="trace-title">优化规则</div>
+      <ul class="trace-list">
+        <li v-for="row in traceRows" :key="row.rule">
+          <span class="rule">{{ row.label }}</span>
+          <span class="status" :class="{ applied: row.status === optimizerStatusLabels.applied }">{{ row.status }}</span>
+        </li>
+      </ul>
+      <p class="opt-summary">{{ optimizationSummary }}</p>
+    </section>
+
     <div v-if="showOptimized ? optimizedNode : logicalNode" class="plan-body">
       <LogicalPlanTreeNode :node="(showOptimized ? optimizedNode : logicalNode)!" />
     </div>
@@ -47,7 +94,7 @@ const showOptimized = ref(true)
   flex: 1;
   min-width: 0;
   overflow: auto;
-  padding: 6px 10px;
+  padding: 8px 10px;
   background: var(--bg-panel);
 }
 
@@ -55,22 +102,22 @@ const showOptimized = ref(true)
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
 .plan-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .plan-tabs button {
-  height: 22px;
+  height: 24px;
   padding: 0 8px;
   border: 1px solid var(--border-default);
   background: var(--bg-muted);
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
 }
 
@@ -80,42 +127,81 @@ const showOptimized = ref(true)
   color: #fff;
 }
 
-.plan-summary {
-  font-size: 10px;
+.pruning-panel,
+.trace-panel {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--bg-muted);
+}
+
+.pruning-title,
+.trace-title {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.pruning-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.pruning-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pruning-grid dt {
   color: var(--text-tertiary);
 }
 
-.prune-stats {
-  margin: 0 0 6px;
-  font-size: 10px;
+.pruning-grid dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pruning-note,
+.opt-summary {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
   color: var(--text-secondary);
 }
 
 .trace-list {
-  margin: 0 0 8px;
+  margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 10px;
-  color: var(--text-tertiary);
+  font-size: 11px;
 }
 
 .trace-list li {
   display: flex;
-  gap: 6px;
-  padding: 1px 0;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
 }
 
 .rule {
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
-.changed {
-  color: #15803d;
+.status {
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
-.unchanged {
-  color: var(--text-tertiary);
+.status.applied {
+  color: var(--success);
+  font-weight: 600;
 }
 
 .plan-empty {

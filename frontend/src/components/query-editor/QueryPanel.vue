@@ -159,7 +159,13 @@ defineExpose({ runQuery })
       </div>
 
       <div v-show="activeTab === 'profile'" class="tab-panel profile-tab">
-        <OperatorMetrics :metrics="metrics" :operators="operatorMetrics" :status="status" />
+        <OperatorMetrics
+          :metrics="metrics"
+          :operators="operatorMetrics"
+          :status="status"
+          :pruned-blocks="prunedBlocks"
+          :total-blocks="totalBlocks"
+        />
         <ExecutionTrace
           :status="status"
           :physical-plan-tree="physicalPlanTree"

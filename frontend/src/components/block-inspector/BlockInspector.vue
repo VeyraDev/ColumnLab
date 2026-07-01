@@ -9,6 +9,7 @@ import RleRunPreview from './RleRunPreview.vue'
 import DictionaryPreview from './DictionaryPreview.vue'
 import { getBlockPreview, type BlockPreview } from '@/api/datasets'
 import { formatBlockLabel, formatBytes } from '@/utils/format'
+import { codecReasonLabel } from '@/utils/terminology'
 import type { SelectedBlockMeta } from '@/stores/storageMapStore'
 
 const props = defineProps<{
@@ -69,8 +70,12 @@ const candidateRows = computed(() => {
   const cands = preview.value?.candidates ?? []
   return cands.map((c) => ({
     encoding: c.encoding,
-    size: formatBytes(c.encoded_bytes),
+    encoded_bytes: c.encoded_bytes,
+    raw_bytes: c.raw_bytes,
+    gain: c.gain,
+    encode_ns: c.encode_ns,
     selected: c.selected,
+    reason: c.reason,
   }))
 })
 
@@ -84,7 +89,7 @@ const decisionRows = computed(() => {
     rows.push({ label: '字典项', value: String(dict.dictionary_count) })
   }
   if (preview.value?.selection_reason) {
-    rows.push({ label: '选择依据', value: preview.value.selection_reason })
+    rows.push({ label: '选择依据', value: codecReasonLabel(preview.value.selection_reason) })
   } else if (props.selectedBlock?.prune_reason) {
     rows.push({ label: '选择依据', value: props.selectedBlock.prune_reason })
   }

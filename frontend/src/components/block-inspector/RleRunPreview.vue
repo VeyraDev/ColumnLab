@@ -11,25 +11,37 @@ defineProps<{
 </script>
 
 <template>
-  <table class="run-table">
-    <thead>
-      <tr>
-        <th>起始行</th>
-        <th>值</th>
-        <th>游程长度</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(run, idx) in runs" :key="idx">
-        <td class="mono">{{ run.start }}</td>
-        <td class="mono">{{ run.value }}</td>
-        <td class="mono">{{ run.run_length }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="rle-preview">
+    <p class="explain">
+      RLE 保存「值 + 连续重复次数」，例如 A A A B B 保存为 (A,3)、(B,2)。
+    </p>
+    <table class="run-table">
+      <thead>
+        <tr>
+          <th>起始行偏移</th>
+          <th>值</th>
+          <th>连续重复次数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(run, idx) in runs" :key="idx">
+          <td class="mono">{{ run.start }}</td>
+          <td class="mono">{{ run.value }}</td>
+          <td class="mono">{{ run.run_length }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <style scoped>
+.explain {
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
 .run-table {
   width: 100%;
   border-collapse: collapse;

@@ -1,0 +1,1400 @@
+{
+  "high_cardinality": {
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": null,
+      "distribution": "high_cardinality",
+      "kind": "codec",
+      "pruning_enabled": false,
+      "repeat_runs": 5,
+      "row_count": 100000,
+      "seed": 42,
+      "sql": null,
+      "warmup_runs": 2
+    },
+    "elapsed_seconds": 385.74009069998283,
+    "summary": {
+      "comparison": {
+        "qty.dict_vs_raw_bytes_ratio": 1.051057958813944,
+        "qty.rle_vs_raw_bytes_ratio": 1.1230695574689726,
+        "region.dict_vs_raw_bytes_ratio": 1.0294459942375533,
+        "region.rle_vs_raw_bytes_ratio": 1.067346405475267
+      },
+      "distribution": "high_cardinality",
+      "kind": "codec",
+      "metrics": {
+        "qty.DICTIONARY.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 1234057100.0,
+          "mean": 827508040.0,
+          "median": 646064000.0,
+          "min": 611143500.0,
+          "p95": 1234057100.0,
+          "stdev": 258368461.2353884
+        },
+        "qty.DICTIONARY.compression_ratio": {
+          "count": 5.0,
+          "max": -0.05105795881394393,
+          "mean": -0.05105795881394393,
+          "median": -0.05105795881394393,
+          "min": -0.05105795881394393,
+          "p95": -0.05105795881394393,
+          "stdev": 0.0
+        },
+        "qty.DICTIONARY.decode_ns": {
+          "count": 5.0,
+          "max": 1237701600.0,
+          "mean": 884330900.0,
+          "median": 733987700.0,
+          "min": 673705800.0,
+          "p95": 1237701600.0,
+          "stdev": 234925835.77129188
+        },
+        "qty.DICTIONARY.encode_ns": {
+          "count": 5.0,
+          "max": 11430190500.0,
+          "mean": 8323711700.0,
+          "median": 8065919800.0,
+          "min": 6908040000.0,
+          "p95": 11430190500.0,
+          "stdev": 1639614423.3436518
+        },
+        "qty.DICTIONARY.encoded_bytes": {
+          "count": 5.0,
+          "max": 853993.0,
+          "mean": 853993.0,
+          "median": 853993.0,
+          "min": 853993.0,
+          "p95": 853993.0,
+          "stdev": 0.0
+        },
+        "qty.DICTIONARY.filter_eq_ns": {
+          "count": 5.0,
+          "max": 1218273300.0,
+          "mean": 863041680.0,
+          "median": 718146400.0,
+          "min": 593140100.0,
+          "p95": 1218273300.0,
+          "stdev": 266845733.1025355
+        },
+        "qty.DICTIONARY.filter_range_ns": {
+          "count": 5.0,
+          "max": 44300.0,
+          "mean": 28620.0,
+          "median": 28000.0,
+          "min": 14500.0,
+          "p95": 44300.0,
+          "stdev": 11110.247521995178
+        },
+        "qty.DICTIONARY.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 14753664.0,
+          "mean": 14753564.8,
+          "median": 14753536.0,
+          "min": 14753480.0,
+          "p95": 14753664.0,
+          "stdev": 83.53777588612232
+        },
+        "qty.RAW.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 202453300.0,
+          "mean": 162671680.0,
+          "median": 169470500.0,
+          "min": 119236500.0,
+          "p95": 202453300.0,
+          "stdev": 32858647.326778382
+        },
+        "qty.RAW.compression_ratio": {
+          "count": 5.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95": 0.0,
+          "stdev": 0.0
+        },
+        "qty.RAW.decode_ns": {
+          "count": 5.0,
+          "max": 161592700.0,
+          "mean": 117237740.0,
+          "median": 100716500.0,
+          "min": 83131000.0,
+          "p95": 161592700.0,
+          "stdev": 33565637.91716761
+        },
+        "qty.RAW.encode_ns": {
+          "count": 5.0,
+          "max": 1068918400.0,
+          "mean": 868812220.0,
+          "median": 799145400.0,
+          "min": 699858600.0,
+          "p95": 1068918400.0,
+          "stdev": 159198385.57995996
+        },
+        "qty.RAW.encoded_bytes": {
+          "count": 5.0,
+          "max": 812508.0,
+          "mean": 812508.0,
+          "median": 812508.0,
+          "min": 812508.0,
+          "p95": 812508.0,
+          "stdev": 0.0
+        },
+        "qty.RAW.filter_eq_ns": {
+          "count": 5.0,
+          "max": 278336900.0,
+          "mean": 205786260.0,
+          "median": 195688000.0,
+          "min": 143314600.0,
+          "p95": 278336900.0,
+          "stdev": 50289828.646023445
+        },
+        "qty.RAW.filter_range_ns": {
+          "count": 5.0,
+          "max": 529394500.0,
+          "mean": 409949300.0,
+          "median": 360918300.0,
+          "min": 305216600.0,
+          "p95": 529394500.0,
+          "stdev": 86189367.23273933
+        },
+        "qty.RAW.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 5035718.0,
+          "mean": 5035673.2,
+          "median": 5035662.0,
+          "min": 5035662.0,
+          "p95": 5035718.0,
+          "stdev": 22.4
+        },
+        "qty.RLE.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 510578500.0,
+          "mean": 319506080.0,
+          "median": 230721500.0,
+          "min": 217448100.0,
+          "p95": 510578500.0,
+          "stdev": 120640173.28350288
+        },
+        "qty.RLE.compression_ratio": {
+          "count": 5.0,
+          "max": -0.12306955746897263,
+          "mean": -0.12306955746897263,
+          "median": -0.12306955746897263,
+          "min": -0.12306955746897263,
+          "p95": -0.12306955746897263,
+          "stdev": 0.0
+        },
+        "qty.RLE.decode_ns": {
+          "count": 5.0,
+          "max": 425292600.0,
+          "mean": 342773960.0,
+          "median": 335785300.0,
+          "min": 264751100.0,
+          "p95": 425292600.0,
+          "stdev": 69205886.35911255
+        },
+        "qty.RLE.encode_ns": {
+          "count": 5.0,
+          "max": 3831661200.0,
+          "mean": 2906751880.0,
+          "median": 2505180800.0,
+          "min": 2177964400.0,
+          "p95": 3831661200.0,
+          "stdev": 675959243.257016
+        },
+        "qty.RLE.encoded_bytes": {
+          "count": 5.0,
+          "max": 912503.0,
+          "mean": 912503.0,
+          "median": 912503.0,
+          "min": 912503.0,
+          "p95": 912503.0,
+          "stdev": 0.0
+        },
+        "qty.RLE.filter_eq_ns": {
+          "count": 5.0,
+          "max": 491102400.0,
+          "mean": 364868140.0,
+          "median": 363210200.0,
+          "min": 266673500.0,
+          "p95": 491102400.0,
+          "stdev": 77372269.64207783
+        },
+        "qty.RLE.filter_range_ns": {
+          "count": 5.0,
+          "max": 822813500.0,
+          "mean": 564349800.0,
+          "median": 449778200.0,
+          "min": 369584200.0,
+          "p95": 822813500.0,
+          "stdev": 181071708.54663077
+        },
+        "qty.RLE.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 17553753.0,
+          "mean": 17553677.8,
+          "median": 17553697.0,
+          "min": 17553593.0,
+          "p95": 17553753.0,
+          "stdev": 53.68947755380005
+        },
+        "region.DICTIONARY.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 1250519300.0,
+          "mean": 991985120.0,
+          "median": 880545300.0,
+          "min": 795542400.0,
+          "p95": 1250519300.0,
+          "stdev": 205409975.5301227
+        },
+        "region.DICTIONARY.compression_ratio": {
+          "count": 5.0,
+          "max": -0.02944599423755334,
+          "mean": -0.02944599423755334,
+          "median": -0.02944599423755334,
+          "min": -0.02944599423755334,
+          "p95": -0.02944599423755334,
+          "stdev": 0.0
+        },
+        "region.DICTIONARY.decode_ns": {
+          "count": 5.0,
+          "max": 1302220400.0,
+          "mean": 1007573700.0,
+          "median": 910442100.0,
+          "min": 724861200.0,
+          "p95": 1302220400.0,
+          "stdev": 245864928.41951248
+        },
+        "region.DICTIONARY.encode_ns": {
+          "count": 5.0,
+          "max": 13409354300.0,
+          "mean": 10221324520.0,
+          "median": 8355825600.0,
+          "min": 7847658700.0,
+          "p95": 13409354300.0,
+          "stdev": 2577462473.8195615
+        },
+        "region.DICTIONARY.encoded_bytes": {
+          "count": 5.0,
+          "max": 1528507.0,
+          "mean": 1528507.0,
+          "median": 1528507.0,
+          "min": 1528507.0,
+          "p95": 1528507.0,
+          "stdev": 0.0
+        },
+        "region.DICTIONARY.filter_eq_ns": {
+          "count": 5.0,
+          "max": 1295232200.0,
+          "mean": 999163240.0,
+          "median": 865080800.0,
+          "min": 753827600.0,
+          "p95": 1295232200.0,
+          "stdev": 238670743.3515101
+        },
+        "region.DICTIONARY.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 23627185.0,
+          "mean": 23627085.8,
+          "median": 23627057.0,
+          "min": 23627001.0,
+          "p95": 23627185.0,
+          "stdev": 83.53777588612232
+        },
+        "region.RAW.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 9209833800.0,
+          "mean": 7388718900.0,
+          "median": 7646938600.0,
+          "min": 5642694000.0,
+          "p95": 9209833800.0,
+          "stdev": 1433832204.24761
+        },
+        "region.RAW.compression_ratio": {
+          "count": 5.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95": 0.0,
+          "stdev": 0.0
+        },
+        "region.RAW.decode_ns": {
+          "count": 5.0,
+          "max": 169592900.0,
+          "mean": 129255500.0,
+          "median": 113386600.0,
+          "min": 98473500.0,
+          "p95": 169592900.0,
+          "stdev": 31623872.037244268
+        },
+        "region.RAW.encode_ns": {
+          "count": 5.0,
+          "max": 1900252200.0,
+          "mean": 1458869880.0,
+          "median": 1268757100.0,
+          "min": 1068852200.0,
+          "p95": 1900252200.0,
+          "stdev": 362022419.3711953
+        },
+        "region.RAW.encoded_bytes": {
+          "count": 5.0,
+          "max": 1484786.0,
+          "mean": 1484786.0,
+          "median": 1484786.0,
+          "min": 1484786.0,
+          "p95": 1484786.0,
+          "stdev": 0.0
+        },
+        "region.RAW.filter_eq_ns": {
+          "count": 5.0,
+          "max": 323783100.0,
+          "mean": 247769660.0,
+          "median": 208509600.0,
+          "min": 188323100.0,
+          "p95": 323783100.0,
+          "stdev": 61982349.54432108
+        },
+        "region.RAW.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 10050290.0,
+          "mean": 10050245.2,
+          "median": 10050234.0,
+          "min": 10050234.0,
+          "p95": 10050290.0,
+          "stdev": 22.4
+        },
+        "region.RLE.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 9153638000.0,
+          "mean": 7460562520.0,
+          "median": 6974999500.0,
+          "min": 5582082100.0,
+          "p95": 9153638000.0,
+          "stdev": 1451084924.765266
+        },
+        "region.RLE.compression_ratio": {
+          "count": 5.0,
+          "max": -0.06734640547526705,
+          "mean": -0.06734640547526705,
+          "median": -0.06734640547526705,
+          "min": -0.06734640547526705,
+          "p95": -0.06734640547526705,
+          "stdev": 0.0
+        },
+        "region.RLE.decode_ns": {
+          "count": 5.0,
+          "max": 576450300.0,
+          "mean": 454712440.0,
+          "median": 530359000.0,
+          "min": 275540500.0,
+          "p95": 576450300.0,
+          "stdev": 123071280.20375185
+        },
+        "region.RLE.encode_ns": {
+          "count": 5.0,
+          "max": 6627790000.0,
+          "mean": 5416790080.0,
+          "median": 6394121900.0,
+          "min": 3716925400.0,
+          "p95": 6627790000.0,
+          "stdev": 1317239619.7098436
+        },
+        "region.RLE.encoded_bytes": {
+          "count": 5.0,
+          "max": 1584781.0,
+          "mean": 1584781.0,
+          "median": 1584781.0,
+          "min": 1584781.0,
+          "p95": 1584781.0,
+          "stdev": 0.0
+        },
+        "region.RLE.filter_eq_ns": {
+          "count": 5.0,
+          "max": 663666000.0,
+          "mean": 537779180.0,
+          "median": 633548700.0,
+          "min": 344359600.0,
+          "p95": 663666000.0,
+          "stdev": 134361492.02702984
+        },
+        "region.RLE.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 23615294.0,
+          "mean": 23615110.0,
+          "median": 23615022.0,
+          "min": 23615022.0,
+          "p95": 23615294.0,
+          "stdev": 112.68362791461766
+        },
+        "row_aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 13023400.0,
+          "mean": 8711340.0,
+          "median": 7317500.0,
+          "min": 4685000.0,
+          "p95": 13023400.0,
+          "stdev": 3011990.379533109
+        },
+        "row_filter_eq_ns": {
+          "count": 5.0,
+          "max": 7632100.0,
+          "mean": 5743260.0,
+          "median": 5700800.0,
+          "min": 3635900.0,
+          "p95": 7632100.0,
+          "stdev": 1406294.200514245
+        },
+        "row_filter_range_ns": {
+          "count": 5.0,
+          "max": 17289900.0,
+          "mean": 13135040.0,
+          "median": 12610200.0,
+          "min": 8365900.0,
+          "p95": 17289900.0,
+          "stdev": 3535714.323640981
+        }
+      },
+      "repeat_runs": 5,
+      "row_count": 100000,
+      "seed": 42,
+      "warmup_runs": 2
+    }
+  },
+  "low_cardinality": {
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": null,
+      "distribution": "low_cardinality",
+      "kind": "codec",
+      "pruning_enabled": false,
+      "repeat_runs": 5,
+      "row_count": 100000,
+      "seed": 42,
+      "sql": null,
+      "warmup_runs": 2
+    },
+    "elapsed_seconds": 133.95395880006254,
+    "summary": {
+      "comparison": {
+        "qty.dict_vs_raw_bytes_ratio": 0.061637546953383845,
+        "qty.rle_vs_raw_bytes_ratio": 0.9856838332668725,
+        "region.dict_vs_raw_bytes_ratio": 0.05740916789847951,
+        "region.rle_vs_raw_bytes_ratio": 0.8745110496192179
+      },
+      "distribution": "low_cardinality",
+      "kind": "codec",
+      "metrics": {
+        "qty.DICTIONARY.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 138776800.0,
+          "mean": 118204280.0,
+          "median": 118569500.0,
+          "min": 99544400.0,
+          "p95": 138776800.0,
+          "stdev": 13513821.558892954
+        },
+        "qty.DICTIONARY.compression_ratio": {
+          "count": 5.0,
+          "max": 0.9383624530466161,
+          "mean": 0.9383624530466161,
+          "median": 0.9383624530466161,
+          "min": 0.9383624530466161,
+          "p95": 0.9383624530466161,
+          "stdev": 0.0
+        },
+        "qty.DICTIONARY.decode_ns": {
+          "count": 5.0,
+          "max": 163310500.0,
+          "mean": 146937360.0,
+          "median": 138686400.0,
+          "min": 135949200.0,
+          "p95": 163310500.0,
+          "stdev": 11448590.850336123
+        },
+        "qty.DICTIONARY.encode_ns": {
+          "count": 5.0,
+          "max": 2359370000.0,
+          "mean": 2250415740.0,
+          "median": 2270283600.0,
+          "min": 2120133800.0,
+          "p95": 2359370000.0,
+          "stdev": 86927397.56292258
+        },
+        "qty.DICTIONARY.encoded_bytes": {
+          "count": 5.0,
+          "max": 50081.0,
+          "mean": 50081.0,
+          "median": 50081.0,
+          "min": 50081.0,
+          "p95": 50081.0,
+          "stdev": 0.0
+        },
+        "qty.DICTIONARY.filter_eq_ns": {
+          "count": 5.0,
+          "max": 161048600.0,
+          "mean": 147495880.0,
+          "median": 151716100.0,
+          "min": 132310400.0,
+          "p95": 161048600.0,
+          "stdev": 11221495.142341772
+        },
+        "qty.DICTIONARY.filter_range_ns": {
+          "count": 5.0,
+          "max": 15600.0,
+          "mean": 13140.0,
+          "median": 13000.0,
+          "min": 11500.0,
+          "p95": 15600.0,
+          "stdev": 1433.3178293735134
+        },
+        "qty.DICTIONARY.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 4153723.0,
+          "mean": 4153644.6,
+          "median": 4153611.0,
+          "min": 4153611.0,
+          "p95": 4153723.0,
+          "stdev": 44.8
+        },
+        "qty.RAW.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 116764300.0,
+          "mean": 112171120.0,
+          "median": 114720200.0,
+          "min": 100464600.0,
+          "p95": 116764300.0,
+          "stdev": 5928768.087014367
+        },
+        "qty.RAW.compression_ratio": {
+          "count": 5.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95": 0.0,
+          "stdev": 0.0
+        },
+        "qty.RAW.decode_ns": {
+          "count": 5.0,
+          "max": 115064200.0,
+          "mean": 92993820.0,
+          "median": 90575200.0,
+          "min": 78840900.0,
+          "p95": 115064200.0,
+          "stdev": 12490983.802311169
+        },
+        "qty.RAW.encode_ns": {
+          "count": 5.0,
+          "max": 795165900.0,
+          "mean": 676640740.0,
+          "median": 671938300.0,
+          "min": 570112000.0,
+          "p95": 795165900.0,
+          "stdev": 74548919.42520964
+        },
+        "qty.RAW.encoded_bytes": {
+          "count": 5.0,
+          "max": 812508.0,
+          "mean": 812508.0,
+          "median": 812508.0,
+          "min": 812508.0,
+          "p95": 812508.0,
+          "stdev": 0.0
+        },
+        "qty.RAW.filter_eq_ns": {
+          "count": 5.0,
+          "max": 175542000.0,
+          "mean": 157865820.0,
+          "median": 156874300.0,
+          "min": 138714000.0,
+          "p95": 175542000.0,
+          "stdev": 12129680.617130857
+        },
+        "qty.RAW.filter_range_ns": {
+          "count": 5.0,
+          "max": 340583200.0,
+          "mean": 325544480.0,
+          "median": 331101300.0,
+          "min": 304191700.0,
+          "p95": 340583200.0,
+          "stdev": 15059388.316050556
+        },
+        "qty.RAW.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 2426272.0,
+          "mean": 2426227.2,
+          "median": 2426216.0,
+          "min": 2426216.0,
+          "p95": 2426272.0,
+          "stdev": 22.4
+        },
+        "qty.RLE.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 260589500.0,
+          "mean": 213291640.0,
+          "median": 209865600.0,
+          "min": 190087400.0,
+          "p95": 260589500.0,
+          "stdev": 24993158.749113727
+        },
+        "qty.RLE.compression_ratio": {
+          "count": 5.0,
+          "max": 0.014316166733127522,
+          "mean": 0.014316166733127522,
+          "median": 0.014316166733127522,
+          "min": 0.014316166733127522,
+          "p95": 0.014316166733127522,
+          "stdev": 0.0
+        },
+        "qty.RLE.decode_ns": {
+          "count": 5.0,
+          "max": 242978600.0,
+          "mean": 217423300.0,
+          "median": 219913100.0,
+          "min": 188069800.0,
+          "p95": 242978600.0,
+          "stdev": 18169978.89178741
+        },
+        "qty.RLE.encode_ns": {
+          "count": 5.0,
+          "max": 2337294900.0,
+          "mean": 2157932620.0,
+          "median": 2116234000.0,
+          "min": 1995260400.0,
+          "p95": 2337294900.0,
+          "stdev": 116151363.04649033
+        },
+        "qty.RLE.encoded_bytes": {
+          "count": 5.0,
+          "max": 800876.0,
+          "mean": 800876.0,
+          "median": 800876.0,
+          "min": 800876.0,
+          "p95": 800876.0,
+          "stdev": 0.0
+        },
+        "qty.RLE.filter_eq_ns": {
+          "count": 5.0,
+          "max": 289607100.0,
+          "mean": 268496360.0,
+          "median": 261766200.0,
+          "min": 243036300.0,
+          "p95": 289607100.0,
+          "stdev": 18121872.90934356
+        },
+        "qty.RLE.filter_range_ns": {
+          "count": 5.0,
+          "max": 485736800.0,
+          "mean": 442445240.0,
+          "median": 434113400.0,
+          "min": 417172300.0,
+          "p95": 485736800.0,
+          "stdev": 24008061.098106194
+        },
+        "qty.RLE.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 13264866.0,
+          "mean": 13264736.4,
+          "median": 13264762.0,
+          "min": 13264594.0,
+          "p95": 13264866.0,
+          "stdev": 122.3136950631449
+        },
+        "region.DICTIONARY.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 132052800.0,
+          "mean": 110205220.0,
+          "median": 108152000.0,
+          "min": 92544400.0,
+          "p95": 132052800.0,
+          "stdev": 14115178.421599919
+        },
+        "region.DICTIONARY.compression_ratio": {
+          "count": 5.0,
+          "max": 0.9425908321015205,
+          "mean": 0.9425908321015205,
+          "median": 0.9425908321015205,
+          "min": 0.9425908321015205,
+          "p95": 0.9425908321015205,
+          "stdev": 0.0
+        },
+        "region.DICTIONARY.decode_ns": {
+          "count": 5.0,
+          "max": 163103800.0,
+          "mean": 146165440.0,
+          "median": 145362000.0,
+          "min": 125150400.0,
+          "p95": 163103800.0,
+          "stdev": 13517926.76716367
+        },
+        "region.DICTIONARY.encode_ns": {
+          "count": 5.0,
+          "max": 2783408600.0,
+          "mean": 2639430980.0,
+          "median": 2672300000.0,
+          "min": 2439161700.0,
+          "p95": 2783408600.0,
+          "stdev": 131875940.0653872
+        },
+        "region.DICTIONARY.encoded_bytes": {
+          "count": 5.0,
+          "max": 50062.0,
+          "mean": 50062.0,
+          "median": 50062.0,
+          "min": 50062.0,
+          "p95": 50062.0,
+          "stdev": 0.0
+        },
+        "region.DICTIONARY.filter_eq_ns": {
+          "count": 5.0,
+          "max": 161151900.0,
+          "mean": 148417280.0,
+          "median": 154354900.0,
+          "min": 127435400.0,
+          "p95": 161151900.0,
+          "stdev": 12963952.983469201
+        },
+        "region.DICTIONARY.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 7965813.0,
+          "mean": 7965729.8,
+          "median": 7965749.0,
+          "min": 7965581.0,
+          "p95": 7965813.0,
+          "stdev": 86.84330716871624
+        },
+        "region.RAW.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 1100776200.0,
+          "mean": 1013748200.0,
+          "median": 1034094200.0,
+          "min": 886570200.0,
+          "p95": 1100776200.0,
+          "stdev": 80787432.58802077
+        },
+        "region.RAW.compression_ratio": {
+          "count": 5.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95": 0.0,
+          "stdev": 0.0
+        },
+        "region.RAW.decode_ns": {
+          "count": 5.0,
+          "max": 129389900.0,
+          "mean": 113157640.0,
+          "median": 118018200.0,
+          "min": 90789400.0,
+          "p95": 129389900.0,
+          "stdev": 13648375.649959229
+        },
+        "region.RAW.encode_ns": {
+          "count": 5.0,
+          "max": 1282271500.0,
+          "mean": 1161434500.0,
+          "median": 1206346000.0,
+          "min": 1012179000.0,
+          "p95": 1282271500.0,
+          "stdev": 100269507.2193137
+        },
+        "region.RAW.encoded_bytes": {
+          "count": 5.0,
+          "max": 872021.0,
+          "mean": 872021.0,
+          "median": 872021.0,
+          "min": 872021.0,
+          "p95": 872021.0,
+          "stdev": 0.0
+        },
+        "region.RAW.filter_eq_ns": {
+          "count": 5.0,
+          "max": 234972900.0,
+          "mean": 199716780.0,
+          "median": 189517100.0,
+          "min": 171713800.0,
+          "p95": 234972900.0,
+          "stdev": 25480802.678361606
+        },
+        "region.RAW.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 6238620.0,
+          "mean": 6238575.2,
+          "median": 6238564.0,
+          "min": 6238564.0,
+          "p95": 6238620.0,
+          "stdev": 22.4
+        },
+        "region.RLE.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 1129294000.0,
+          "mean": 1001949020.0,
+          "median": 975745100.0,
+          "min": 891153900.0,
+          "p95": 1129294000.0,
+          "stdev": 93112112.7078835
+        },
+        "region.RLE.compression_ratio": {
+          "count": 5.0,
+          "max": 0.12548895038078212,
+          "mean": 0.12548895038078212,
+          "median": 0.12548895038078212,
+          "min": 0.12548895038078212,
+          "p95": 0.12548895038078212,
+          "stdev": 0.0
+        },
+        "region.RLE.decode_ns": {
+          "count": 5.0,
+          "max": 384838200.0,
+          "mean": 282844500.0,
+          "median": 260848600.0,
+          "min": 245838400.0,
+          "p95": 384838200.0,
+          "stdev": 52267707.6528137
+        },
+        "region.RLE.encode_ns": {
+          "count": 5.0,
+          "max": 3703513600.0,
+          "mean": 3405389520.0,
+          "median": 3464826900.0,
+          "min": 2994707500.0,
+          "p95": 3703513600.0,
+          "stdev": 243502220.48393235
+        },
+        "region.RLE.encoded_bytes": {
+          "count": 5.0,
+          "max": 762592.0,
+          "mean": 762592.0,
+          "median": 762592.0,
+          "min": 762592.0,
+          "p95": 762592.0,
+          "stdev": 0.0
+        },
+        "region.RLE.filter_eq_ns": {
+          "count": 5.0,
+          "max": 311391000.0,
+          "mean": 294812720.0,
+          "median": 298303500.0,
+          "min": 277514000.0,
+          "p95": 311391000.0,
+          "stdev": 12799944.455098232
+        },
+        "region.RLE.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 15867993.0,
+          "mean": 15867863.4,
+          "median": 15867889.0,
+          "min": 15867721.0,
+          "p95": 15867993.0,
+          "stdev": 122.3136950631449
+        },
+        "row_aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 6060800.0,
+          "mean": 5357260.0,
+          "median": 5323900.0,
+          "min": 4354600.0,
+          "p95": 6060800.0,
+          "stdev": 625221.876136784
+        },
+        "row_filter_eq_ns": {
+          "count": 5.0,
+          "max": 4930400.0,
+          "mean": 4493280.0,
+          "median": 4731400.0,
+          "min": 3571100.0,
+          "p95": 4930400.0,
+          "stdev": 511005.61014532903
+        },
+        "row_filter_range_ns": {
+          "count": 5.0,
+          "max": 11594300.0,
+          "mean": 10873200.0,
+          "median": 11010300.0,
+          "min": 9649600.0,
+          "p95": 11594300.0,
+          "stdev": 663215.4009068245
+        }
+      },
+      "repeat_runs": 5,
+      "row_count": 100000,
+      "seed": 42,
+      "warmup_runs": 2
+    }
+  },
+  "run_length": {
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": null,
+      "distribution": "run_length",
+      "kind": "codec",
+      "pruning_enabled": false,
+      "repeat_runs": 5,
+      "row_count": 100000,
+      "seed": 42,
+      "sql": null,
+      "warmup_runs": 2
+    },
+    "elapsed_seconds": 101.82204860006459,
+    "summary": {
+      "comparison": {
+        "qty.dict_vs_raw_bytes_ratio": 0.06161785483958312,
+        "qty.rle_vs_raw_bytes_ratio": 0.029310480635267592,
+        "region.dict_vs_raw_bytes_ratio": 0.05475493605981459,
+        "region.rle_vs_raw_bytes_ratio": 0.029361516889571383
+      },
+      "distribution": "run_length",
+      "kind": "codec",
+      "metrics": {
+        "qty.DICTIONARY.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 143234800.0,
+          "mean": 123753940.0,
+          "median": 121042800.0,
+          "min": 103758800.0,
+          "p95": 143234800.0,
+          "stdev": 13977800.151325673
+        },
+        "qty.DICTIONARY.compression_ratio": {
+          "count": 5.0,
+          "max": 0.9383821451604168,
+          "mean": 0.9383821451604168,
+          "median": 0.9383821451604168,
+          "min": 0.9383821451604168,
+          "p95": 0.9383821451604168,
+          "stdev": 0.0
+        },
+        "qty.DICTIONARY.decode_ns": {
+          "count": 5.0,
+          "max": 204804600.0,
+          "mean": 165933840.0,
+          "median": 150396300.0,
+          "min": 136288400.0,
+          "p95": 204804600.0,
+          "stdev": 26492429.801028065
+        },
+        "qty.DICTIONARY.encode_ns": {
+          "count": 5.0,
+          "max": 2274199900.0,
+          "mean": 2158734860.0,
+          "median": 2135198300.0,
+          "min": 2008615300.0,
+          "p95": 2274199900.0,
+          "stdev": 98493126.75596404
+        },
+        "qty.DICTIONARY.encoded_bytes": {
+          "count": 5.0,
+          "max": 50065.0,
+          "mean": 50065.0,
+          "median": 50065.0,
+          "min": 50065.0,
+          "p95": 50065.0,
+          "stdev": 0.0
+        },
+        "qty.DICTIONARY.filter_eq_ns": {
+          "count": 5.0,
+          "max": 178052900.0,
+          "mean": 160392960.0,
+          "median": 161800300.0,
+          "min": 141051300.0,
+          "p95": 178052900.0,
+          "stdev": 11855734.044520399
+        },
+        "qty.DICTIONARY.filter_range_ns": {
+          "count": 5.0,
+          "max": 14800.0,
+          "mean": 12640.0,
+          "median": 12500.0,
+          "min": 11000.0,
+          "p95": 14800.0,
+          "stdev": 1269.0153663372243
+        },
+        "qty.DICTIONARY.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 4153062.0,
+          "mean": 4153017.2,
+          "median": 4153006.0,
+          "min": 4153006.0,
+          "p95": 4153062.0,
+          "stdev": 22.4
+        },
+        "qty.RAW.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 148987600.0,
+          "mean": 129329660.0,
+          "median": 121007800.0,
+          "min": 111191500.0,
+          "p95": 148987600.0,
+          "stdev": 14792236.218584396
+        },
+        "qty.RAW.compression_ratio": {
+          "count": 5.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95": 0.0,
+          "stdev": 0.0
+        },
+        "qty.RAW.decode_ns": {
+          "count": 5.0,
+          "max": 113626600.0,
+          "mean": 103778600.0,
+          "median": 107453300.0,
+          "min": 94006000.0,
+          "p95": 113626600.0,
+          "stdev": 7881529.434062909
+        },
+        "qty.RAW.encode_ns": {
+          "count": 5.0,
+          "max": 735075700.0,
+          "mean": 696181980.0,
+          "median": 695611600.0,
+          "min": 646329200.0,
+          "p95": 735075700.0,
+          "stdev": 31292395.222699076
+        },
+        "qty.RAW.encoded_bytes": {
+          "count": 5.0,
+          "max": 812508.0,
+          "mean": 812508.0,
+          "median": 812508.0,
+          "min": 812508.0,
+          "p95": 812508.0,
+          "stdev": 0.0
+        },
+        "qty.RAW.filter_eq_ns": {
+          "count": 5.0,
+          "max": 203279300.0,
+          "mean": 173143040.0,
+          "median": 168720400.0,
+          "min": 140922600.0,
+          "p95": 203279300.0,
+          "stdev": 21496967.038221925
+        },
+        "qty.RAW.filter_range_ns": {
+          "count": 5.0,
+          "max": 358219900.0,
+          "mean": 332859740.0,
+          "median": 331766100.0,
+          "min": 302041100.0,
+          "p95": 358219900.0,
+          "stdev": 21374861.525595903
+        },
+        "qty.RAW.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 2426272.0,
+          "mean": 2426227.2,
+          "median": 2426216.0,
+          "min": 2426216.0,
+          "p95": 2426272.0,
+          "stdev": 22.4
+        },
+        "qty.RLE.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 5648800.0,
+          "mean": 3997660.0,
+          "median": 4064300.0,
+          "min": 2394400.0,
+          "p95": 5648800.0,
+          "stdev": 1110426.0724604768
+        },
+        "qty.RLE.compression_ratio": {
+          "count": 5.0,
+          "max": 0.9706895193647324,
+          "mean": 0.9706895193647324,
+          "median": 0.9706895193647324,
+          "min": 0.9706895193647324,
+          "p95": 0.9706895193647324,
+          "stdev": 0.0
+        },
+        "qty.RLE.decode_ns": {
+          "count": 5.0,
+          "max": 32958500.0,
+          "mean": 14330060.0,
+          "median": 9674400.0,
+          "min": 7592100.0,
+          "p95": 32958500.0,
+          "stdev": 9468991.725120474
+        },
+        "qty.RLE.encode_ns": {
+          "count": 5.0,
+          "max": 1448112700.0,
+          "mean": 1293830320.0,
+          "median": 1268339600.0,
+          "min": 1214420500.0,
+          "p95": 1448112700.0,
+          "stdev": 83358928.71001641
+        },
+        "qty.RLE.encoded_bytes": {
+          "count": 5.0,
+          "max": 23815.0,
+          "mean": 23815.0,
+          "median": 23815.0,
+          "min": 23815.0,
+          "p95": 23815.0,
+          "stdev": 0.0
+        },
+        "qty.RLE.filter_eq_ns": {
+          "count": 5.0,
+          "max": 19845300.0,
+          "mean": 12359100.0,
+          "median": 9927100.0,
+          "min": 8972900.0,
+          "p95": 19845300.0,
+          "stdev": 4005104.777156273
+        },
+        "qty.RLE.filter_range_ns": {
+          "count": 5.0,
+          "max": 96425100.0,
+          "mean": 68850040.0,
+          "median": 69788500.0,
+          "min": 51855100.0,
+          "p95": 96425100.0,
+          "stdev": 16381454.887964012
+        },
+        "qty.RLE.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 3382374.0,
+          "mean": 3382284.4,
+          "median": 3382262.0,
+          "min": 3382262.0,
+          "p95": 3382374.0,
+          "stdev": 44.8
+        },
+        "region.DICTIONARY.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 133291500.0,
+          "mean": 117146960.0,
+          "median": 108972200.0,
+          "min": 105855800.0,
+          "p95": 133291500.0,
+          "stdev": 11555607.140881866
+        },
+        "region.DICTIONARY.compression_ratio": {
+          "count": 5.0,
+          "max": 0.9452450639401854,
+          "mean": 0.9452450639401854,
+          "median": 0.9452450639401854,
+          "min": 0.9452450639401854,
+          "p95": 0.9452450639401854,
+          "stdev": 0.0
+        },
+        "region.DICTIONARY.decode_ns": {
+          "count": 5.0,
+          "max": 153391900.0,
+          "mean": 145300700.0,
+          "median": 145226700.0,
+          "min": 133730500.0,
+          "p95": 153391900.0,
+          "stdev": 7003323.931962593
+        },
+        "region.DICTIONARY.encode_ns": {
+          "count": 5.0,
+          "max": 3047129200.0,
+          "mean": 2732141560.0,
+          "median": 2654388600.0,
+          "min": 2615672600.0,
+          "p95": 3047129200.0,
+          "stdev": 160006012.71349275
+        },
+        "region.DICTIONARY.encoded_bytes": {
+          "count": 5.0,
+          "max": 50062.0,
+          "mean": 50062.0,
+          "median": 50062.0,
+          "min": 50062.0,
+          "p95": 50062.0,
+          "stdev": 0.0
+        },
+        "region.DICTIONARY.filter_eq_ns": {
+          "count": 5.0,
+          "max": 199706500.0,
+          "mean": 156503360.0,
+          "median": 151549200.0,
+          "min": 132762300.0,
+          "p95": 199706500.0,
+          "stdev": 22770921.775246605
+        },
+        "region.DICTIONARY.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 8082261.0,
+          "mean": 8082261.0,
+          "median": 8082261.0,
+          "min": 8082261.0,
+          "p95": 8082261.0,
+          "stdev": 0.0
+        },
+        "region.RAW.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 1298787600.0,
+          "mean": 1163193560.0,
+          "median": 1135716700.0,
+          "min": 1088240900.0,
+          "p95": 1298787600.0,
+          "stdev": 75717712.98824602
+        },
+        "region.RAW.compression_ratio": {
+          "count": 5.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p95": 0.0,
+          "stdev": 0.0
+        },
+        "region.RAW.decode_ns": {
+          "count": 5.0,
+          "max": 127890600.0,
+          "mean": 104651420.0,
+          "median": 106510600.0,
+          "min": 82335700.0,
+          "p95": 127890600.0,
+          "stdev": 15901114.70223393
+        },
+        "region.RAW.encode_ns": {
+          "count": 5.0,
+          "max": 1292239000.0,
+          "mean": 1210364100.0,
+          "median": 1231898000.0,
+          "min": 1069404100.0,
+          "p95": 1292239000.0,
+          "stdev": 83978966.88352388
+        },
+        "region.RAW.encoded_bytes": {
+          "count": 5.0,
+          "max": 914292.0,
+          "mean": 914292.0,
+          "median": 914292.0,
+          "min": 914292.0,
+          "p95": 914292.0,
+          "stdev": 0.0
+        },
+        "region.RAW.filter_eq_ns": {
+          "count": 5.0,
+          "max": 255055800.0,
+          "mean": 217460580.0,
+          "median": 210511500.0,
+          "min": 188785600.0,
+          "p95": 255055800.0,
+          "stdev": 25595393.85236336
+        },
+        "region.RAW.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 6355800.0,
+          "mean": 6355800.0,
+          "median": 6355800.0,
+          "min": 6355800.0,
+          "p95": 6355800.0,
+          "stdev": 0.0
+        },
+        "region.RLE.aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 24242100.0,
+          "mean": 20468080.0,
+          "median": 20532500.0,
+          "min": 18134600.0,
+          "p95": 24242100.0,
+          "stdev": 2150623.1482061194
+        },
+        "region.RLE.compression_ratio": {
+          "count": 5.0,
+          "max": 0.9706384831104287,
+          "mean": 0.9706384831104287,
+          "median": 0.9706384831104287,
+          "min": 0.9706384831104287,
+          "p95": 0.9706384831104287,
+          "stdev": 0.0
+        },
+        "region.RLE.decode_ns": {
+          "count": 5.0,
+          "max": 18118000.0,
+          "mean": 14330020.0,
+          "median": 13354300.0,
+          "min": 12258800.0,
+          "p95": 18118000.0,
+          "stdev": 2082208.079323486
+        },
+        "region.RLE.encode_ns": {
+          "count": 5.0,
+          "max": 2674760600.0,
+          "mean": 2446135860.0,
+          "median": 2428552000.0,
+          "min": 2272163000.0,
+          "p95": 2674760600.0,
+          "stdev": 134184283.3365756
+        },
+        "region.RLE.encoded_bytes": {
+          "count": 5.0,
+          "max": 26845.0,
+          "mean": 26845.0,
+          "median": 26845.0,
+          "min": 26845.0,
+          "p95": 26845.0,
+          "stdev": 0.0
+        },
+        "region.RLE.filter_eq_ns": {
+          "count": 5.0,
+          "max": 18222500.0,
+          "mean": 13851060.0,
+          "median": 13667500.0,
+          "min": 10486000.0,
+          "p95": 18222500.0,
+          "stdev": 2559047.1168776867
+        },
+        "region.RLE.peak_memory_bytes": {
+          "count": 5.0,
+          "max": 7335765.0,
+          "mean": 7335765.0,
+          "median": 7335765.0,
+          "min": 7335765.0,
+          "p95": 7335765.0,
+          "stdev": 0.0
+        },
+        "row_aggregate_sum_ns": {
+          "count": 5.0,
+          "max": 7342500.0,
+          "mean": 5801220.0,
+          "median": 5695500.0,
+          "min": 4910200.0,
+          "p95": 7342500.0,
+          "stdev": 835741.5567027883
+        },
+        "row_filter_eq_ns": {
+          "count": 5.0,
+          "max": 4910300.0,
+          "mean": 3812100.0,
+          "median": 3796000.0,
+          "min": 3038200.0,
+          "p95": 4910300.0,
+          "stdev": 618377.5707446059
+        },
+        "row_filter_range_ns": {
+          "count": 5.0,
+          "max": 12595600.0,
+          "mean": 11218460.0,
+          "median": 11724600.0,
+          "min": 9465300.0,
+          "p95": 12595600.0,
+          "stdev": 1268955.6061580721
+        }
+      },
+      "repeat_runs": 5,
+      "row_count": 100000,
+      "seed": 42,
+      "warmup_runs": 2
+    }
+  }
+}

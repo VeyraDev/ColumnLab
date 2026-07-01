@@ -1,0 +1,10 @@
+﻿distribution,distribution_label,representative_column,logical_type,encoding,encoded_bytes_mean,raw_encoded_bytes_mean,relative_size_percent,compression_ratio_mean,row_count,warmup_runs,repeat_runs,seed,block_size_config_bytes
+run_length,长游程,qty,INT64,RAW,812508.0,812508.0,100.0,0.0,100000,2,5,42,65536
+run_length,长游程,qty,INT64,RLE,23815.0,812508.0,2.931048063526759,0.9706895193647324,100000,2,5,42,65536
+run_length,长游程,qty,INT64,DICTIONARY,50065.0,812508.0,6.161785483958312,0.9383821451604168,100000,2,5,42,65536
+low_cardinality,低基数,region,UTF8,RAW,872021.0,872021.0,100.0,0.0,100000,2,5,42,65536
+low_cardinality,低基数,region,UTF8,RLE,762592.0,872021.0,87.45110496192179,0.12548895038078212,100000,2,5,42,65536
+low_cardinality,低基数,region,UTF8,DICTIONARY,50062.0,872021.0,5.740916789847951,0.9425908321015205,100000,2,5,42,65536
+high_cardinality,高基数,region,UTF8,RAW,1484786.0,1484786.0,100.0,0.0,100000,2,5,42,65536
+high_cardinality,高基数,region,UTF8,RLE,1584781.0,1484786.0,106.73464054752671,-0.06734640547526705,100000,2,5,42,65536
+high_cardinality,高基数,region,UTF8,DICTIONARY,1528507.0,1484786.0,102.94459942375534,-0.02944599423755334,100000,2,5,42,65536

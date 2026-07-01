@@ -168,16 +168,19 @@ onUnmounted(() => importStore.stopTracking())
       </section>
 
       <label class="field">
-        <span>块大小</span>
+        <span>目标原始块大小</span>
         <select v-model.number="targetBlockBytes" :disabled="demoDenseBlocks">
           <option v-for="opt in blockSizeOptions" :key="opt.value" :value="opt.value">
             {{ opt.label }}
           </option>
         </select>
+        <span class="field-hint">
+          系统根据未压缩数据量划分对齐行组。压缩后的列块大小不一定等于该值，同一行组中各列块行数相同，但编码和物理大小可以不同。
+        </span>
       </label>
       <label class="field checkbox-field">
         <input v-model="demoDenseBlocks" type="checkbox" />
-        <span>演示密集块模式（4 KiB，产生更多小块便于展示）</span>
+        <span>演示密集块模式（4 KiB，使页面中显示更多列块，仅用于演示，不用于正式性能结论）</span>
       </label>
       <label class="field">
         <span>导入模式</span>
@@ -344,6 +347,12 @@ onUnmounted(() => importStore.stopTracking())
 
 .state-hint.error {
   color: #b91c1c;
+}
+
+.field-hint {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-tertiary);
 }
 
 .checkbox-field {

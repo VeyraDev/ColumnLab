@@ -1,0 +1,6 @@
+﻿block_size_bytes,block_size_kib,raw_bytes,encoded_bytes,relative_size_percent,block_count,median_ms,p95_ms,scanned_blocks,decoded_blocks,bytes_read,repeat_runs,warmup_runs,row_count,sql
+16384,16,2000426.0,476863.0,23.83807249055951,196.0,31.2271,36.917,0.0,0.0,0.0,3,1,20000,"SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+32768,32,1998998.0,471007.0,23.56215463947438,98.0,24.12,24.9236,0.0,0.0,0.0,3,1,20000,"SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+65536,64,1998242.0,468011.0,23.42113717958085,49.0,25.9228,33.9295,0.0,0.0,0.0,3,1,20000,"SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+131072,128,1997918.0,466736.0,23.361118924800717,28.0,57.0312,59.0007,0.0,0.0,0.0,3,1,20000,"SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+262144,256,1997702.0,465882.0,23.320895709169836,14.0,49.0926,57.7867,0.0,0.0,0.0,3,1,20000,"SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"

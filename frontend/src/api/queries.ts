@@ -92,6 +92,8 @@ export interface QueryMetrics {
 
   decoded_blocks: number
 
+  block_accesses?: number
+
   peak_memory: number
 
   execute_time?: number

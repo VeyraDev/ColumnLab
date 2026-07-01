@@ -13,7 +13,7 @@ defineProps<{
       <span class="plan-title">物理计划</span>
     </div>
     <div v-if="node" class="plan-body">
-      <LogicalPlanTreeNode :node="node" />
+      <LogicalPlanTreeNode :node="node" physical :is-last="true" />
     </div>
     <p v-else class="plan-empty">执行完成后显示物理算子树</p>
   </section>
@@ -24,19 +24,19 @@ defineProps<{
   flex: 1;
   min-width: 0;
   overflow: auto;
-  padding: 6px 10px;
+  padding: 8px 10px;
   background: var(--bg-panel);
   border-left: 1px solid var(--border-default);
 }
 
 .plan-header {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .plan-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .plan-empty {
@@ -45,3 +45,4 @@ defineProps<{
   color: var(--text-tertiary);
 }
 </style>
+

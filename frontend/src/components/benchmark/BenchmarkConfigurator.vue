@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { BenchmarkConfig } from '@/api/benchmarks'
+import { benchmarkKindLabels } from '@/utils/terminology'
 
 const config = defineModel<BenchmarkConfig>('config', { required: true })
 
@@ -23,24 +24,24 @@ const blockSizeOptions = [4096, 16384, 65536]
     <label>
       实验类型
       <select v-model="config.kind">
-        <option value="codec">Codec 基准</option>
-        <option value="query">Query 基准</option>
+        <option value="codec">{{ benchmarkKindLabels.codec }}</option>
+        <option value="query">{{ benchmarkKindLabels.query }}</option>
       </select>
     </label>
 
-    <label>
-      数据集 ID
-      <input
-        v-model.number="config.dataset_id"
-        type="number"
-        min="1"
-        placeholder="Query 实验"
-        :disabled="config.kind !== 'query'"
-      />
-    </label>
+    <template v-if="config.kind === 'query'">
+      <label>
+        数据集 ID
+        <input v-model.number="config.dataset_id" type="number" min="1" placeholder="Query 实验" />
+      </label>
+      <label class="wide">
+        SQL
+        <input v-model="config.sql" type="text" placeholder="SELECT COUNT(*) FROM data" />
+      </label>
+    </template>
 
     <label>
-      块大小
+      目标原始块大小
       <select
         :value="config.block_sizes?.[0] ?? 65536"
         @change="config.block_sizes = [Number(($event.target as HTMLSelectElement).value)]"
@@ -78,21 +79,15 @@ const blockSizeOptions = [4096, 16384, 65536]
         行数
         <input v-model.number="config.row_count" type="number" min="256" step="256" />
       </label>
+      <label>
+        随机种子
+        <input v-model.number="config.seed" type="number" min="0" />
+      </label>
     </template>
 
-    <label v-if="config.kind === 'query'" class="wide">
-      SQL
-      <input v-model="config.sql" type="text" placeholder="SELECT COUNT(*) FROM data" />
-    </label>
-
-    <label class="checkbox">
+    <label v-if="config.kind === 'query'" class="checkbox">
       <input v-model="config.pruning_enabled" type="checkbox" />
       启用块裁剪
-    </label>
-
-    <label>
-      随机种子
-      <input v-model.number="config.seed" type="number" min="0" />
     </label>
 
     <slot />
@@ -138,9 +133,5 @@ select {
   background: var(--bg-app);
   color: var(--text-primary);
   width: 100%;
-}
-
-input:disabled {
-  opacity: 0.5;
 }
 </style>

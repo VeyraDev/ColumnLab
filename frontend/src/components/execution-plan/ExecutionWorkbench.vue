@@ -3,7 +3,9 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useQueryStore } from '@/stores/query'
 import LogicalPlanTreeNode from '@/components/execution-plan/LogicalPlanTreeNode.vue'
+import { buildExecutionSummary } from '@/utils/executionSummary'
 import { formatBytes, formatDurationMs } from '@/utils/format'
+import { profileMetricLabels } from '@/utils/terminology'
 
 const queryStore = useQueryStore()
 const {
@@ -14,21 +16,26 @@ const {
   metrics,
   history,
   currentQueryId,
+  prunedBlocks,
+  totalBlocks,
 } = storeToRefs(queryStore)
 
-const summary = computed(() => {
+const profileSummary = computed(() =>
+  buildExecutionSummary(metrics.value, prunedBlocks.value, totalBlocks.value),
+)
+
+const profileItems = computed(() => {
   const m = metrics.value
-  if (!m) return null
-  const total = m.scanned_blocks + m.pruned_blocks
-  return {
-    scanned: m.scanned_blocks,
-    pruned: m.pruned_blocks,
-    total,
-    decoded: m.decoded_blocks,
-    bytesRead: m.bytes_read,
-    rowsOut: m.rows_output,
-    totalTime: (m as { total_time?: number }).total_time ?? m.execute_time,
-  }
+  if (!m) return []
+  return [
+    { label: profileMetricLabels.block_accesses, value: m.block_accesses ?? '—' },
+    { label: profileMetricLabels.scanned_blocks, value: m.scanned_blocks },
+    { label: profileMetricLabels.cache_hits, value: m.cache_hits },
+    { label: profileMetricLabels.compressed_operator_blocks, value: m.compressed_operator_blocks },
+    { label: profileMetricLabels.decoded_blocks, value: m.decoded_blocks },
+    { label: profileMetricLabels.bytes_read, value: formatBytes(m.bytes_read) },
+    { label: profileMetricLabels.rows_output, value: m.rows_output },
+  ]
 })
 
 const filterText = computed(() => {
@@ -73,40 +80,21 @@ const statusDotClass = computed(() => {
       <div class="bench-card trace-pane">
         <header class="card-header">执行轨迹</header>
         <div class="card-body">
-          <div v-if="physicalPlanTree" class="plan-tree mono">
-            <LogicalPlanTreeNode :node="physicalPlanTree" />
+          <div v-if="physicalPlanTree" class="plan-tree">
+            <LogicalPlanTreeNode :node="physicalPlanTree" physical :is-last="true" />
           </div>
           <p v-else class="empty">运行查询后显示算子树</p>
         </div>
       </div>
 
       <div class="bench-card stats-pane">
-        <header class="card-header">执行统计</header>
+        <header class="card-header">执行 Profile</header>
         <div class="card-body">
-          <template v-if="summary">
-            <div class="stat-row">
-              <span class="stat-label">扫描块</span>
-              <span class="stat-value mono">{{ summary.scanned }} / {{ summary.total }}</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">跳过块</span>
-              <span class="stat-value mono">{{ summary.pruned }}</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">解码块</span>
-              <span class="stat-value mono">{{ summary.decoded }}</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">读取量</span>
-              <span class="stat-value mono">{{ formatBytes(summary.bytesRead) }}</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">输出行</span>
-              <span class="stat-value mono">{{ summary.rowsOut }}</span>
-            </div>
-            <div v-if="summary.totalTime != null" class="stat-row">
-              <span class="stat-label">耗时</span>
-              <span class="stat-value mono">{{ formatDurationMs(summary.totalTime) }}</span>
+          <p v-if="profileSummary" class="profile-summary">{{ profileSummary }}</p>
+          <template v-if="profileItems.length">
+            <div v-for="item in profileItems" :key="item.label" class="stat-row">
+              <span class="stat-label">{{ item.label }}</span>
+              <span class="stat-value mono">{{ item.value }}</span>
             </div>
           </template>
           <p v-else class="empty">暂无执行统计</p>
@@ -195,8 +183,14 @@ const statusDotClass = computed(() => {
   padding: 6px 8px;
 }
 
+.profile-summary {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
 .plan-tree {
-  font-size: 13px;
   line-height: 20px;
   color: var(--text-primary);
 }

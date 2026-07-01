@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;fill:#1F2933}.small{font-size:16px}.label{font-size:19px}.title{font-size:34px;font-weight:700}.subtitle{font-size:19px;fill:#5B6573}</style>
+<text x="800" y="58" text-anchor="middle" class="title">目标块大小对存储与查询的影响</text>
+<text x="800" y="96" text-anchor="middle" class="subtitle">相同数据与SQL；分别导入16、32、64、128、256 KiB版本</text>
+<rect x="70" y="145" width="700" height="600" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/>
+<text x="94" y="183" font-size="22" font-weight="700">块大小—相对存储大小</text>
+<line x1="152" y1="673" x2="735" y2="673" stroke="#4B5563" stroke-width="2"/>
+<line x1="152" y1="220" x2="152" y2="673" stroke="#4B5563" stroke-width="2"/>
+<circle cx="152.0" cy="406.1" r="7" fill="#333333"/>
+<text x="152.0" y="391.1" text-anchor="middle" font-size="16" font-weight="600">23.84%</text>
+<text x="152.0" y="705" text-anchor="middle" font-size="16">16 KiB</text>
+<circle cx="297.8" cy="449.2" r="7" fill="#333333"/>
+<text x="297.8" y="434.2" text-anchor="middle" font-size="16" font-weight="600">23.56%</text>
+<text x="297.8" y="705" text-anchor="middle" font-size="16">32 KiB</text>
+<circle cx="443.5" cy="471.2" r="7" fill="#333333"/>
+<text x="443.5" y="456.2" text-anchor="middle" font-size="16" font-weight="600">23.42%</text>
+<text x="443.5" y="705" text-anchor="middle" font-size="16">64 KiB</text>
+<circle cx="589.2" cy="480.6" r="7" fill="#333333"/>
+<text x="589.2" y="465.6" text-anchor="middle" font-size="16" font-weight="600">23.36%</text>
+<text x="589.2" y="705" text-anchor="middle" font-size="16">128 KiB</text>
+<circle cx="735.0" cy="486.9" r="7" fill="#333333"/>
+<text x="735.0" y="471.9" text-anchor="middle" font-size="16" font-weight="600">23.32%</text>
+<text x="735.0" y="705" text-anchor="middle" font-size="16">256 KiB</text>
+<polyline points="152.0,406.1 297.8,449.2 443.5,471.2 589.2,480.6 735.0,486.9" fill="none" stroke="#333333" stroke-width="4"/>
+<text x="94" y="723" font-size="15" fill="#5B6573">编码后字节数 / 原始字节数</text>
+<rect x="830" y="145" width="700" height="600" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/>
+<text x="854" y="183" font-size="22" font-weight="700">块大小—查询延迟</text>
+<line x1="912" y1="673" x2="1495" y2="673" stroke="#4B5563" stroke-width="2"/>
+<line x1="912" y1="220" x2="912" y2="673" stroke="#4B5563" stroke-width="2"/>
+<circle cx="912.0" cy="541.1" r="7" fill="#333333"/>
+<text x="912.0" y="526.1" text-anchor="middle" font-size="16" font-weight="600">31.23 ms</text>
+<text x="912.0" y="705" text-anchor="middle" font-size="16">16 KiB</text>
+<circle cx="1057.8" cy="613.0" r="7" fill="#333333"/>
+<text x="1057.8" y="598.0" text-anchor="middle" font-size="16" font-weight="600">24.12 ms</text>
+<text x="1057.8" y="705" text-anchor="middle" font-size="16">32 KiB</text>
+<circle cx="1203.5" cy="594.8" r="7" fill="#333333"/>
+<text x="1203.5" y="579.8" text-anchor="middle" font-size="16" font-weight="600">25.92 ms</text>
+<text x="1203.5" y="705" text-anchor="middle" font-size="16">64 KiB</text>
+<circle cx="1349.2" cy="280.0" r="7" fill="#333333"/>
+<text x="1349.2" y="265.0" text-anchor="middle" font-size="16" font-weight="600">57.03 ms</text>
+<text x="1349.2" y="705" text-anchor="middle" font-size="16">128 KiB</text>
+<circle cx="1495.0" cy="360.3" r="7" fill="#333333"/>
+<text x="1495.0" y="345.3" text-anchor="middle" font-size="16" font-weight="600">49.09 ms</text>
+<text x="1495.0" y="705" text-anchor="middle" font-size="16">256 KiB</text>
+<polyline points="912.0,541.1 1057.8,613.0 1203.5,594.8 1349.2,280.0 1495.0,360.3" fill="none" stroke="#333333" stroke-width="4"/>
+<text x="854" y="723" font-size="15" fill="#5B6573">冷缓存、中位数</text>
+<text x="800" y="825" text-anchor="middle" font-size="17" fill="#5B6573">小块提高裁剪粒度但增加块头与调度开销；大块减少块数但可能读取更多无关数据。</text>
+</svg>

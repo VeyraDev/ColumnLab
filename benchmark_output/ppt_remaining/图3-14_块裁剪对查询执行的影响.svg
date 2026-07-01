@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;fill:#1F2933}.small{font-size:16px}.label{font-size:19px}.title{font-size:34px;font-weight:700}.subtitle{font-size:19px;fill:#5B6573}</style>
+<text x="800" y="58" text-anchor="middle" class="title">块裁剪对查询执行的影响</text>
+<text x="800" y="96" text-anchor="middle" class="subtitle">相同SQL、冷缓存；比较裁剪关闭与开启</text>
+<rect x="70" y="135" width="700" height="600" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/>
+<text x="94" y="173" font-size="22" font-weight="700">查询延迟（中位数）</text>
+<line x1="145" y1="663" x2="740" y2="663" stroke="#4B5563" stroke-width="2"/>
+<line x1="145" y1="210" x2="145" y2="663" stroke="#4B5563" stroke-width="2"/>
+<rect x="233.8" y="279.1" width="120.0" height="383.9" fill="#555555" stroke="#222"/>
+<text x="293.8" y="269.1" text-anchor="middle" font-size="17" font-weight="600">108.48 ms</text>
+<text x="293.8" y="695" text-anchor="middle" font-size="17">关闭裁剪</text>
+<rect x="531.2" y="497.7" width="120.0" height="165.3" fill="#CFCFCF" stroke="#222"/>
+<text x="591.2" y="487.7" text-anchor="middle" font-size="17" font-weight="600">46.72 ms</text>
+<text x="591.2" y="695" text-anchor="middle" font-size="17">开启裁剪</text>
+<rect x="830" y="135" width="700" height="275" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/>
+<text x="854" y="173" font-size="22" font-weight="700">实际扫描块数</text>
+<line x1="905" y1="338" x2="1500" y2="338" stroke="#4B5563" stroke-width="2"/>
+<line x1="905" y1="210" x2="905" y2="338" stroke="#4B5563" stroke-width="2"/>
+<rect x="993.8" y="229.5" width="120.0" height="108.5" fill="#555555" stroke="#222"/>
+<text x="1053.8" y="230.0" text-anchor="middle" font-size="17" font-weight="600">54.00</text>
+<text x="1053.8" y="370" text-anchor="middle" font-size="17">关闭裁剪</text>
+<rect x="1291.2" y="307.9" width="120.0" height="30.1" fill="#CFCFCF" stroke="#222"/>
+<text x="1351.2" y="297.9" text-anchor="middle" font-size="17" font-weight="600">15.00</text>
+<text x="1351.2" y="370" text-anchor="middle" font-size="17">开启裁剪</text>
+<rect x="830" y="460" width="700" height="275" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/>
+<text x="854" y="498" font-size="22" font-weight="700">读取数据量</text>
+<line x1="905" y1="663" x2="1500" y2="663" stroke="#4B5563" stroke-width="2"/>
+<line x1="905" y1="535" x2="905" y2="663" stroke="#4B5563" stroke-width="2"/>
+<rect x="993.8" y="554.5" width="120.0" height="108.5" fill="#555555" stroke="#222"/>
+<text x="1053.8" y="555.0" text-anchor="middle" font-size="17" font-weight="600">0.10 MiB</text>
+<text x="1053.8" y="695" text-anchor="middle" font-size="17">关闭裁剪</text>
+<rect x="1291.2" y="630.8" width="120.0" height="32.2" fill="#CFCFCF" stroke="#222"/>
+<text x="1351.2" y="620.8" text-anchor="middle" font-size="17" font-weight="600">0.03 MiB</text>
+<text x="1351.2" y="695" text-anchor="middle" font-size="17">开启裁剪</text>
+<text x="800" y="825" text-anchor="middle" font-size="17" fill="#5B6573">裁剪收益应同时由耗时与实际扫描量解释，而不是只比较单次耗时。</text>
+</svg>

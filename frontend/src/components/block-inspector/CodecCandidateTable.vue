@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { codecReasonLabel, encodingLabel } from '@/utils/terminology'
+
 export interface CodecCandidate {
   encoding: string
   encoded_bytes: number
@@ -14,6 +16,7 @@ defineProps<{
 }>()
 
 function formatKiB(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
   return `${(bytes / 1024).toFixed(1)} KiB`
 }
 
@@ -26,26 +29,29 @@ function formatGain(gain: number): string {
   <table class="candidate-table">
     <thead>
       <tr>
-        <th>算法</th>
-        <th>大小</th>
-        <th>收益</th>
-        <th>耗时</th>
-        <th>结果</th>
+        <th>编码</th>
+        <th>编码载荷</th>
+        <th>相比 RAW 节省</th>
+        <th>单次编码耗时</th>
+        <th>选择结果</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="row in candidates" :key="row.encoding" :class="{ selected: row.selected }">
-        <td>{{ row.encoding }}</td>
+        <td :title="row.encoding">{{ encodingLabel(row.encoding) }}</td>
         <td class="mono">{{ formatKiB(row.encoded_bytes) }}</td>
         <td class="mono">{{ formatGain(row.gain) }}</td>
         <td class="mono">{{ (row.encode_ns / 1_000_000).toFixed(2) }} ms</td>
         <td>
           <span v-if="row.selected" class="tag selected-tag">已选</span>
-          <span class="reason">{{ row.reason }}</span>
+          <span class="reason" :title="row.reason">{{ codecReasonLabel(row.reason) }}</span>
         </td>
       </tr>
     </tbody>
   </table>
+  <p class="table-note">
+    候选结果是在查看块时重新编码计算得到。单次编码耗时只用于观察算法开销，不代表导入总耗时或正式 Benchmark 结果。
+  </p>
 </template>
 
 <style scoped>
@@ -88,6 +94,13 @@ function formatGain(gain: number): string {
 }
 
 .reason {
+  color: var(--text-tertiary);
+}
+
+.table-note {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
   color: var(--text-tertiary);
 }
 </style>

@@ -1,0 +1,689 @@
+{
+  "mode": "quick",
+  "pruning_False": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 19,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": false,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 54.0,
+        "mean": 54.0,
+        "median": 54.0,
+        "min": 54.0,
+        "p95": 54.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 99856.0,
+        "mean": 99856.0,
+        "median": 99856.0,
+        "min": 99856.0,
+        "p95": 99856.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 54.0,
+        "mean": 54.0,
+        "median": 54.0,
+        "min": 54.0,
+        "p95": 54.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 54.0,
+        "mean": 54.0,
+        "median": 54.0,
+        "min": 54.0,
+        "p95": 54.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 19,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 120191600.0,
+        "mean": 109051100.0,
+        "median": 108483400.0,
+        "min": 98478300.0,
+        "p95": 120191600.0,
+        "stdev": 8873502.190604715
+      }
+    },
+    "pruning_enabled": false,
+    "seed": 42,
+    "sql": "SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'"
+  },
+  "pruning_True": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 19,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": true,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 15.0,
+        "mean": 15.0,
+        "median": 15.0,
+        "min": 15.0,
+        "p95": 15.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 29684.0,
+        "mean": 29684.0,
+        "median": 29684.0,
+        "min": 29684.0,
+        "p95": 29684.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 15.0,
+        "mean": 15.0,
+        "median": 15.0,
+        "min": 15.0,
+        "p95": 15.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 15.0,
+        "mean": 15.0,
+        "median": 15.0,
+        "min": 15.0,
+        "p95": 15.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 19,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 50582500.0,
+        "mean": 45751200.0,
+        "median": 46722700.0,
+        "min": 39948400.0,
+        "p95": 50582500.0,
+        "stdev": 4395367.249730106
+      }
+    },
+    "pruning_enabled": true,
+    "seed": 42,
+    "sql": "SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'"
+  },
+  "block_16384": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 20,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": true,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 20,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 36917000.0,
+        "mean": 31861100.0,
+        "median": 31227100.0,
+        "min": 27439200.0,
+        "p95": 36917000.0,
+        "stdev": 3895179.9453512626
+      }
+    },
+    "pruning_enabled": true,
+    "seed": 42,
+    "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+  },
+  "block_32768": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 21,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": true,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 21,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 24923600.0,
+        "mean": 23969333.333333332,
+        "median": 24120000.0,
+        "min": 22864400.0,
+        "p95": 24923600.0,
+        "stdev": 847388.7314699331
+      }
+    },
+    "pruning_enabled": true,
+    "seed": 42,
+    "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+  },
+  "block_65536": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 22,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": true,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 22,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 33929500.0,
+        "mean": 28153466.666666668,
+        "median": 25922800.0,
+        "min": 24608100.0,
+        "p95": 33929500.0,
+        "stdev": 4119387.4806281035
+      }
+    },
+    "pruning_enabled": true,
+    "seed": 42,
+    "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+  },
+  "block_131072": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 23,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": true,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 23,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 59000700.0,
+        "mean": 56870700.0,
+        "median": 57031200.0,
+        "min": 54580200.0,
+        "p95": 59000700.0,
+        "stdev": 1808226.6174348833
+      }
+    },
+    "pruning_enabled": true,
+    "seed": 42,
+    "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+  },
+  "block_262144": {
+    "cache_mode": "cold",
+    "config": {
+      "block_sizes": [
+        65536
+      ],
+      "cache_mode": "cold",
+      "dataset_id": 24,
+      "distribution": "mixed_business",
+      "kind": "query",
+      "pruning_enabled": true,
+      "repeat_runs": 3,
+      "row_count": 4096,
+      "seed": 42,
+      "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region",
+      "warmup_runs": 1
+    },
+    "counters": {
+      "block_accesses": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "bytes_read": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "cache_hits": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "compressed_operator_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "decoded_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      },
+      "scanned_blocks": {
+        "count": 3.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p95": 0.0,
+        "stdev": 0.0
+      }
+    },
+    "dataset_id": 24,
+    "env": {
+      "cpu_count": 16,
+      "engine_version": "0.1",
+      "git_commit": "f016572",
+      "machine": "AMD64",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.1"
+    },
+    "kind": "query",
+    "metrics": {
+      "query.execute_ns": {
+        "count": 3.0,
+        "max": 57786700.0,
+        "mean": 51130500.0,
+        "median": 49092600.0,
+        "min": 46512200.0,
+        "p95": 57786700.0,
+        "stdev": 4823094.778942942
+      }
+    },
+    "pruning_enabled": true,
+    "seed": 42,
+    "sql": "SELECT region, COUNT(*) AS c FROM data WHERE status = '已完成' GROUP BY region ORDER BY region"
+  }
+}

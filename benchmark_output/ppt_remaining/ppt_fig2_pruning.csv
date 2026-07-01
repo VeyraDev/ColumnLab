@@ -1,0 +1,3 @@
+﻿pruning,median_ms,p95_ms,scanned_blocks,decoded_blocks,bytes_read,compressed_operator_blocks,cache_hits,repeat_runs,warmup_runs,row_count,sql
+关闭裁剪,108.4834,120.1916,54.0,0.0,99856.0,54.0,0.0,3,1,12000,SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'
+开启裁剪,46.7227,50.5825,15.0,0.0,29684.0,15.0,0.0,3,1,12000,SELECT COUNT(*) AS n FROM data WHERE amount >= 2500 AND region = 'north'

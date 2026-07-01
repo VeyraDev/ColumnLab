@@ -15,12 +15,15 @@ defineProps<{
 
 <template>
   <div class="dict-preview">
+    <p class="explain">
+      Dictionary 保存「字典 + 编号序列」，重复值只保存较短编号。
+    </p>
     <div class="meta mono">
-      字典 {{ dictionary.dictionary_count }} 项 · code 位宽 {{ dictionary.bit_width }}
+      字典项数 {{ dictionary.dictionary_count }} · 编号位宽 {{ dictionary.bit_width }}
     </div>
     <table class="dict-table">
       <thead>
-        <tr><th>code</th><th>值</th></tr>
+        <tr><th>编号</th><th>值</th></tr>
       </thead>
       <tbody>
         <tr v-for="(entry, code) in dictionary.entries" :key="code">
@@ -30,11 +33,11 @@ defineProps<{
       </tbody>
     </table>
     <div class="packed">
-      <div class="label">packed codes（前 16 字节）</div>
+      <div class="label">编号载荷预览</div>
       <code class="mono">{{ dictionary.packed_codes_hex }}</code>
     </div>
     <div class="packed">
-      <div class="label">样本 codes</div>
+      <div class="label">编号示例</div>
       <code class="mono">{{ dictionary.sample_codes.join(', ') }}</code>
     </div>
   </div>
@@ -46,6 +49,12 @@ defineProps<{
   flex-direction: column;
   gap: 8px;
   font-size: 11px;
+}
+
+.explain {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--text-secondary);
 }
 
 .meta {

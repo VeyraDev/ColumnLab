@@ -1,36 +1,78 @@
 <script setup lang="ts">
-defineProps<{
-  rows: Array<{ column: string; encoding: string; mean: number; median?: number; p95: number }>
-  statLabel?: string
+import { computed } from 'vue'
+import { encodingLabel } from '@/utils/terminology'
+import { formatBytes } from '@/utils/format'
+
+export type StorageRow = {
+  encoding: string
+  encodedBytes: number
+  relativePercent: number
+  savedPercent: number
+}
+
+export type TimingRow = {
+  encoding: string
+  median: number
+  p95: number
+  stdev: number
+}
+
+const props = defineProps<{
+  mode: 'storage' | 'timing'
+  storageRows?: StorageRow[]
+  timingRows?: TimingRow[]
+  column?: string
 }>()
 
-function fmt(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
-  return n.toFixed(0)
+function formatTiming(ns: number): string {
+  if (ns < 1000) return `${Math.round(ns)} ns`
+  if (ns < 1_000_000) return `${(ns / 1000).toFixed(1)} µs`
+  return `${(ns / 1_000_000).toFixed(2)} ms`
 }
+
+const title = computed(() =>
+  props.mode === 'storage'
+    ? `${props.column ?? ''} 列编码方案对比`
+    : `${props.column ?? ''} 列编码耗时对比`,
+)
 </script>
 
 <template>
   <section class="compare-table">
-    <h2>汇总表（mean / median / p95）</h2>
-    <table>
+    <h2>{{ title }}</h2>
+    <table v-if="mode === 'storage' && storageRows?.length">
       <thead>
         <tr>
-          <th>列</th>
-          <th>编码</th>
-          <th>mean</th>
-          <th>median</th>
-          <th>p95</th>
+          <th>编码方案</th>
+          <th>编码后大小</th>
+          <th>相对 RAW 大小</th>
+          <th>节省空间</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="`${row.column}-${row.encoding}`">
-          <td>{{ row.column }}</td>
-          <td>{{ row.encoding }}</td>
-          <td>{{ fmt(row.mean) }}</td>
-          <td>{{ fmt(row.median ?? row.mean) }}</td>
-          <td>{{ fmt(row.p95) }}</td>
+        <tr v-for="row in storageRows" :key="row.encoding">
+          <td>{{ encodingLabel(row.encoding) }}</td>
+          <td class="mono">{{ formatBytes(row.encodedBytes) }}</td>
+          <td class="mono">{{ row.relativePercent.toFixed(1) }}%</td>
+          <td class="mono">{{ row.savedPercent.toFixed(1) }}%</td>
+        </tr>
+      </tbody>
+    </table>
+    <table v-else-if="mode === 'timing' && timingRows?.length">
+      <thead>
+        <tr>
+          <th>编码方案</th>
+          <th>中位数</th>
+          <th>P95</th>
+          <th>标准差</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="row in timingRows" :key="row.encoding">
+          <td>{{ encodingLabel(row.encoding) }}</td>
+          <td class="mono">{{ formatTiming(row.median) }}</td>
+          <td class="mono">{{ formatTiming(row.p95) }}</td>
+          <td class="mono">{{ formatTiming(row.stdev) }}</td>
         </tr>
       </tbody>
     </table>
@@ -61,11 +103,11 @@ th,
 td {
   text-align: left;
   padding: 6px 8px;
-  border-bottom: 1px solid var(--border-subtle, var(--border-default));
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 th {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 </style>
